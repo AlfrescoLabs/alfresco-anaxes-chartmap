@@ -1,0 +1,11 @@
+@startuml
+skinparam linetype ortho
+title Chart Map for alfresco-content-services:0.0.1
+'There are 3 referenced Helm Charts
+artifact "nginx-ingress:0.8.23\n====\n\tnginx-ingress\n====\n\t0.8.23\n====\n\tMaintainers: jackzampolin, mgoodness, chancez\n====\n\tKeywords: ingress, nginx" as nginx_ingress_0_8_23 #PaleGreen
+artifact "alfresco-content-services:0.0.1\n====\n\talfresco-content-services\n====\n\t0.0.1\n====\n\tMaintainers: \n====\n\tKeywords: content, content services, alfresco, community, alfresco community" as alfresco_content_services_0_0_1 #PaleGreen
+artifact "postgresql:0.8.5\n====\n\tpostgresql\n====\n\t0.8.5\n====\n\tMaintainers: swordbeta, databus23\n====\n\tKeywords: postgresql, postgres, database, sql" as postgresql_0_8_5 #PaleGreen
+alfresco_content_services_0_0_1--->nginx_ingress_0_8_23:depends on
+alfresco_content_services_0_0_1--->postgresql_0_8_5:depends on
+center footer Generated on 2018/02/05 15:06:33 by org.alfresco.deployment.util.PlantUmlChartMapPrinter
+@enduml
