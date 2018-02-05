@@ -22,9 +22,6 @@ hs_err_pid*
 target
 dependency-reduced-pom.xml
 
-# Package Files #
-*.jar
-*.war
-*.ear
+
 
 
