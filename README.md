@@ -48,7 +48,7 @@ java -jar chartmap-1.0-SNAPSHOT.jar -c "alfresco-content-services:0.0.1" -d "/Us
  
 ## Example Output (PlantUML) File
 
-![](./resource/example/alfresco-content-services.puml)
+https://github.com/Alfresco/alfresco-anaxes-chartmap/blob/master/resource/example/alfresco-content-services.puml
 
 ## Example Image generated from PlantUML file
 
