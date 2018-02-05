@@ -2,16 +2,16 @@
 
 ## Overview
 
-This project generates a file that shows the dependencies of a Helm Chart.
+This project generates a file that shows the recursive dependencies of a Helm Chart.  
 
 The generated file can be in either PlantUML text format or in a plain text format.  
 
 The most useful format is PlantUML since this offers a visual representation of the chart dependencies.  See the example below.
-For more information about PlantUML, see http://plantuml.com/. 
+For more information about PlantUML, see http://plantuml.com/.  
 
 ## Prerequisites
 
-The Helm Client is required since the chart map is based on the dependencies discovered by the Kubernetes Helm client. I have tested it with v2.7.2 of the Helm Client though other version may work. 
+The Helm Client is required since the chart map is based on the dependencies discovered by the Kubernetes Helm client. I have tested it with v2.7.2 of the Helm Client though other versions may also work. 
 
 For instructions on installing the Helm Client, see https://docs.helm.sh/using_helm/#installing-helm
 
