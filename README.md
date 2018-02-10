@@ -54,6 +54,12 @@ https://github.com/Alfresco/alfresco-anaxes-chartmap/blob/master/resource/exampl
 
 ![](./resource/example/alfresco-content-services.png)
 
+Note that the colors chosen for a chart are randomly selected from a standard set of PlantUML
+colors (see [PlantUML Colors](http://plantuml.com/colors)) using a method that will depict
+Helm Charts that differ only by their Version using the same color.   For example 'postgresql:0.8.5'
+and 'postgresql:0.8.7' will be depicted with the same color.  This will make it easier to spot
+cases you may want to optimize a deployment to use a common Helm Chart instead.
+
 ## Building the jar from source
 
 1.  git clone this repository
