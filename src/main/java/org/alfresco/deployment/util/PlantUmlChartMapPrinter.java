@@ -1,5 +1,6 @@
 package org.alfresco.deployment.util;
 
+import org.alfresco.deployment.util.model.HelmDeploymentContainer;
 import org.apache.commons.collections4.map.MultiKeyMap;
 
 import org.alfresco.deployment.util.model.HelmChart;
@@ -14,7 +15,7 @@ import java.io.IOException;
  */
 public class PlantUmlChartMapPrinter extends ChartMapPrinter {
 
-    protected String[] colors;
+    private String[] colors;
 
     /**
      * Constructor
@@ -33,25 +34,23 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
     /**
      * Writes the start of a PlantUML diagram including a title
      *
-     * @throws IOException
+     * @throws IOException      IOException
      */
     public void printHeader() throws IOException {
         writeLine("@startuml");
         writeLine("skinparam linetype ortho");  // TODO: get this from config
         writeLine("title Chart Map for " + chart.getNameFull());
-        writer.flush();
     }
 
     /**
      * Writes a PlantUML footer with a time stamp and a reference to this
      * class
      *
-     * @throws IOException
+     * @throws IOException      IOException
      */
     public void printFooter() throws IOException {
         writeLine("center footer Generated on " + getCurrentDateTime() + " by " + this.getClass().getCanonicalName());
         writeLine("@enduml");
-        writer.flush();
     }
 
     /**
@@ -59,27 +58,46 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      *
      * @param   parentChart     the parent Helm Chart
      * @param   dependentChart  a Helm Chart on which the parent Helm Chart depends
-     * @throws  IOException
+     * @throws  IOException     IOException
      */
-    public void printDependency(HelmChart parentChart, HelmChart dependentChart) throws IOException {
+    public void printChartToChartDependency(HelmChart parentChart, HelmChart dependentChart) throws IOException {
         writeLine(getNameAsPlantUmlReference(parentChart.getNameFull()) + "--->" + getNameAsPlantUmlReference(dependentChart.getNameFull()) + ":depends on");
-        writer.flush();
     }
+
+    /**
+     * Writes a line that shows the dependency of a Chart on a Container
+     *
+     * @param   chart           a Helm Chart
+     * @param   container       a Docker Container on which the Helm Chart depends
+     * @throws  IOException     IOException
+     */
+    public void printChartToContainerDependency(HelmChart chart, HelmDeploymentContainer container) throws IOException {
+        writeLine(getNameAsPlantUmlReference(chart.getNameFull()) + "--->" + getNameAsPlantUmlReference(container.getImage()) + ":uses");
+    }
+
 
     /**
      * Writes a line to depict a Helm Chart
      * @param   chart   a Helm Chart
-     * @throws  IOException
+     * @throws  IOException     IOException
      */
     public void printChart(HelmChart chart) throws IOException {
-        writeLine("artifact \"" + chart.getNameFull() + getComponentBody(chart) + "\" as " + getNameAsPlantUmlReference(chart.getNameFull()) + " " + getArtifactColor(chart));
+        writeLine("artifact \"" + chart.getNameFull() + getComponentBody(chart) + "\" as " + getNameAsPlantUmlReference(chart.getNameFull()) + " " + getChartArtifactColor(chart));
+    }
+
+    /**
+     * Writes a line to depict a Docker Container
+     */
+    public void printContainer(HelmDeploymentContainer container)  throws IOException {
+        //     image: "quay.io/alfresco/service-sync:2.2-SNAPSHOT"
+        writeLine("rectangle \"" + getContainerBody(container) + "\" as " + getNameAsPlantUmlReference(container.getImage()) + " " + getContainerArtifactColor(container));
     }
 
     /**
      * Writes a comment line
      *
      * @param   comment the comment to be written
-     * @throws  IOException
+     * @throws  IOException     IOException
      */
     public void printComment(String comment) throws IOException {
         writer.write("'" + comment + "\n");
@@ -93,7 +111,7 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      * @return          text that can be used for the body of
      *                  a PlantUML artifact
      */
-    protected String getComponentBody(HelmChart chart) {
+    private String getComponentBody(HelmChart chart) {
         String body = getSeparator();
         body += "\\t" + chart.getName();
         body += getSeparator();
@@ -106,12 +124,47 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
     }
 
     /**
+     * Returns the text to use in a PlantUML artifact that
+     * describes a Docker Container
+     *
+     * @param   container   a Docker Container
+     * @return               text that can be used for the body of
+     *                       a PlantUML artifact
+     */
+    private String getContainerBody(HelmDeploymentContainer container) {
+        String image = container.getImage();
+        String imageName=null;
+        String body="Image";
+        body += getSeparator();
+        String repoHost="DockerHub";
+        if (container.getImage().contains("/")) {
+            repoHost = image.substring(0,image.indexOf('/'));
+        }
+        body += "\\t" + repoHost;
+        body += getSeparator();
+        if (image.contains("/") && image.contains(":")) {
+            imageName = image.substring(image.indexOf('/')+1,image.indexOf(':'));
+        }
+        else if (image.contains(":")) {
+            imageName = image.substring(0,image.indexOf(':'));
+        }
+        body += "\\t" + imageName;
+        body += getSeparator();
+        String version="?";
+        if (container.getImage().contains(":")) {
+            version = image.substring(image.indexOf(':')+1,image.length());
+        }
+        body += "\\t" + version;
+        return body;
+    }
+
+    /**
      * Returns a PlantUML separator
      *
-     * @return
+     * @return      PlantUML text for a separator
      */
-    protected String getSeparator() {
-        return new String("\\n====\\n");
+    private String getSeparator() {
+        return "\\n====\\n";
     }
 
     /**
@@ -121,8 +174,8 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      * @return      a formatted String of the maintainers separated by
      *              commas
      */
-    protected String getMaintainers(HelmMaintainer[] m) {
-        String maintainers = new String("Maintainers: ");
+    private String getMaintainers(HelmMaintainer[] m) {
+        String maintainers = "Maintainers: ";
         boolean first = true;
         if (m != null) {
             for (HelmMaintainer hm : m) {
@@ -144,8 +197,8 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      * @return      a formatted String of the keywords separated by
      *              commas
      */
-    protected String getKeywords(String[] k) {
-        String keywords = new String("Keywords: ");
+    private String getKeywords(String[] k) {
+        String keywords = "Keywords: ";
         boolean first = true;
         if (k != null) {
             for (String aKeyword : k) {
@@ -162,19 +215,19 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
 
     /**
      *
-     * Get the name of a Helm Chart as a name that obeys PlantUML
+     * Get the name of a Helm artifact as a name that obeys PlantUML
      * rules
      *
-     * @param   s   the full name of the Helm Chart in the format
-     *              name:version
-     * @return      the name of the Helm Chart where the characters
+     * @param   s   the full name of the the artifact
+     * @return      the name of the artifact where the characters
      *              that would violate PlantUML naming rules are replaced
      *              with underscores
      */
-    protected String getNameAsPlantUmlReference(String s) {
+    private String getNameAsPlantUmlReference(String s) {
         String reference = s.replace(':', '_');
         reference = reference.replace('.', '_');
         reference = reference.replace('-', '_');
+        reference = reference.replace('/', '_');
         return reference;
     }
 
@@ -185,8 +238,13 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      *              table
      */
 
-    protected String getArtifactColor(HelmChart h) {
+    private String getChartArtifactColor(HelmChart h) {
         int hashValue = hashHelmChartName(h);
+        return "#" + colors[hashValue];
+    }
+
+    private String getContainerArtifactColor(HelmDeploymentContainer c) {
+        int hashValue = hashHelmContainerName(c);
         return "#" + colors[hashValue];
     }
 
@@ -200,11 +258,30 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      *              visually a group of related Helm Charts in the
      *              diagram (e.g. all the Postgresql Charts may be
      *              colored as 'Coral').
-     *              a color this way
+     *
      * @return      a calculated hash value aa an unsigned int
      */
-    protected int hashHelmChartName(HelmChart h) {
+    private int hashHelmChartName(HelmChart h) {
         int hashCode =  (h.getName().hashCode() * Integer.MAX_VALUE) / (Integer.MAX_VALUE / (getColors().length) * 2);
+        hashCode = Math.abs(hashCode);
+        return hashCode;
+    }
+
+    /**
+     *
+     * @param   c  a HelmDeploymentContainer from which a hash code will be
+     *              generated (for the purpose of indexing into
+     *              the colors array).   Only the name of the
+     *              Containers is used to create the has because
+     *              the main point of choosing a color is to associate
+     *              visually a group of related Containers in the
+     *              diagram (e.g. all the Postgresql Images may be
+     *              colored as 'Chocolate').
+     *
+     * @return      a calculated hash value aa an unsigned int
+     */
+    private int hashHelmContainerName(HelmDeploymentContainer c) {
+        int hashCode =  (c.getImage().hashCode() * Integer.MAX_VALUE) / (Integer.MAX_VALUE / (getColors().length) * 2);
         hashCode = Math.abs(hashCode);
         return hashCode;
     }
@@ -214,7 +291,7 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      * @return      the colors array
      */
 
-    protected String[] getColors() {
+    private String[] getColors() {
         return colors;
     }
 
@@ -229,11 +306,13 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      *
      * PlantUML does support using other than black text so if you decide
      * to use a different color (using skinparam) you may decide to use these
-     * darker colors.   But note that your choice of text color applies to the
+     * darker colors.  A matter of taste.
+     *
+     * But note that your choice of text color applies to the
      * whole file.
      */
 
-    protected void initializeColors() {
+    private void initializeColors() {
         colors = new String[]{
                 "AliceBlue",
                 "AntiqueWhite",
@@ -259,10 +338,10 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
                 //"DarkBlue",
                 //"DarkCyan",
                 "DarkGoldenRod",
-                "DarkGray",
+                //"DarkGray",
                 //"DarkGreen",
-                "DarkGrey",
-                "DarkKhaki",
+                //"DarkGrey",
+                //"DarkKhaki",
                 //"DarkMagenta",
                 //"DarkOliveGreen",
                 //"DarkOrchid",
@@ -282,7 +361,7 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
                 "DodgerBlue",
                 //"FireBrick",
                 "FloralWhite",
-                "ForestGreen",
+                //"ForestGreen",
                 "Fuchsia",
                 "Gainsboro",
                 "GhostWhite",

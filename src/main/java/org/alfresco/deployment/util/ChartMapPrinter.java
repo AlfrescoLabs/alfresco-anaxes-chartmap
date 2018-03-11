@@ -6,18 +6,19 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 
+import org.alfresco.deployment.util.model.HelmDeploymentContainer;
 import org.apache.commons.collections4.map.MultiKeyMap;
 
 import org.alfresco.deployment.util.model.HelmChart;
 
 public class ChartMapPrinter implements IChartMapPrinter {
 
-    protected MultiKeyMap charts;
-    protected HelmChart chart;
-    protected String outputFilename;
-    protected FileWriter writer;
+    private MultiKeyMap charts;
+    HelmChart chart;
+    private String outputFilename;
+    FileWriter writer;
 
-    public ChartMapPrinter(String outputFilename, MultiKeyMap charts, HelmChart chart ) {
+    ChartMapPrinter(String outputFilename, MultiKeyMap charts, HelmChart chart ) {
         this.outputFilename = outputFilename;
         this.charts = charts;
         this.chart = chart;
@@ -29,7 +30,7 @@ public class ChartMapPrinter implements IChartMapPrinter {
         }
     }
 
-    protected void writeLine (String l ) throws IOException {
+    void writeLine (String l ) throws IOException {
         try {
             writer.write(l + "\n");
             writer.flush();
@@ -48,8 +49,12 @@ public class ChartMapPrinter implements IChartMapPrinter {
         writeLine("Generated on " + getCurrentDateTime() + " by " + this.getClass().getCanonicalName());
     }
 
-    public void printDependency (HelmChart parentChart, HelmChart dependentChart)   throws IOException {
+    public void printChartToChartDependency (HelmChart parentChart, HelmChart dependentChart)   throws IOException {
         writeLine(parentChart.getNameFull() + " depends on " + dependentChart.getNameFull());
+    }
+
+    public void printChartToContainerDependency (HelmChart chart, HelmDeploymentContainer container)   throws IOException {
+        writeLine(chart.getNameFull() + " uses " + container.getImage());
     }
 
     public void printChart(HelmChart chart)   throws IOException {
@@ -61,12 +66,16 @@ public class ChartMapPrinter implements IChartMapPrinter {
         writeLine("\tdescription: " + chart.getDescription());
         writeLine("\tdigest: " + chart.getDigest());
         writeLine("\ticon: " + chart.getIcon());
-        writeLine("\tkeywords: " + chart.getKeywords());
-        writeLine("\tmaintainers: " + chart.getMaintainers());
+        writeLine("\tkeywords: " + chart.getKeywords().toString());
+        writeLine("\tmaintainers: " + chart.getMaintainers().toString());
         writeLine("\tname: " + chart.getName());
-        writeLine("\tsources: " + chart.getSources());
-        writeLine("\turls: " + chart.getUrls());
+        writeLine("\tsources: " + chart.getSources().toString());
+        writeLine("\turls: " + chart.getUrls().toString());
         writeLine("\tversion: " + chart.getVersion());
+    }
+
+    public void printContainer(HelmDeploymentContainer container)  throws IOException {
+        writeLine("Image: " + container.getImage());
     }
 
     public void printComment(String comment)  throws IOException {
@@ -89,7 +98,7 @@ public class ChartMapPrinter implements IChartMapPrinter {
         return chart;
     }
 
-    protected String getCurrentDateTime () {
+    String getCurrentDateTime () {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         return(f.format(LocalDateTime.now()));
     }
