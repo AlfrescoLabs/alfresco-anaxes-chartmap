@@ -11,7 +11,7 @@ public class ChartUtil {
      * @param values    a map of values such as from a values.yaml file
      * @return          the value of the key
      */
-    String getValue(String k, Map<String, Object> values) {
+    @SuppressWarnings("unchecked") public static String getValue(String k, Map<String, Object> values) {
         if (values != null) {
             String head = k;
             String tail = "";

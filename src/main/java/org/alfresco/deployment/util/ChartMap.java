@@ -139,18 +139,18 @@ public class ChartMap {
      *
      */
     private void initialize() {
-        chartName = null;
-        outputFilename = getDefaultOutputFilename();
-        verbose = false;
-        helmHome = getDefaultHelmHome();
-        tempDirName = null;
+        setChartName(null);
+        setOutputFilename(getDefaultOutputFilename());
+        setVerbose(false);
+        setHelmHome(getDefaultHelmHome());
+        setTempDirName(null);
+        setPrinter(null);
+        setPrintFormat(PrintFormat.TEXT);
+        setRefreshLocalRepo(false);
         charts = new MultiKeyMap();
         chartsReferenced = new MultiKeyMap();
         containersReferenced = new HashMap<>();
         deploymentTemplatesReferenced = new HashMap<>();
-        printer = null;
-        printFormat = PrintFormat.TEXT;
-        refreshLocalRepo=false;
     }
 
     /**
@@ -319,7 +319,7 @@ public class ChartMap {
      * 3.  If the user specified the chart by name, the chart is already in the charts map we create from the repo so find the download url from that entry and download it
      */
     private String getChart() {
-        String chartDirName = null;
+        String chartDirName = "";
         if (getApprSpec() != null) {
             chartDirName = pullChart(getApprSpec());
         }
@@ -338,33 +338,33 @@ public class ChartMap {
     /**
      * Downloads a chart using appr into the temp directory
      *
-     * @param c     a string specifying the location of the chart
-     * @return      the name of the directory where the chart was downloaded into
-     *              e.g. /temp/alfresco_alfresco-dbp_0.2.0/alfresco-dbp
+     * @param apprSpec    a string specifying the location of the chart
+     * @return            the name of the directory where the chart was downloaded into
+     *                    e.g. /temp/alfresco_alfresco-dbp_0.2.0/alfresco-dbp
      */
-    private String pullChart (String c) {
-        String command = "helm registry pull ";
+    private String pullChart (String apprSpec) {
         String chartDirName = null;
-        if (c !=null) {
-            command += c + " -t helm ";
-        }
         try {
+            // the chart name should be of the form <repo>/<org>/<chartname>@<version> e.g. quay.io/alfresco/alfresco-dbp@0.2.0
+            if (apprSpec == null || (apprSpec.indexOf('/')==-1) || (apprSpec.indexOf('@')==-1)) {
+                throw new Exception("appr specification invalid: " + apprSpec + " .  I was expecting something like quay.io/alfresco/alfresco-dbp@0.2.0");
+            }
+            String command = "helm registry pull ";
+            command += apprSpec + " -t helm ";
             Process p = Runtime.getRuntime().exec(command, null, new File(getTempDirName()));
             p.waitFor(10000, TimeUnit.MILLISECONDS);
             int exitCode = p.exitValue();
             if (exitCode == 0) {
-                // of form quay.io/alfresco/alfresco-dbp@0.2.0
-                chartDirName = getTempDirName() + c.substring(c.indexOf('/') + 1, c.length()).replace('@', '_').replace('/', '_') + File.separator + chartName;
+                chartDirName = getTempDirName() + apprSpec.substring(apprSpec.indexOf('/') + 1, apprSpec.length()).replace('@', '_').replace('/', '_') + File.separator + chartName;
                 createChart(chartDirName);
                 unpackEmbeddedCharts(chartDirName);
             }
             else {
                 throw new Exception("Error Code: " + exitCode + " executing command \"" + command + "\"");
             }
-            // if the user wants us to update the local repo cache, do so
             updateLocalRepo(chartDirName);
         } catch (Exception e) {
-            System.out.println("Exception pulling chart from appr using specification " + c + " : " + e.getMessage());
+            System.out.println("Exception pulling chart from appr using specification " + apprSpec + " : " + e.getMessage());
         }
         return chartDirName;
     }
@@ -465,13 +465,17 @@ public class ChartMap {
             while ((entry = (TarArchiveEntry) tis.getNextEntry()) != null) {
                 String name = entry.getName();
                 String chartName = name.substring(0, name.lastIndexOf(File.separator));
-                File p = new File(chartFileName.substring(0, chartFileName.lastIndexOf(File.separator)), chartName);
-                p.mkdirs();
+                File dir = new File(chartFileName.substring(0, chartFileName.lastIndexOf(File.separator)), chartName);
+                if (!dir.mkdirs()) {
+                    throw new Exception("Error creating directory: " + dir.getAbsolutePath());
+                }
                 int count;
                 byte[] data = new byte[bufferSize];
                 String fileName = chartFileName.substring(0, chartFileName.lastIndexOf(File.separator)) + File.separator + entry.getName();
                 File file = new File(fileName);
-                file.createNewFile();
+                if (!file.createNewFile()) {
+                    throw new Exception("Error creating file: " + file.getAbsolutePath());
+                }
                 FileOutputStream fos = new FileOutputStream(file);
                 BufferedOutputStream dos = new BufferedOutputStream(fos, bufferSize);
                 while ((count = tis.read(data, 0, bufferSize)) != -1) {
@@ -501,11 +505,7 @@ public class ChartMap {
             @Override
             public boolean accept(File dir, String name) {
                 File file = new File(chartDirName + File.separator + name);
-                if (file.isDirectory() && name.equals("charts")) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return (file.isDirectory() && name.equals("charts"));
             }
         });
         if (directories != null) {
@@ -520,8 +520,10 @@ public class ChartMap {
                         }
                     }
                 });
-                for (String t : tgzFiles) {
-                    unpackChart(chartDirName + File.separator + "charts" + File.separator + t);   // recursion
+                if (tgzFiles != null) {
+                    for (String t : tgzFiles) {
+                        unpackChart(chartDirName + File.separator + "charts" + File.separator + t);   // recursion
+                    }
                 }
             }
         }
@@ -548,34 +550,36 @@ public class ChartMap {
                     return new File(c, n).isDirectory();
                 }
             });
-            for (String s : directories) {
-                if (h != null) {
-                    parentHelmChart = (HelmChart) charts.get(h.getName(), h.getVersion());
-                    chartsReferenced.put(parentHelmChart.getName(), parentHelmChart.getVersion(), parentHelmChart);
-                }
-                File chartFile = new File(chartDirName + File.separator + s + File.separator + "Chart.yaml");
-                if (chartFile.exists()) {
-                    ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-                    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                    HelmChart currentHelmChartFromDisk = mapper.readValue(chartFile, HelmChart.class);   // this reference is not in the map
-                    HelmChart currentHelmChart = (HelmChart) charts.get(currentHelmChartFromDisk.getName(),currentHelmChartFromDisk.getVersion());
-                    if (currentHelmChart == null) {
-                        // this is most likely because the local Helm charts are out of date and should be refreshed
-                        throw new Exception(parentHelmChart.getName() + ":" + parentHelmChart.getVersion() + " depends on " +
-                                currentHelmChartFromDisk.getName() + ":" + currentHelmChartFromDisk.getVersion() +
-                                " which was not found in the local Helm charts cache.\n  " +
-                                " Try running the command again with the '-r' option");
+            if (directories != null) {
+                for (String s : directories) {
+                    if (h != null) {
+                        parentHelmChart = (HelmChart) charts.get(h.getName(), h.getVersion());
+                        chartsReferenced.put(parentHelmChart.getName(), parentHelmChart.getVersion(), parentHelmChart);
+                    }
+                    File chartFile = new File(chartDirName + File.separator + s + File.separator + "Chart.yaml");
+                    if (chartFile.exists()) {
+                        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+                        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                        HelmChart currentHelmChartFromDisk = mapper.readValue(chartFile, HelmChart.class);   // this reference is not in the map
+                        HelmChart currentHelmChart = (HelmChart) charts.get(currentHelmChartFromDisk.getName(), currentHelmChartFromDisk.getVersion());
+                        if (currentHelmChart == null) {
+                            // this is most likely because the local Helm charts are out of date and should be refreshed
+                            throw new Exception("A dependency on " +
+                                    currentHelmChartFromDisk.getName() + ":" + currentHelmChartFromDisk.getVersion() +
+                                    " was found but that chart was not found in the local Helm charts cache.\n  " +
+                                    " Try running the command again with the '-r' option");
 
-                    }
-                    if (parentHelmChart != null) {
-                        parentHelmChart.getDependencies().add(currentHelmChart);   // add this chart as a dependent
-                        chartsReferenced.put(currentHelmChart.getName(), currentHelmChart.getVersion(), currentHelmChart); // may be redundant given we added parent already in an earlier iteration
-                        collectValues(chartDirName + File.separator + s, currentHelmChart);
-                    }
-                    renderTemplates(currentDirectory,currentHelmChart);
-                    File chartsDirectory = new File(chartDirName + File.separator + s + File.separator + "charts");
-                    if (chartsDirectory.exists()) {
-                        collectDependencies(chartsDirectory.getAbsolutePath(), currentHelmChart);  // recursion
+                        }
+                        if (parentHelmChart != null) {
+                            parentHelmChart.getDependencies().add(currentHelmChart);   // add this chart as a dependent
+                            chartsReferenced.put(currentHelmChart.getName(), currentHelmChart.getVersion(), currentHelmChart); // may be redundant given we added parent already in an earlier iteration
+                            collectValues(chartDirName + File.separator + s, currentHelmChart);
+                        }
+                        renderTemplates(currentDirectory, currentHelmChart);
+                        File chartsDirectory = new File(chartDirName + File.separator + s + File.separator + "charts");
+                        if (chartsDirectory.exists()) {
+                            collectDependencies(chartsDirectory.getAbsolutePath(), currentHelmChart);  // recursion
+                        }
                     }
                 }
             }
@@ -589,7 +593,7 @@ public class ChartMap {
         while (i.hasNext()) {
             i.next();
             HelmChart h = (HelmChart)i.getValue();
-            ArrayList a = new ArrayList<HelmDeploymentTemplate>();
+            ArrayList<HelmDeploymentTemplate> a = new ArrayList<>();
             for (HelmDeploymentTemplate t : h.getDeploymentTemplates()) {
                 // get the template from the weighted templates array
                 WeightedDeploymentTemplate w = deploymentTemplatesReferenced.get(t._getFileName());
@@ -611,16 +615,22 @@ public class ChartMap {
      *
      * @param dirName       the name of the directory in which the values file exists
      * @param h             the Helm Chart object to which these values apply
-     * @throws IOException  IOException
+     * @throws Exception    Exception
      */
-    private void collectValues(String dirName, HelmChart h) throws IOException {
+    @SuppressWarnings("unchecked") private void collectValues(String dirName, HelmChart h) throws Exception {
         if (h==null || dirName == null) {return;}
         File valuesFile = new File(dirName + File.separator + "values.yaml");
         if (valuesFile.exists()) {
             FileInputStream fis = new FileInputStream(valuesFile);
             Yaml yaml = new Yaml();
-            Map<String, Object>  values = (Map<String, Object>) yaml.load(fis);
-            h.setValues(values);
+            Object o = yaml.load(fis);
+            if (o instanceof Map<?,?>) {
+                Map<String, Object> values = (Map<String, Object>) o;
+                h.setValues(values);
+            }
+            else {
+                throw new Exception("The values.yaml file:" + valuesFile.getAbsolutePath() + " could not be parsed");
+            }
         }
     }
 
@@ -656,7 +666,9 @@ public class ChartMap {
                     dir.getAbsolutePath() + File.separator + h.getName()
                             + File.separator  + "templates"
                             + File.separator  + this.getClass().getCanonicalName() + RENDERED_TEMPLATE_FILE);
-            f.createNewFile();
+            if (!f.createNewFile()) {
+                throw new Exception("File: " + f.getAbsolutePath() + " could not be created.");
+            }
             BufferedOutputStream out =
                     new BufferedOutputStream(
                             new FileOutputStream(f));
@@ -754,7 +766,7 @@ public class ChartMap {
             int lineCount = 0;
             while ((line = bufferedReader.readLine()) != null) {
                 lineCount++;
-                if (line.length() > new String("# Source: " + chartName).length() && line.charAt(0) == '#') {
+                if (line.length() > ("# Source: " + chartName).length() && line.charAt(0) == '#') {
                     // a pattern like this  <chartName>/templates/... means that this is
                     // a template of immediate interest to the chart alfresco-content-services/templates
                     String[] s = line.split(File.separator, 3);
@@ -1011,4 +1023,8 @@ public class ChartMap {
     private void setRefreshLocalRepo(boolean refreshLocalRepo) {
         this.refreshLocalRepo = refreshLocalRepo;
     }
+
+    public PrintFormat getPrintFormat() {return printFormat;}
+
+    public void setPrintFormat(PrintFormat printFormat) {this.printFormat = printFormat;}
 }
