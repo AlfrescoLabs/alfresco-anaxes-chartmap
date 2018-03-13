@@ -11,7 +11,6 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.collections4.MapIterator;
-import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.collections4.map.MultiKeyMap;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -33,6 +32,7 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,6 +48,7 @@ public class ChartMap {
 
     private String apprSpec;
     private HelmChart chart;
+    private String chartFileName;
     private MultiKeyMap charts;
     private String chartName;
     private String chartVersion;
@@ -141,6 +142,8 @@ public class ChartMap {
     private void initialize() {
         setChartName(null);
         setOutputFilename(getDefaultOutputFilename());
+        setChartFileName(null);
+        setChartUrl(null);
         setVerbose(false);
         setHelmHome(getDefaultHelmHome());
         setTempDirName(null);
@@ -163,6 +166,7 @@ public class ChartMap {
         options.addOption("a", true, "The appr chart location");
         options.addOption("c", true, "The Chart Name");
         options.addOption("d", true, "Directory for Helm Home");
+        options.addOption("f", true, "Helm Chart File Name");
         options.addOption("h", false, "Help");
         options.addOption("o", true, "The Output Filename");
         options.addOption("r", false, "Update the Helm Chart dependencies");
@@ -189,7 +193,11 @@ public class ChartMap {
                     count++;
                 }
             }
-            if (cmd.hasOption("u")) { // https://alfresco.github.io/charts/incubator/alfresco-content-services-0.0.1.tgz
+            if (cmd.hasOption("f")) { // e.g. /Users/johndoe/alfresco-content-services-0.0.1.tgz
+                setChartFileName(cmd.getOptionValue("f"));
+                count++;
+            }
+            if (cmd.hasOption("u")) { // e.g. https://alfresco.github.io/charts/incubator/alfresco-content-services-0.0.1.tgz
                 setChartUrl(cmd.getOptionValue("u"));
                 count++;
             }
@@ -224,8 +232,8 @@ public class ChartMap {
      */
     private static String getHelp() {
         String help = "Usage:\n";
-        help += "\tjava ChartMap {-a <appr location> | -c <name of the chart> | -u <chart url>} -d <helm home directory> -o <output file name> -r (update dependencies) -v (verbose) -h (help)\n";
-        help += "\tNote 1:\tUse an output file extension of 'puml' to generate a map in PlantUML format.  Otherwise a map in plain text fill be generated.\n";
+        help += "\tjava ChartMap {-a <appr location> | -c <name of the chart> | -f <chart filename> | -u <chart url>} -d <helm home directory> -o <output file name> -r (update dependencies) -v (verbose) -h (help)\n";
+        help += "\tNote 1:\tUse an output file extension of 'puml' to generate a map in PlantUML format.  Otherwise a map in plain text will be generated.\n";
         help += "\nExample:\n\tjava -jar chartmap-1.0-SNAPSHOT.jar -c \"alfresco-content-services:0.0.1\" -d \"/Users/myself/.helm\" -o  alfresco-content-services.puml -v";
         return help;
     }
@@ -312,19 +320,30 @@ public class ChartMap {
     }
 
     /**
-     * Gets a chart from a Helm repo in one of three ways ...
+     * Gets a chart from a Helm repo in one of four ways ...
      *
      * 1.  If the user specified an appr spec, pull the chart using the helm command line
      * 2.  If the user specified the url of a chart package (a tgz file), download the file using http and unpack it
-     * 3.  If the user specified the chart by name, the chart is already in the charts map we create from the repo so find the download url from that entry and download it
+     * 3.  If the user specified the name of a local tgz file, there is no need to fetch a chart
+     * 4.  If the user specified the chart by name, the chart is already in the charts map we create from the repo so find the download url from that entry and download it
      */
     private String getChart() {
         String chartDirName = "";
         if (getApprSpec() != null) {
             chartDirName = pullChart(getApprSpec());
-        }
-        else if (getChartUrl() != null ) {
+        } else if (getChartUrl() != null) {
             chartDirName = downloadChart(getChartUrl());
+        } else if (getChartFileName() != null) {
+            try {
+                Path src = new File(getChartFileName()).toPath();
+                Path tgt = new File(getTempDirName()).toPath().resolve(new File(getChartFileName()).getName());
+                Files.copy(src, tgt, StandardCopyOption.REPLACE_EXISTING);
+                String s = tgt.toAbsolutePath().toString();
+                chartDirName = unpackChart(s);
+            }
+            catch(IOException e) {
+                System.out.println("Exception copying " + getChartFileName() + " to " + getTempDirName() + " : " + e.getMessage());
+            }
         } else {
             HelmChart h = (HelmChart) charts.get(chartName, chartVersion);
             if (h != null) {
@@ -332,7 +351,7 @@ public class ChartMap {
             }
         }
         chart = (HelmChart) charts.get(chartName, chartVersion);
-        return chartDirName.substring(0,chartDirName.lastIndexOf(File.separator)); // return the parent directory
+        return chartDirName.substring(0, chartDirName.lastIndexOf(File.separator)); // return the parent directory
     }
 
     /**
@@ -465,9 +484,9 @@ public class ChartMap {
             while ((entry = (TarArchiveEntry) tis.getNextEntry()) != null) {
                 String name = entry.getName();
                 String chartName = name.substring(0, name.lastIndexOf(File.separator));
-                File dir = new File(chartFileName.substring(0, chartFileName.lastIndexOf(File.separator)), chartName);
-                if (!dir.mkdirs()) {
-                    throw new Exception("Error creating directory: " + dir.getAbsolutePath());
+                Path dir = new File(chartFileName.substring(0, chartFileName.lastIndexOf(File.separator)), chartName).toPath();
+                if (!Files.exists(dir)) {
+                    Files.createDirectories(dir);
                 }
                 int count;
                 byte[] data = new byte[bufferSize];
@@ -488,6 +507,37 @@ public class ChartMap {
             bis.close();
             fis.close();
             unpackEmbeddedCharts(unpackDirName);
+
+            // If the Chart Name or Version were not yet extracted, such as would happen if the chart was provided as a local tgz file
+            // then extract the chart name and version from the highest order Chart.yaml file and create the entry in the charts map
+            // if it is not already there (such as would happen if the chart was in an appr repo)
+            if (getChartName() == null || getChartVersion() == null) {
+                String chartFileDir = chartFileName.substring(0, chartFileName.lastIndexOf(File.separator));
+                String[] directories = new File(chartFileDir).list(new FilenameFilter() {
+                    @Override
+                    public boolean accept(File dir, String name) {
+                        File file = new File(chartFileDir + File.separator + name);
+                        return (file.isDirectory());
+                    }
+                });
+                if (directories != null) {
+                    try {
+                        String chartYamlFilename = chartFileDir + File.separator + directories[0] + File.separator + "Chart.yaml";
+                        File chartYamlFile = new File(chartYamlFilename);
+                        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+                        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                        HelmChart h = mapper.readValue(chartYamlFile, HelmChart.class);
+                        chartName = h.getName();
+                        chartVersion = h.getVersion();
+                        if (charts.get(chartName, chartVersion) == null) {
+                            charts.put(chartName, chartVersion, h);
+                        }
+                        unpackDirName = tempDirName + chartName;
+                    } catch (IOException e) {
+                        throw new Exception("Error extracting Chart Name and Chart Version");
+                    }
+                }
+            }
         } catch (Exception e) {
             System.out.println("Exception extracting Chart " + chartFileName + ":" + e.getMessage());
         }
@@ -1027,4 +1077,8 @@ public class ChartMap {
     public PrintFormat getPrintFormat() {return printFormat;}
 
     public void setPrintFormat(PrintFormat printFormat) {this.printFormat = printFormat;}
+
+    public String getChartFileName() {return chartFileName;}
+
+    public void setChartFileName(String chartFileName) {this.chartFileName = chartFileName;}
 }
