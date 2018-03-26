@@ -47,9 +47,37 @@
           <compilerArgument>-Xlint:unchecked</compilerArgument>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>com.github.jeluard</groupId>
+        <artifactId>plantuml-maven-plugin</artifactId>
+        <version>1.2</version>
+        <configuration>
+          <outputDirectory>${basedir}</outputDirectory>
+          <config>${basedir}/config/plantuml.config</config>
+          <sourceFiles>
+            <directory>${basedir}</directory>
+            <includes>
+              <include>**/*.puml</include>
+            </includes>
+          </sourceFiles>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>net.sourceforge.plantuml</groupId>
+            <artifactId>plantuml</artifactId>
+            <version>1.2017.14 </version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
-
   <dependencies>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -88,5 +116,4 @@
       <version>4.1</version>
     </dependency>
   </dependencies>
-
 </project>

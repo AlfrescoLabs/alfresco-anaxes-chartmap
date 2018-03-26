@@ -67,6 +67,13 @@ public class ChartMap {
     final private String RENDERED_TEMPLATE_FILE = "_renderedtemplates.yaml"; // this is the suffix of the name of the file we use to hold the rendered templates
     final private int MAX_WEIGHT = 100;
 
+    /**
+     * This inner class is used to assign a 'weight' to a template based on its
+     * position in the file system (parent templates having the lower weight).
+     * A template of the lowest weight is used to determine which containers will
+     * be referenced.
+     *
+     */
     private class WeightedDeploymentTemplate {
         private int weight;
         private HelmDeploymentTemplate template;
@@ -109,6 +116,8 @@ public class ChartMap {
      * @param verbose          When true, provides a little more information as the Chart Map is
      *                         generated
      *
+     *                         TODO: bring up to the date with the command line parms I've added
+     *
      */
     public ChartMap(String chartName, String outputFilename, String helmHome, boolean verbose) {
         initialize();
@@ -147,7 +156,6 @@ public class ChartMap {
         setVerbose(false);
         setHelmHome(getDefaultHelmHome());
         setTempDirName(null);
-        setPrinter(null);
         setPrintFormat(PrintFormat.TEXT);
         setRefreshLocalRepo(false);
         charts = new MultiKeyMap();
@@ -238,6 +246,14 @@ public class ChartMap {
         return help;
     }
 
+    /**
+     *
+     * Finds all the local repositories the user has previously added (using for example
+     * 'helm repo add') and constructs a HelmChartReposLocal from them.   Then calls a method
+     * to load all the charts in that repo into the charts map where they are raw material for
+     * being referenced later
+     *
+     */
     private void loadLocalRepos() {
         try {
             ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -253,6 +269,11 @@ public class ChartMap {
         }
     }
 
+    /**
+     *
+     * Prints a summary of some local repo information, if the user wants verbosity
+     *
+     */
     private void printLocalRepos() {
         if (isVerbose()) {
             HelmChartRepoLocal[] repos = localRepos.getRepositories();
@@ -267,6 +288,10 @@ public class ChartMap {
         }
     }
 
+    /**
+     * For each of the local repos the user has previously added (using for example
+     * 'helm repo add') calls the function to load the charts
+     */
     private void loadLocalCharts() {
         HelmChartRepoLocal[] repos = localRepos.getRepositories();
         for (HelmChartRepoLocal r : repos) {
@@ -275,6 +300,13 @@ public class ChartMap {
         }
     }
 
+
+    /**
+     * Takes a directory containing files in yaml form and constructs a HelmChart object from
+     * each and adds that Helm Chart object to the charts map
+     *
+     * @param c     a Directory containing Helm Charts in yaml form
+     */
     private void loadChartsFromCache(File c) {
         HelmChartLocalCache cache;
         try {
@@ -292,8 +324,13 @@ public class ChartMap {
         }
     }
 
-    private void printCharts(MultiKeyMap charts) {
-        MapIterator it = charts.mapIterator();
+    /**
+     * For each chart in the referenced charts map, print the chart.  Precede that with a summary
+     * of how many charts were referenced
+     *
+     */
+    private void printCharts() {
+        MapIterator it = chartsReferenced.mapIterator();
         try {
             printer.printComment("There are " + charts.size() + " referenced Helm Charts");
             while (it.hasNext()) {
@@ -329,26 +366,30 @@ public class ChartMap {
      */
     private String getChart() {
         String chartDirName = "";
-        if (getApprSpec() != null) {
-            chartDirName = pullChart(getApprSpec());
-        } else if (getChartUrl() != null) {
-            chartDirName = downloadChart(getChartUrl());
-        } else if (getChartFileName() != null) {
-            try {
-                Path src = new File(getChartFileName()).toPath();
-                Path tgt = new File(getTempDirName()).toPath().resolve(new File(getChartFileName()).getName());
-                Files.copy(src, tgt, StandardCopyOption.REPLACE_EXISTING);
-                String s = tgt.toAbsolutePath().toString();
-                chartDirName = unpackChart(s);
+        try {
+            if (getApprSpec() != null) {
+                chartDirName = pullChart(getApprSpec());
+            } else if (getChartUrl() != null) {
+                chartDirName = downloadChart(getChartUrl());
+            } else if (getChartFileName() != null) {
+                try {
+                    Path src = new File(getChartFileName()).toPath();
+                    Path tgt = new File(getTempDirName()).toPath().resolve(new File(getChartFileName()).getName());
+                    Files.copy(src, tgt, StandardCopyOption.REPLACE_EXISTING);
+                    String s = tgt.toAbsolutePath().toString();
+                    chartDirName = unpackChart(s);
+                } catch (IOException e) {
+                    System.out.println("Exception copying " + getChartFileName() + " to " + getTempDirName() + " : " + e.getMessage());
+                }
+            } else {
+                HelmChart h = (HelmChart) charts.get(chartName, chartVersion);
+                if (h != null) {
+                    chartDirName = downloadChart(h.getUrls()[0]);
+                }
             }
-            catch(IOException e) {
-                System.out.println("Exception copying " + getChartFileName() + " to " + getTempDirName() + " : " + e.getMessage());
-            }
-        } else {
-            HelmChart h = (HelmChart) charts.get(chartName, chartVersion);
-            if (h != null) {
-                chartDirName = downloadChart(h.getUrls()[0]);
-            }
+            updateLocalRepo(chartDirName);
+        } catch (Exception e) {
+            System.out.println("Error getting chart: " + e.getMessage());
         }
         chart = (HelmChart) charts.get(chartName, chartVersion);
         return chartDirName.substring(0, chartDirName.lastIndexOf(File.separator)); // return the parent directory
@@ -381,7 +422,7 @@ public class ChartMap {
             else {
                 throw new Exception("Error Code: " + exitCode + " executing command \"" + command + "\"");
             }
-            updateLocalRepo(chartDirName);
+            //updateLocalRepo(chartDirName);
         } catch (Exception e) {
             System.out.println("Exception pulling chart from appr using specification " + apprSpec + " : " + e.getMessage());
         }
@@ -418,13 +459,20 @@ public class ChartMap {
             client.close();
             chartDirName = unpackChart(tgzFileName);
             createChart(chartDirName);
-            updateLocalRepo(chartDirName);
+            //updateLocalRepo(chartDirName);
         } catch (Exception e) {
             System.out.println("Error downloading chart " + chartDirName + " : " + e.getMessage());
         }
         return chartDirName;
     }
 
+    /**
+     * Updates the local chart cache using the Helm client.   This is only done
+     * if the user has specified the refresh parameter on the command line or method call
+     *
+     * @param dirName   The name of the directory containing the chart
+     * @throws Exception
+     */
     private void updateLocalRepo(String dirName) throws Exception {
         // if the user wants us to update the Helm dependencies, do so
         if (this.isRefreshLocalRepo()) {
@@ -638,6 +686,13 @@ public class ChartMap {
         }
     }
 
+    /**
+     * For each of the referenced charts, find the template that has the heighest
+     * priority (the 'weighted template' which was previously determined from the
+     * location of the hierarchy in the file system (parents having priority over
+     * children) and set that one in the chart
+     *
+     */
     private void applyTemplates() {
         MapIterator i = chartsReferenced.mapIterator();
         while (i.hasNext()) {
@@ -880,7 +935,7 @@ public class ChartMap {
                     printer = new TextChartMapPrinter(outputFilename, charts, chart);
                 }
                 printer.printHeader();
-                printCharts(chartsReferenced);
+                printCharts();
                 printContainers();
                 printChartDependencies(chart);
                 printContainerDependencies();
@@ -912,6 +967,12 @@ public class ChartMap {
         }
     }
 
+    /**
+     *
+     * For each of the referenced charts, prints the containers referenced by the
+     * chart
+     *
+     */
     private void printContainerDependencies () {
         MapIterator it = chartsReferenced.mapIterator();
         try {
@@ -1014,7 +1075,7 @@ public class ChartMap {
 
     private void setChartName(String chartName) {this.chartName = chartName; }
 
-    public String getChartName() {
+    private String getChartName() {
         return chartName;
     }
 
@@ -1044,9 +1105,7 @@ public class ChartMap {
         this.outputFilename = outputFilename;
     }
 
-    private void setPrinter(IChartMapPrinter printer) {
-        this.printer = printer;
-    }
+    private void setPrinter(IChartMapPrinter printer) {this.printer = printer;}
 
     private IChartMapPrinter getPrinter() {
         return printer;
@@ -1076,9 +1135,9 @@ public class ChartMap {
 
     public PrintFormat getPrintFormat() {return printFormat;}
 
-    public void setPrintFormat(PrintFormat printFormat) {this.printFormat = printFormat;}
+    private void setPrintFormat(PrintFormat printFormat) {this.printFormat = printFormat;}
 
-    public String getChartFileName() {return chartFileName;}
+    private String getChartFileName() {return chartFileName;}
 
-    public void setChartFileName(String chartFileName) {this.chartFileName = chartFileName;}
+    private void setChartFileName(String chartFileName) {this.chartFileName = chartFileName;}
 }

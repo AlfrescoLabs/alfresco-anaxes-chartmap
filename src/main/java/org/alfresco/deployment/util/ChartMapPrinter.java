@@ -42,7 +42,7 @@ public class ChartMapPrinter implements IChartMapPrinter {
     }
 
     public void printFooter() throws IOException {
-        writeLine("Generated on " + getCurrentDateTime() + " by " + this.getClass().getCanonicalName());
+        writeLine("Generated on " + getCurrentDateTime() + " by " + this.getClass().getCanonicalName() + " (https://github.com/Alfresco/alfresco-anaxes-chartmap)");
     }
 
     public void printChartToChartDependency(HelmChart parentChart, HelmChart dependentChart) throws IOException {

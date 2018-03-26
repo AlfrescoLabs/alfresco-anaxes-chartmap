@@ -49,7 +49,7 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      * @throws IOException      IOException
      */
     public void printFooter() throws IOException {
-        writeLine("center footer Generated on " + getCurrentDateTime() + " by " + this.getClass().getCanonicalName());
+        writeLine("center footer Generated on " + getCurrentDateTime() + " by " + this.getClass().getCanonicalName() + "\\nhttps://github.com/Alfresco/alfresco-anaxes-chartmap");
         writeLine("@enduml");
     }
 
@@ -356,8 +356,8 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
                 "Darkorange",
                 //"DeepPink",
                 "DeepSkyBlue",
-                "DimGray",
-                "DimGrey",
+                //"DimGray",
+                //"DimGrey",
                 "DodgerBlue",
                 //"FireBrick",
                 "FloralWhite",
