@@ -107,10 +107,12 @@ public class ChartMapPrinter implements IChartMapPrinter {
      */
     private String printArray(String[] a) {
         StringBuilder sb = new StringBuilder("");
-        for (int i = 0; i < a.length; i++) {
-            sb.append(a[i]);
-            if (i != a.length - 1) {
-                sb.append(",");
+        if (a !=null) {
+            for (int i = 0; i < a.length; i++) {
+                sb.append(a[i]);
+                if (i != a.length - 1) {
+                    sb.append(",");
+                }
             }
         }
         return sb.toString();
@@ -125,12 +127,14 @@ public class ChartMapPrinter implements IChartMapPrinter {
      */
     private String printMaintainers(HelmMaintainer[] m) {
         StringBuilder sb = new StringBuilder("");
-        for (int i = 0; i < m.length; i++) {
-            sb.append(m[i].getName());
-            sb.append(":");
-            sb.append(m[i].getEmail());
-            if (i != m.length - 1) {
-                sb.append(",");
+        if (m != null) {
+            for (int i = 0; i < m.length; i++) {
+                sb.append(m[i].getName());
+                sb.append(":");
+                sb.append(m[i].getEmail());
+                if (i != m.length - 1) {
+                    sb.append(",");
+                }
             }
         }
         return sb.toString();

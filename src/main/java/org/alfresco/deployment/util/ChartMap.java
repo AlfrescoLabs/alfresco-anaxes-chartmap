@@ -106,33 +106,60 @@ public class ChartMap {
     }
 
     /**
-     * Initializer
+     * Constructor
      *
-     * @param chartName        The name of the Helm Chart for the Chart Map
-     * @param outputFilename   The name of the file to which to write the generated Chart Map.
-     *                         Note the file is overwritten if it exists.
-     * @param helmHome         The location of the user helm directory.  This is needed to find
-     *                         the local cache of index files downloaded from the Helm Chart repos.
-     * @param verbose          When true, provides a little more information as the Chart Map is
-     *                         generated
+     * @param option            The format of the Helm Chart name
+     * @param chart             The name of the Helm Chart in one of the formats specifified by
+     *                          the options parameter
+     * @param outputFilename    The name of the file to which to write the generated Chart Map.
+     *                          Note the file is overwritten if it exists.
+     * @param helmHome          The location of the user helm directory.  This is needed to find
+     *                          the local cache of index files downloaded from the Helm Chart repos.
+     * @param refresh           When true refresh the local Helm repo
+     * @param verbose           When true, provides a little more information as the Chart Map is
+     *                          generated
      *
-     *                         TODO: bring up to the date with the command line parms I've added
-     *
-     */
-    public ChartMap(String chartName, String outputFilename, String helmHome, boolean verbose) {
+     **/
+
+    public ChartMap(ChartOption option, String chart, String outputFilename, String helmHome, boolean refresh, boolean verbose) throws Exception {
         initialize();
-        this.setChartName(chartName);
-        this.setOutputFilename(outputFilename);
-        this.setHelmHome(helmHome);
-        this.setVerbose(verbose);
+        ArrayList <String> args = new ArrayList<>();
+        if (option.equals(ChartOption.APPRSPEC)) {
+           args.add("-a");
+        }
+        else if (option.equals(ChartOption.CHARTNAME)) {
+            args.add("-c");
+        }
+        else if (option.equals(ChartOption.FILENAME)) {
+            args.add("-f");;
+        }
+        else if (option.equals(ChartOption.URL)) {
+            args.add("-u");
+        }
+        else {
+            throw new Exception ("Invalid Option Specification");
+        }
+        args.add(chart);
+        if (refresh) {
+            args.add("-r");
+        }
+        if (verbose) {
+            args.add("-v");
+        }
+        args.add("-o");
+        args.add(outputFilename);
+        args.add("-d");
+        args.add(helmHome);
+        parseArgs(args.toArray(new String[args.size()]));
     }
+
 
     /**
      * Prints the Chart Map by creating a temp directory, loading the local
      * repo with charts, resolving the dependencies of the selected chart,
-     * printing the Chart Map, then cleaning up
+     * printing the Chart Map, then cleans up
      */
-    private void print() {
+    public void print() {
         createTempDir();
         loadLocalRepos();
         resolveChartDependencies();
@@ -184,20 +211,13 @@ public class ChartMap {
         int count=0;
         try {
             CommandLine cmd = parser.parse(options, args);
-            if (cmd.hasOption("a")) { // e.g. quay.io/alfresco/alfresco-dbp@0.2.0
-                String[] apprSpecParts = cmd.getOptionValue("a").split("@");
-                if (apprSpecParts.length == 2) {
-                    setChartName(apprSpecParts[0].substring(apprSpecParts[0].lastIndexOf('/')+ 1 ,apprSpecParts[0].length()));
-                    setChartVersion(apprSpecParts[1]);
-                    setApprSpec(cmd.getOptionValue("a"));
+            if (cmd.hasOption("a")) {
+                if (parseApprSpec(cmd.getOptionValue("a"))) {
                     count++;
                 }
             }
-            if (cmd.hasOption("c")) { // e.g. content-services:0.0.1
-                String[] chartNameParts = cmd.getOptionValue("c").split(":");
-                if (chartNameParts.length == 2) {
-                    setChartName(chartNameParts[0]);
-                    setChartVersion(chartNameParts[1]);
+            if (cmd.hasOption("c")) {
+                if (parseChartName(cmd.getOptionValue("c"))) {
                     count++;
                 }
             }
@@ -231,6 +251,43 @@ public class ChartMap {
             System.out.println(e.getMessage());
             System.exit(-1);
         }
+    }
+    /**
+     *
+     * Parses a Appr Specification of the format <chart-repp>/<org>/<chart-name>@<chart-version>
+     * and sets the values chartName and chartVersion
+     *
+     * @param   a the Appr Specification
+     * @return  true if a valid Appr Specification was passed
+     */
+    private boolean parseApprSpec(String a) {
+        // e.g. quay.io/alfresco/alfresco-dbp@0.2.0
+        String[] apprSpecParts = a.split("@");
+        if (apprSpecParts.length == 2) {
+            setChartName(apprSpecParts[0].substring(apprSpecParts[0].lastIndexOf('/') + 1, apprSpecParts[0].length()));
+            setChartVersion(apprSpecParts[1]);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * Parses a Chart Name of the format <chart-name><chart version> and sets the values of
+     * chartName and chartVersion
+     *
+     * @param   c the Chart Name
+     * @return  true if a valid Chart Name was passed
+     */
+    private boolean parseChartName(String c) {
+        // e.g. content-services:0.0.1
+        String[] chartNameParts = c.split(":");
+        if (chartNameParts.length == 2) {
+            setChartName(chartNameParts[0]);
+            setChartVersion(chartNameParts[1]);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -332,7 +389,7 @@ public class ChartMap {
     private void printCharts() {
         MapIterator it = chartsReferenced.mapIterator();
         try {
-            printer.printComment("There are " + charts.size() + " referenced Helm Charts");
+            printer.printComment("There are " + chartsReferenced.size() + " referenced Helm Charts");
             while (it.hasNext()) {
                 it.next();
                 printer.printChart((HelmChart) it.getValue());
@@ -481,7 +538,8 @@ public class ChartMap {
             p.waitFor(10000, TimeUnit.MILLISECONDS);
             int exitCode = p.exitValue();
             if (exitCode != 0) {
-                throw new Exception("Exception updating chart repo.  Exit code: " + exitCode);
+                throw new Exception("Exception updating chart repo.  Exit code: " +
+                        exitCode + ".  Possibly you cannot cannot to one of your remote charts repos.");
             }
             else {
                 if (this.isVerbose()) {
