@@ -1,13 +1,17 @@
 package org.alfresco.deployment.util.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+import org.alfresco.deployment.util.ChartUtil;
 
 public class HelmChart {
     private String apiVersion;
     private String appVersion;
     private String created;
     private String description;
-    private ArrayList<HelmChart> dependencies;
+    private ArrayList<HelmChart> dependencies = new ArrayList<>();
+    private ArrayList<HelmDeploymentTemplate> deploymentTemplates = new ArrayList<>();
     private String digest;
     private String icon;
     private String[] keywords;
@@ -15,7 +19,22 @@ public class HelmChart {
     private String name;
     private String[] sources;
     private String[] urls;
+    private Map<String, Object> values;
     private String version;
+
+
+    /**
+     * Collects the containers referenced by this chart and returns a collection of them
+     *
+     * @return a collection of the containers referenced by this chart
+     */
+    public ArrayList<HelmDeploymentContainer> getContainers() {
+        ArrayList<HelmDeploymentContainer> containers = new ArrayList<>();
+        for (HelmDeploymentTemplate t : deploymentTemplates) {
+            containers.addAll(Arrays.asList(t.getSpec().getTemplate().getSpec().getContainers()));
+        }
+        return containers;
+    }
 
     public String getApiVersion() {
         return apiVersion;
@@ -49,6 +68,14 @@ public class HelmChart {
         dependencies = d;
     }
 
+    public ArrayList<HelmDeploymentTemplate> getDeploymentTemplates() {
+        return deploymentTemplates;
+    }
+
+    public void setDeploymentTemplates(ArrayList<HelmDeploymentTemplate> deploymentTemplates) {
+        this.deploymentTemplates = deploymentTemplates;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -75,7 +102,7 @@ public class HelmChart {
         return keywords;
     }
 
-    public void setKeywords (String[] k) {
+    public void setKeywords(String[] k) {
         keywords = k;
     }
 
@@ -87,9 +114,7 @@ public class HelmChart {
         maintainers = m;
     }
 
-    public String getNameFull() {
-        return name + ":" + version;
-    }
+    public String getNameFull() {return name + ":" + version;}
 
     public String getName() {
         return name;
@@ -123,4 +148,15 @@ public class HelmChart {
         version = v;
     }
 
+    public Map<String, Object> getValues() {
+        return values;
+    }
+
+    public void setValues(Map<String, Object> v) {
+        values = v;
+    }
+
+    public String getValue(String k) {
+        return ChartUtil.getValue(k, values);
+    }
 }
