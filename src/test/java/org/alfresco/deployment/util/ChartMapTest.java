@@ -159,7 +159,6 @@ public class ChartMapTest {
             Files.deleteIfExists(testOutputTextFilePathNRV);
             Files.deleteIfExists(testOutputTextFilePathRNV);
             Files.deleteIfExists(testOutputTextFilePathNRNV);
-
             Files.deleteIfExists(testOutputImageRV);
             Files.deleteIfExists(testOutputImageNRV);
             Files.deleteIfExists(testOutputImageRNV);

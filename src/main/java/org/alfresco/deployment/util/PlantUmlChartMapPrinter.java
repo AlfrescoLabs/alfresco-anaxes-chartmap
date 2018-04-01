@@ -38,7 +38,12 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      */
     public void printHeader() throws IOException {
         writeLine("@startuml");
-        writeLine("skinparam linetype ortho");  // TODO: get this from config
+        writeLine("skinparam linetype ortho");  // TODO: get these from config
+        writeLine("skinparam backgroundColor white");
+        writeLine("skinparam usecaseBorderColor black");
+        writeLine("skinparam usecaseArrowColor LightSlateGray");
+        writeLine("skinparam artifactBorderColor black");
+        writeLine("skinparam artifactArrowColor LightSlateGray");
         writeLine("title Chart Map for " + chart.getNameFull());
     }
 
@@ -90,7 +95,7 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      */
     public void printContainer(HelmDeploymentContainer container)  throws IOException {
         //     image: "quay.io/alfresco/service-sync:2.2-SNAPSHOT"
-        writeLine("rectangle \"" + getContainerBody(container) + "\" as " + getNameAsPlantUmlReference(container.getImage()) + " " + getContainerArtifactColor(container));
+        writeLine("usecase \"" + getContainerBody(container) + "\" as " + getNameAsPlantUmlReference(container.getImage()) + " " + getContainerArtifactColor(container));
     }
 
     /**

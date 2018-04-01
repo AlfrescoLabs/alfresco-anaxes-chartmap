@@ -97,31 +97,43 @@ public class ChartMap {
     /**
      * Parses the command line and generates a Chart Map file
      *
-     * @param arg   The command line args
+     * @param   arg   The command line args
+     * @throws  IOException
      */
     public static void main(String[] arg) {
         ChartMap chartMap = new ChartMap();
-        chartMap.parseArgs(arg);
-        chartMap.print();
+        try {
+            chartMap.parseArgs(arg);
+            chartMap.print();
+        } catch (IOException e) {
+            System.out.println("IOException: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+        }
     }
 
     /**
      * Constructor
      *
-     * @param option            The format of the Helm Chart name
-     * @param chart             The name of the Helm Chart in one of the formats specifified by
-     *                          the options parameter
+     * @param option            The format of the Helm Chart
+     * @param chart             The name of the Helm Chart in one of the formats specified by
+     *                          the option parameter
      * @param outputFilename    The name of the file to which to write the generated Chart Map.
      *                          Note the file is overwritten if it exists.
      * @param helmHome          The location of the user helm directory.  This is needed to find
      *                          the local cache of index files downloaded from the Helm Chart repos.
-     * @param refresh           When true refresh the local Helm repo
+     * @param refresh           When true, refresh the local Helm repo
      * @param verbose           When true, provides a little more information as the Chart Map is
      *                          generated
      *
      **/
 
-    public ChartMap(ChartOption option, String chart, String outputFilename, String helmHome, boolean refresh, boolean verbose) throws Exception {
+    public ChartMap(ChartOption option,
+                    String chart,
+                    String outputFilename,
+                    String helmHome,
+                    boolean refresh,
+                    boolean verbose) throws Exception {
         initialize();
         ArrayList <String> args = new ArrayList<>();
         if (option.equals(ChartOption.APPRSPEC)) {
@@ -159,7 +171,7 @@ public class ChartMap {
      * repo with charts, resolving the dependencies of the selected chart,
      * printing the Chart Map, then cleans up
      */
-    public void print() {
+    public void print() throws IOException {
         createTempDir();
         loadLocalRepos();
         resolveChartDependencies();
@@ -196,7 +208,7 @@ public class ChartMap {
      *
      * @param args  command line args
      */
-    private void parseArgs(String[] args) {
+    private void parseArgs(String[] args) throws ParseException {
         Options options = new Options();
         options.addOption("a", true, "The appr chart location");
         options.addOption("c", true, "The Chart Name");
@@ -211,12 +223,12 @@ public class ChartMap {
         int count=0;
         try {
             CommandLine cmd = parser.parse(options, args);
-            if (cmd.hasOption("a")) {
+            if (cmd.hasOption("a")) { // e.g. quay.io/alfresco/alfresco-dbp@0.2.0
                 if (parseApprSpec(cmd.getOptionValue("a"))) {
                     count++;
                 }
             }
-            if (cmd.hasOption("c")) {
+            if (cmd.hasOption("c")) { // e.g. alfresco-dbp:0.2.0
                 if (parseChartName(cmd.getOptionValue("c"))) {
                     count++;
                 }
@@ -249,7 +261,7 @@ public class ChartMap {
             }
         } catch (ParseException e) {
             System.out.println(e.getMessage());
-            System.exit(-1);
+            throw (e);
         }
     }
     /**
@@ -261,7 +273,6 @@ public class ChartMap {
      * @return  true if a valid Appr Specification was passed
      */
     private boolean parseApprSpec(String a) {
-        // e.g. quay.io/alfresco/alfresco-dbp@0.2.0
         String[] apprSpecParts = a.split("@");
         if (apprSpecParts.length == 2) {
             setChartName(apprSpecParts[0].substring(apprSpecParts[0].lastIndexOf('/') + 1, apprSpecParts[0].length()));
@@ -311,7 +322,7 @@ public class ChartMap {
      * being referenced later
      *
      */
-    private void loadLocalRepos() {
+    private void loadLocalRepos() throws IOException {
         try {
             ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -323,6 +334,7 @@ public class ChartMap {
             loadLocalCharts();
         } catch (IOException e) {
             System.out.println(e.getMessage());
+            throw (e);
         }
     }
 
@@ -983,7 +995,7 @@ public class ChartMap {
     /**
      * Prints the Chart Map
      */
-    private void printMap() {
+    private void printMap() throws IOException {
         try {
             if (chart != null) {
                 detectPrintFormat(outputFilename);
@@ -1002,6 +1014,7 @@ public class ChartMap {
             }
         } catch (IOException e) {
             System.out.println("Exception printing Map : " + e.getMessage());
+            throw (e);
         }
     }
 
@@ -1081,15 +1094,16 @@ public class ChartMap {
      * Creates a temporary used to download and expand the Helm Chart
      *
      */
-    private void createTempDir() {
+    private void createTempDir() throws IOException {
         try {
             Path p = Files.createTempDirectory(this.getClass().getCanonicalName()+".");
             setTempDirName(p.toAbsolutePath().toString() + File.separator);
             if (isVerbose()) {
                 System.out.println("Temporary Directory " + getTempDirName() + " will be used");
             }
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             System.out.println("Error creating temp directory: " + e.getMessage());
+            throw (e);
         }
     }
 
@@ -1098,7 +1112,7 @@ public class ChartMap {
      * Removes the temporary directory created by createTempDir()
      *
      */
-    private void removeTempDir() {
+    private void removeTempDir() throws IOException {
         Path directory = Paths.get(getTempDirName());
         try {
             Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
@@ -1118,6 +1132,8 @@ public class ChartMap {
             }
         } catch (IOException e) {
             System.out.println("Error <" + e.getMessage() + "> removing temporary directory " + getTempDirName());
+            throw (e);
+
         }
     }
 

@@ -1,0 +1,109 @@
+Chart Map for alfresco-dbp:0.3.0
+There are 6 referenced Helm Charts
+Chart: alfresco-process-services:0.1.0
+	apiVersion: v1
+	appVersion: null
+	created: 2018-03-28T08:00:01.142516511Z
+	dependencies: [org.alfresco.deployment.util.model.HelmChart@62041e5f]
+	description: A Helm chart for Alresco Process Services
+	digest: c824ad5be44f6a52d93580522e9761f0bed6189e02bfda98456ce1e69a2cdff2
+	icon: null
+	keywords: 
+	maintainers: Alfresco:null
+	name: alfresco-process-services
+	sources: 
+	urls: http://kubernetes-charts.alfresco.com/incubator/alfresco-process-services-0.1.0.tgz
+	version: 0.1.0
+Chart: postgresql:0.9.3
+	apiVersion: null
+	appVersion: null
+	created: 2018-03-29T04:56:10.224673062Z
+	dependencies: []
+	description: Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
+	digest: 828f019164cfbc9d97824fd6ef39748ec8f5677d8267b90de44b6df59ec2cbbc
+	icon: https://www.postgresql.org/media/img/about/press/elephant.png
+	keywords: postgresql,postgres,database,sql
+	maintainers: databus23:null
+	name: postgresql
+	sources: https://github.com/kubernetes/charts,https://github.com/docker-library/postgres
+	urls: https://kubernetes-charts.storage.googleapis.com/postgresql-0.9.3.tgz
+	version: 0.9.3
+Chart: alfresco-dbp:0.3.0
+	apiVersion: null
+	appVersion: null
+	created: 2018-03-30T14:27:32.865799164Z
+	dependencies: [org.alfresco.deployment.util.model.HelmChart@18bb7eca, org.alfresco.deployment.util.model.HelmChart@6bac4719, org.alfresco.deployment.util.model.HelmChart@2fb800ca]
+	description: A Helm chart for the Alfresco Digital Business Platform
+	digest: 1a5f197670c48674fc9ed9211093e2f05951e5723fc19aa3d50fabea5ddd04c1
+	icon: null
+	keywords: alfresco,dbp,platform
+	maintainers: Alfresco Platform Services Team:null
+	name: alfresco-dbp
+	sources: 
+	urls: http://kubernetes-charts.alfresco.com/incubator/alfresco-dbp-0.3.0.tgz
+	version: 0.3.0
+Chart: alfresco-sync-service:0.1.0
+	apiVersion: null
+	appVersion: null
+	created: 2018-03-28T08:42:07.852189229Z
+	dependencies: [org.alfresco.deployment.util.model.HelmChart@6d8c1584]
+	description: Alfresco Syncservice
+	digest: 72e18d8d39c957e947ca8172f13a89a4672cef9a7116d92a7c8988ef84fb8eff
+	icon: null
+	keywords: syncservice,alfresco,application
+	maintainers: Alfresco:null
+	name: alfresco-sync-service
+	sources: 
+	urls: http://kubernetes-charts.alfresco.com/incubator/alfresco-sync-service-0.1.0.tgz
+	version: 0.1.0
+Chart: alfresco-content-services:0.0.1
+	apiVersion: null
+	appVersion: null
+	created: 2018-03-30T12:25:28.799237106Z
+	dependencies: [org.alfresco.deployment.util.model.HelmChart@62041e5f]
+	description: A Helm chart for deploying Alfresco Content Services
+	digest: e5d97ebdc954465d165e2a0a4f0092331cd5ad65d16d1353aa0f77a9f0fedec9
+	icon: https://avatars0.githubusercontent.com/u/391127?s=200&v=4
+	keywords: content,content services,alfresco,alfresco content services
+	maintainers: 
+	name: alfresco-content-services
+	sources: https://git.alfresco.com/Repository/acs-packaging/tree/master/helm
+	urls: http://kubernetes-charts.alfresco.com/incubator/alfresco-content-services-0.0.1.tgz
+	version: 0.0.1
+Chart: postgresql:0.8.5
+	apiVersion: null
+	appVersion: null
+	created: 2018-01-14T15:49:06.658539254Z
+	dependencies: []
+	description: Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
+	digest: be16d521f58a97153180ea65e7ff2bed6fe283d20184ade9fb09cbece77e93da
+	icon: https://www.postgresql.org/media/img/about/press/elephant.png
+	keywords: postgresql,postgres,database,sql
+	maintainers: swordbeta:null,databus23:null
+	name: postgresql
+	sources: https://github.com/kubernetes/charts,https://github.com/docker-library/postgres
+	urls: https://kubernetes-charts.storage.googleapis.com/postgresql-0.8.5.tgz
+	version: 0.8.5
+There are 7 referenced Images
+Image: postgres:9.4.12
+Image: quay.io/alfresco/alfresco-dbp-share:0.3-SNAPSHOT
+Image: postgres:9.6.2
+Image: quay.io/alfresco/alfresco-dbp-repository:0.3-SNAPSHOT
+Image: quay.io/alfresco/search-services:1.2.0-SNAPSHOT
+Image: alfresco/process-services:1.8.0
+Image: quay.io/alfresco/service-sync:2.2-SNAPSHOT
+alfresco-dbp:0.3.0 depends on alfresco-content-services:0.0.1
+alfresco-content-services:0.0.1 depends on postgresql:0.8.5
+alfresco-dbp:0.3.0 depends on alfresco-process-services:0.1.0
+alfresco-process-services:0.1.0 depends on postgresql:0.8.5
+alfresco-dbp:0.3.0 depends on alfresco-sync-service:0.1.0
+alfresco-sync-service:0.1.0 depends on postgresql:0.9.3
+alfresco-process-services:0.1.0 uses alfresco/process-services:1.8.0
+postgresql:0.9.3 uses postgres:9.6.2
+alfresco-sync-service:0.1.0 uses quay.io/alfresco/service-sync:2.2-SNAPSHOT
+alfresco-content-services:0.0.1 uses quay.io/alfresco/alfresco-dbp-repository:0.3-SNAPSHOT
+alfresco-content-services:0.0.1 uses quay.io/alfresco/alfresco-dbp-share:0.3-SNAPSHOT
+alfresco-content-services:0.0.1 uses quay.io/alfresco/search-services:1.2.0-SNAPSHOT
+postgresql:0.8.5 uses postgres:9.4.12
+postgresql:0.8.5 uses postgres:9.6.2
+Generated on 2018/03/31 15:54:29 by org.alfresco.deployment.util.TextChartMapPrinter (https://github.com/Alfresco/alfresco-anaxes-chartmap)
