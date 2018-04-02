@@ -141,18 +141,20 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
         String imageName=null;
         String body="Image";
         body += getSeparator();
-        String repoHost="DockerHub";
-        if (container.getImage().contains("/")) {
+        String repoHost="Docker Hub";
+        String s = image;
+        int count = s.length() - s.replace("/", "").length();
+        if (count == 0) { // e.g. postgres:9.6.2
+            imageName = image.substring(0,image.indexOf(':'));
+        }
+        else if (count == 1) { // e.g. : alfresco/process-services:1.8.0
+            imageName = image.substring(0,image.indexOf(':'));
+        } else { // e.g. quay.io/alfresco/service:1.0.0
             repoHost = image.substring(0,image.indexOf('/'));
+            imageName = image.substring(image.indexOf('/')+1, image.length());
         }
         body += "\\t" + repoHost;
         body += getSeparator();
-        if (image.contains("/") && image.contains(":")) {
-            imageName = image.substring(image.indexOf('/')+1,image.indexOf(':'));
-        }
-        else if (image.contains(":")) {
-            imageName = image.substring(0,image.indexOf(':'));
-        }
         body += "\\t" + imageName;
         body += getSeparator();
         String version="?";
