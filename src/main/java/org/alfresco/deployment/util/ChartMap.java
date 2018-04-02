@@ -401,7 +401,12 @@ public class ChartMap {
     private void printCharts() {
         MapIterator it = chartsReferenced.mapIterator();
         try {
-            printer.printComment("There are " + chartsReferenced.size() + " referenced Helm Charts");
+            if (chartsReferenced.size() == 1) {
+                printer.printComment("There is one referenced Helm Chart");
+            }
+            else {
+                printer.printComment("There are " + chartsReferenced.size() + " referenced Helm Charts");
+            }
             while (it.hasNext()) {
                 it.next();
                 printer.printChart((HelmChart) it.getValue());
@@ -1067,7 +1072,12 @@ public class ChartMap {
      */
     private void printContainers() {
         try {
-            printer.printComment("There are " + containersReferenced.size() + " referenced Images");
+            if (containersReferenced.size() == 1) {
+                printer.printComment("There is one referenced Image");
+            }
+            else {
+                printer.printComment("There are " + containersReferenced.size() + " referenced Images");
+            }
             for (Map.Entry<String, HelmDeploymentContainer> entry : containersReferenced.entrySet()) {
                 printer.printContainer(entry.getValue());
             }
