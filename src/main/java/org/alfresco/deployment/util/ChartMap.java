@@ -591,7 +591,7 @@ public class ChartMap {
      */
     private String unpackChart(String chartFileName) {
         int bufferSize = 1024;
-        String unpackDirName = null;
+        String baseUnpackDirName = null;
         try {
             File in = new File(chartFileName);
             FileInputStream fis = new FileInputStream(chartFileName);
@@ -619,12 +619,14 @@ public class ChartMap {
                     dos.write(data, 0, count);
                 }
                 dos.close();
-                unpackDirName = tempDirName + File.separator + chartName;
+                if (baseUnpackDirName == null) {
+                    baseUnpackDirName = tempDirName + chartName;
+                }
             }
             tis.close();
             bis.close();
             fis.close();
-            unpackEmbeddedCharts(unpackDirName);
+            unpackEmbeddedCharts(baseUnpackDirName);
 
             // If the Chart Name or Version were not yet extracted, such as would happen if the chart was provided as a local tgz file
             // then extract the chart name and version from the highest order Chart.yaml file and create the entry in the charts map
@@ -650,7 +652,6 @@ public class ChartMap {
                         if (charts.get(chartName, chartVersion) == null) {
                             charts.put(chartName, chartVersion, h);
                         }
-                        unpackDirName = tempDirName + chartName;
                     } catch (IOException e) {
                         throw new Exception("Error extracting Chart Name and Chart Version");
                     }
@@ -659,7 +660,7 @@ public class ChartMap {
         } catch (Exception e) {
             System.out.println("Exception extracting Chart " + chartFileName + ":" + e.getMessage());
         }
-        return unpackDirName;
+        return baseUnpackDirName;
     }
 
     /**
