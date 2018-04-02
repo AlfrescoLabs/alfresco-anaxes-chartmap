@@ -15,6 +15,8 @@ The Helm Client is required since the chart map is based on the dependencies dis
 
 For instructions on installing the Helm Client, see https://docs.helm.sh/using_helm/#installing-helm
 
+The junit test cases rely on the environment variable *HELM_HOME* being set.
+
 
 ## Using Chart Map
 
@@ -156,9 +158,9 @@ More examples illustrating the use of the Java interface can be found in [ChartM
 
 Note that the colors chosen for a chart are randomly selected from a standard set of PlantUML
 colors (see [PlantUML Colors](http://plantuml.com/color)) using a method that will depict
-Helm Charts that differ only by their Version using the same color.   For example 'postgresql:0.8.5'
+Helm Charts or Docker Files that differ only by their Version using the same color.   For example 'postgresql:0.8.5'
 and 'postgresql:0.8.7' will be depicted with the same color.  This will make it easier to spot
-cases you may want to optimize a deployment to use a common Helm Chart instead.
+cases you may want to optimize a deployment to use a common Helm Chart or Docker Image instead.
 
 Helm Charts are depicted as rectangular objects.   Docker Images are depicted as ovals.
 

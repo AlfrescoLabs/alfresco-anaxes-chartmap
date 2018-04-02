@@ -286,7 +286,9 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      * @return      a calculated hash value aa an unsigned int
      */
     private int hashHelmContainerName(HelmDeploymentContainer c) {
-        int hashCode =  (c.getImage().hashCode() * Integer.MAX_VALUE) / (Integer.MAX_VALUE / (getColors().length) * 2);
+        String[] s = c.getImage().split(":");
+        String baseName = s[0];
+        int hashCode =  (baseName.hashCode() * Integer.MAX_VALUE) / (Integer.MAX_VALUE / (getColors().length) * 2);
         hashCode = Math.abs(hashCode);
         return hashCode;
     }
@@ -307,7 +309,7 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      * The color values are derived from http://plantuml.com/color
      *
      * Color values that are too dark to use with black text are
-     * commented out so they are eligible.
+     * commented out so they are ineligible.
      *
      * PlantUML does support using other than black text so if you decide
      * to use a different color (using skinparam) you may decide to use these
