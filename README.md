@@ -9,6 +9,8 @@ The generated file can be in either PlantUML text format or in a plain text form
 The most useful format is PlantUML since this offers a visual representation of the chart dependencies.  See the example below.
 For more information about PlantUML, see http://plantuml.com/.  
 
+Note that although this project was created in the Alfresco GitHub org, ChartMap can be used with any Helm Chart.   An illustration of this point can be found in the examples.
+
 ## Prerequisites
 
 The Helm Client is required since the chart map is based on the dependencies discovered by the Kubernetes Helm client. I have tested it with v2.7.2 of the Helm Client though other versions may also work. 
@@ -56,8 +58,7 @@ The junit test cases rely on the environment variable *HELM_HOME* being set.
 
 ##### Generating a Chartmap using a chart reference 
 ```
-java -jar chartmap-1.0-SNAPSHOT.jar -c "alfresco-dbp:0.3.0" -d "/Users/melahn/.helm" -o alfresco-dbp.puml -v
-
+java -jar chartmap-1.0-SNAPSHOT.jar -c "wordpress:0.8.17" -r -v -o "wordpress.puml" -d "/Users/melahn/.helm"
 ```
 ##### Generating a Chartmap using a file specification
 ```
