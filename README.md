@@ -181,14 +181,14 @@ Helm Charts are depicted as rectangular objects.   Docker Images are depicted as
 1.  git clone this repository
 2.  Run Maven
 ```
-maven package -Dmaven.test.skip=true 
+mvn clean package -Dmaven.test.skip=true 
 
 ```
 #### Running Tests
 1.  git clone this repository
 2.  Run Maven
 ```
-maven package 
+mvn test
 
 ```
 
@@ -197,6 +197,6 @@ maven package
 2.  Copy any PUML files into the source directory
 3.  Run Maven
 ```
-clean com.github.jeluard:plantuml-maven-plugin:generate
+mvn com.github.jeluard:plantuml-maven-plugin:generate
 ```
 
