@@ -31,9 +31,11 @@ public class ChartMapTest {
     @Test
     public void printTestPumlChartRefreshVerbose() {
         try {
-            ChartMap testMap = createTestMap(ChartOption.FILENAME,testInputFilePath,testOutputPumlFilePathRV,
+            ChartMap testMap = createTestMap(ChartOption.FILENAME, testInputFilePath, testOutputPumlFilePathRV,
                     true, true);
-            testMap.print();
+            if (testMap != null) {
+                testMap.print();
+            }
             Assert.assertTrue(Files.exists(testOutputPumlFilePathRV));
         } catch (Exception e) {
             fail("printTestPumlChartRefreshVerbose failed:" + e.getMessage());
@@ -43,9 +45,11 @@ public class ChartMapTest {
     @Test
     public void printTestPumlChartNoRefreshVerbose() {
         try {
-            ChartMap testMap = createTestMap(ChartOption.FILENAME,testInputFilePath,testOutputPumlFilePathNRV,
+            ChartMap testMap = createTestMap(ChartOption.FILENAME, testInputFilePath, testOutputPumlFilePathNRV,
                     false, true);
-            testMap.print();
+            if (testMap != null) {
+                testMap.print();
+            }
             Assert.assertTrue(Files.exists(testOutputPumlFilePathNRV));
         } catch (Exception e) {
             fail("printTestPumlChartNoRefreshVerbose failed:" + e.getMessage());
@@ -55,9 +59,11 @@ public class ChartMapTest {
     @Test
     public void printTestPumlChartRefreshNoVerbose() {
         try {
-            ChartMap testMap = createTestMap(ChartOption.FILENAME,testInputFilePath,testOutputPumlFilePathRNV,
+            ChartMap testMap = createTestMap(ChartOption.FILENAME, testInputFilePath, testOutputPumlFilePathRNV,
                     true, false);
-            testMap.print();
+            if (testMap != null) {
+                testMap.print();
+            }
             Assert.assertTrue(Files.exists(testOutputPumlFilePathRNV));
         } catch (Exception e) {
             fail("printTestPumlChartRefreshNoVerbose failed:" + e.getMessage());
@@ -68,9 +74,11 @@ public class ChartMapTest {
     @Test
     public void printTestPumlChartNoRefreshNoVerbose() {
         try {
-            ChartMap testMap = createTestMap(ChartOption.FILENAME,testInputFilePath,testOutputPumlFilePathNRNV,
+            ChartMap testMap = createTestMap(ChartOption.FILENAME, testInputFilePath, testOutputPumlFilePathNRNV,
                     false, false);
-            testMap.print();
+            if (testMap != null) {
+                testMap.print();
+            }
             Assert.assertTrue(Files.exists(testOutputPumlFilePathNRNV));
         } catch (Exception e) {
             fail("printTestPumlChartNoRefreshNoVerbose failed:" + e.getMessage());
@@ -80,9 +88,11 @@ public class ChartMapTest {
     @Test
     public void printTestTextChartRefreshVerbose() {
         try {
-            ChartMap testMap = createTestMap(ChartOption.FILENAME,testInputFilePath,testOutputTextFilePathRV,
+            ChartMap testMap = createTestMap(ChartOption.FILENAME, testInputFilePath, testOutputTextFilePathRV,
                     true, true);
-            testMap.print();
+            if (testMap != null) {
+                testMap.print();
+            }
             Assert.assertTrue(Files.exists(testOutputTextFilePathRV));
         } catch (Exception e) {
             fail("printTestTextChartRefreshVerbose failed:" + e.getMessage());
@@ -92,9 +102,11 @@ public class ChartMapTest {
     @Test
     public void printTestTextChartNoRefreshVerbose() {
         try {
-            ChartMap testMap = createTestMap(ChartOption.FILENAME,testInputFilePath,testOutputTextFilePathNRV,
+            ChartMap testMap = createTestMap(ChartOption.FILENAME, testInputFilePath, testOutputTextFilePathNRV,
                     false, true);
-            testMap.print();
+            if (testMap != null) {
+                testMap.print();
+            }
             Assert.assertTrue(Files.exists(testOutputTextFilePathNRV));
         } catch (Exception e) {
             fail("printTestTextChartNoRefreshVerbose failed:" + e.getMessage());
@@ -104,9 +116,11 @@ public class ChartMapTest {
     @Test
     public void printTestTextChartRefreshNoVerbose() {
         try {
-            ChartMap testMap = createTestMap(ChartOption.FILENAME,testInputFilePath,testOutputTextFilePathRNV,
+            ChartMap testMap = createTestMap(ChartOption.FILENAME, testInputFilePath, testOutputTextFilePathRNV,
                     false, true);
-            testMap.print();
+            if (testMap != null) {
+                testMap.print();
+            }
             Assert.assertTrue(Files.exists(testOutputTextFilePathRNV));
         } catch (Exception e) {
             fail("printTestTextChartRefreshNoVerbose failed:" + e.getMessage());
@@ -116,9 +130,11 @@ public class ChartMapTest {
     @Test
     public void printTestTextChartNRefreshNoVerbose() {
         try {
-            ChartMap testMap = createTestMap(ChartOption.FILENAME,testInputFilePath,testOutputTextFilePathNRNV,
+            ChartMap testMap = createTestMap(ChartOption.FILENAME, testInputFilePath, testOutputTextFilePathNRNV,
                     false, true);
-            testMap.print();
+            if (testMap != null) {
+                testMap.print();
+            }
             Assert.assertTrue(Files.exists(testOutputTextFilePathNRNV));
         } catch (Exception e) {
             fail("printTestTextChartNRefreshNoVerbose failed:" + e.getMessage());
@@ -170,14 +186,19 @@ public class ChartMapTest {
     }
 
     private ChartMap createTestMap(ChartOption option, Path inputPath, Path outputPath,
-                               boolean refresh, boolean verbose) throws Exception {
-        ChartMap testMap = new ChartMap(
-                option,
-                inputPath.toAbsolutePath().toString(),
-                outputPath.toAbsolutePath().toString(),
-                System.getenv("HELM_HOME"),
-                refresh,
-                verbose);
+                                   boolean refresh, boolean verbose) throws Exception {
+        ChartMap testMap = null;
+        try {
+            testMap = new ChartMap(
+                    option,
+                    inputPath.toAbsolutePath().toString(),
+                    outputPath.toAbsolutePath().toString(),
+                    System.getenv("HELM_HOME"),
+                    refresh,
+                    verbose);
+        } catch (Exception e) {
+            System.out.println("Exception createTestMap: " + e.getMessage());
+        }
         return testMap;
     }
 }
