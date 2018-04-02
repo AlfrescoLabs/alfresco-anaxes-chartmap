@@ -4,7 +4,7 @@ Chart: alfresco-process-services:0.1.0
 	apiVersion: v1
 	appVersion: null
 	created: 2018-03-28T08:00:01.142516511Z
-	dependencies: [org.alfresco.deployment.util.model.HelmChart@67d85d5f]
+	dependencies: [org.alfresco.deployment.util.model.HelmChart@2533444a]
 	description: A Helm chart for Alresco Process Services
 	digest: c824ad5be44f6a52d93580522e9761f0bed6189e02bfda98456ce1e69a2cdff2
 	icon: null
@@ -32,7 +32,7 @@ Chart: alfresco-dbp:0.3.0
 	apiVersion: null
 	appVersion: null
 	created: 2018-04-02T12:52:14.713716017Z
-	dependencies: [org.alfresco.deployment.util.model.HelmChart@7ef7f6d5, org.alfresco.deployment.util.model.HelmChart@59ba219d, org.alfresco.deployment.util.model.HelmChart@5cf69333]
+	dependencies: [org.alfresco.deployment.util.model.HelmChart@781ce680, org.alfresco.deployment.util.model.HelmChart@31167d7, org.alfresco.deployment.util.model.HelmChart@5d1206e0]
 	description: A Helm chart for the Alfresco Digital Business Platform
 	digest: c1e2853fb9a6ce1c5bdc18a084ae9fad0fc280d0249bb1b77624560e7586dac4
 	icon: null
@@ -46,7 +46,7 @@ Chart: alfresco-sync-service:0.1.0
 	apiVersion: null
 	appVersion: null
 	created: 2018-03-28T08:42:07.852189229Z
-	dependencies: [org.alfresco.deployment.util.model.HelmChart@79611f57]
+	dependencies: [org.alfresco.deployment.util.model.HelmChart@623c181c]
 	description: Alfresco Syncservice
 	digest: 72e18d8d39c957e947ca8172f13a89a4672cef9a7116d92a7c8988ef84fb8eff
 	icon: null
@@ -60,7 +60,7 @@ Chart: alfresco-content-services:0.0.1
 	apiVersion: null
 	appVersion: null
 	created: 2018-03-30T12:25:28.799237106Z
-	dependencies: [org.alfresco.deployment.util.model.HelmChart@67d85d5f]
+	dependencies: [org.alfresco.deployment.util.model.HelmChart@2533444a]
 	description: A Helm chart for deploying Alfresco Content Services
 	digest: e5d97ebdc954465d165e2a0a4f0092331cd5ad65d16d1353aa0f77a9f0fedec9
 	icon: https://avatars0.githubusercontent.com/u/391127?s=200&v=4
@@ -85,9 +85,9 @@ Chart: postgresql:0.8.5
 	urls: https://kubernetes-charts.storage.googleapis.com/postgresql-0.8.5.tgz
 	version: 0.8.5
 There are 7 referenced Images
-Image: postgres:9.4.12
 Image: quay.io/alfresco/alfresco-dbp-share:0.3-SNAPSHOT
 Image: postgres:9.6.2
+Image: postgres:10.1
 Image: quay.io/alfresco/alfresco-dbp-repository:0.3-SNAPSHOT
 Image: quay.io/alfresco/search-services:1.2.0-SNAPSHOT
 Image: alfresco/process-services:1.8.0
@@ -104,6 +104,6 @@ alfresco-sync-service:0.1.0 uses quay.io/alfresco/service-sync:2.2-SNAPSHOT
 alfresco-content-services:0.0.1 uses quay.io/alfresco/alfresco-dbp-repository:0.3-SNAPSHOT
 alfresco-content-services:0.0.1 uses quay.io/alfresco/alfresco-dbp-share:0.3-SNAPSHOT
 alfresco-content-services:0.0.1 uses quay.io/alfresco/search-services:1.2.0-SNAPSHOT
-postgresql:0.8.5 uses postgres:9.4.12
+postgresql:0.8.5 uses postgres:10.1
 postgresql:0.8.5 uses postgres:9.6.2
-Generated on 2018/04/02 08:58:27 by org.alfresco.deployment.util.TextChartMapPrinter (https://github.com/Alfresco/alfresco-anaxes-chartmap)
+Generated on 2018/04/02 17:26:39 by org.alfresco.deployment.util.TextChartMapPrinter (https://github.com/Alfresco/alfresco-anaxes-chartmap)

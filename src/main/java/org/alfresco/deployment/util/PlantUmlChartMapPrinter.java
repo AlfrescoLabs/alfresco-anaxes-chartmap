@@ -66,7 +66,7 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      * @throws  IOException     IOException
      */
     public void printChartToChartDependency(HelmChart parentChart, HelmChart dependentChart) throws IOException {
-        writeLine(getNameAsPlantUmlReference(parentChart.getNameFull()) + "--->" + getNameAsPlantUmlReference(dependentChart.getNameFull()) + ":depends on");
+        writeLine(getNameAsPlantUmlReference(parentChart.getNameFull()) + "--[#green]-|>" + getNameAsPlantUmlReference(dependentChart.getNameFull()));
     }
 
     /**
@@ -77,7 +77,7 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      * @throws  IOException     IOException
      */
     public void printChartToContainerDependency(HelmChart chart, HelmDeploymentContainer container) throws IOException {
-        writeLine(getNameAsPlantUmlReference(chart.getNameFull()) + "--->" + getNameAsPlantUmlReference(container.getImage()) + ":uses");
+        writeLine(getNameAsPlantUmlReference(chart.getNameFull()) + "--[#orange]-|>" + getNameAsPlantUmlReference(container.getImage()));
     }
 
 
