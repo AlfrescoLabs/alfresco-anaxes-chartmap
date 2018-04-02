@@ -14,26 +14,26 @@ artifact "alfresco-sync-service:0.1.0\n====\n\talfresco-sync-service\n====\n\t0.
 artifact "alfresco-content-services:0.0.1\n====\n\talfresco-content-services\n====\n\t0.0.1\n====\n\tMaintainers: \n====\n\tKeywords: content, content services, alfresco, alfresco content services" as alfresco_content_services_0_0_1 #Gainsboro
 artifact "postgresql:0.8.5\n====\n\tpostgresql\n====\n\t0.8.5\n====\n\tMaintainers: swordbeta, databus23\n====\n\tKeywords: postgresql, postgres, database, sql" as postgresql_0_8_5 #LightSlateGray
 'There are 7 referenced Images
+usecase "Image\n====\n\tDocker Hub\n====\n\tpostgres\n====\n\t9.4.12" as postgres_9_4_12 #Ivory
 usecase "Image\n====\n\tquay.io\n====\n\talfresco/alfresco-dbp-share:0.3-SNAPSHOT\n====\n\t0.3-SNAPSHOT" as quay_io_alfresco_alfresco_dbp_share_0_3_SNAPSHOT #LightSlateGray
 usecase "Image\n====\n\tDocker Hub\n====\n\tpostgres\n====\n\t9.6.2" as postgres_9_6_2 #Ivory
-usecase "Image\n====\n\tDocker Hub\n====\n\tpostgres\n====\n\t10.1" as postgres_10_1 #Ivory
 usecase "Image\n====\n\tquay.io\n====\n\talfresco/alfresco-dbp-repository:0.3-SNAPSHOT\n====\n\t0.3-SNAPSHOT" as quay_io_alfresco_alfresco_dbp_repository_0_3_SNAPSHOT #Chocolate
 usecase "Image\n====\n\tquay.io\n====\n\talfresco/search-services:1.2.0-SNAPSHOT\n====\n\t1.2.0-SNAPSHOT" as quay_io_alfresco_search_services_1_2_0_SNAPSHOT #Aquamarine
 usecase "Image\n====\n\tDocker Hub\n====\n\talfresco/process-services\n====\n\t1.8.0" as alfresco_process_services_1_8_0 #LightBlue
 usecase "Image\n====\n\tquay.io\n====\n\talfresco/service-sync:2.2-SNAPSHOT\n====\n\t2.2-SNAPSHOT" as quay_io_alfresco_service_sync_2_2_SNAPSHOT #LightSalmon
-alfresco_dbp_0_3_0--->alfresco_content_services_0_0_1:depends on
-alfresco_content_services_0_0_1--->postgresql_0_8_5:depends on
-alfresco_dbp_0_3_0--->alfresco_process_services_0_1_0:depends on
-alfresco_process_services_0_1_0--->postgresql_0_8_5:depends on
-alfresco_dbp_0_3_0--->alfresco_sync_service_0_1_0:depends on
-alfresco_sync_service_0_1_0--->postgresql_0_9_3:depends on
-alfresco_process_services_0_1_0--->alfresco_process_services_1_8_0:uses
-postgresql_0_9_3--->postgres_9_6_2:uses
-alfresco_sync_service_0_1_0--->quay_io_alfresco_service_sync_2_2_SNAPSHOT:uses
-alfresco_content_services_0_0_1--->quay_io_alfresco_alfresco_dbp_repository_0_3_SNAPSHOT:uses
-alfresco_content_services_0_0_1--->quay_io_alfresco_alfresco_dbp_share_0_3_SNAPSHOT:uses
-alfresco_content_services_0_0_1--->quay_io_alfresco_search_services_1_2_0_SNAPSHOT:uses
-postgresql_0_8_5--->postgres_10_1:uses
-postgresql_0_8_5--->postgres_9_6_2:uses
-center footer Generated on 2018/04/02 08:58:21 by org.alfresco.deployment.util.PlantUmlChartMapPrinter\nhttps://github.com/Alfresco/alfresco-anaxes-chartmap
+alfresco_dbp_0_3_0--[#green]-|>alfresco_content_services_0_0_1
+alfresco_content_services_0_0_1--[#green]-|>postgresql_0_8_5
+alfresco_dbp_0_3_0--[#green]-|>alfresco_process_services_0_1_0
+alfresco_process_services_0_1_0--[#green]-|>postgresql_0_8_5
+alfresco_dbp_0_3_0--[#green]-|>alfresco_sync_service_0_1_0
+alfresco_sync_service_0_1_0--[#green]-|>postgresql_0_9_3
+alfresco_process_services_0_1_0--[#orange]-|>alfresco_process_services_1_8_0
+postgresql_0_9_3--[#orange]-|>postgres_9_6_2
+alfresco_sync_service_0_1_0--[#orange]-|>quay_io_alfresco_service_sync_2_2_SNAPSHOT
+alfresco_content_services_0_0_1--[#orange]-|>quay_io_alfresco_alfresco_dbp_repository_0_3_SNAPSHOT
+alfresco_content_services_0_0_1--[#orange]-|>quay_io_alfresco_alfresco_dbp_share_0_3_SNAPSHOT
+alfresco_content_services_0_0_1--[#orange]-|>quay_io_alfresco_search_services_1_2_0_SNAPSHOT
+postgresql_0_8_5--[#orange]-|>postgres_9_4_12
+postgresql_0_8_5--[#orange]-|>postgres_9_6_2
+center footer Generated on 2018/04/02 17:26:33 by org.alfresco.deployment.util.PlantUmlChartMapPrinter\nhttps://github.com/Alfresco/alfresco-anaxes-chartmap
 @enduml
