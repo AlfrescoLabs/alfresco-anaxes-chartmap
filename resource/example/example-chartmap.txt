@@ -106,4 +106,4 @@ alfresco-content-services:0.0.1 uses quay.io/alfresco/alfresco-dbp-share:0.3-SNA
 alfresco-content-services:0.0.1 uses quay.io/alfresco/search-services:1.2.0-SNAPSHOT
 postgresql:0.8.5 uses postgres:9.4.12
 postgresql:0.8.5 uses postgres:9.6.2
-Generated on 2018/03/31 15:54:29 by org.alfresco.deployment.util.TextChartMapPrinter (https://github.com/Alfresco/alfresco-anaxes-chartmap)
+Generated on 2018/04/01 21:34:36 by org.alfresco.deployment.util.TextChartMapPrinter (https://github.com/Alfresco/alfresco-anaxes-chartmap)
