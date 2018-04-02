@@ -217,7 +217,7 @@ public class ChartMap {
         options.addOption("h", false, "Help");
         options.addOption("o", true, "The Output Filename");
         options.addOption("r", false, "Update the Helm Chart dependencies");
-        options.addOption("u", false, "The Url of the Helm Chart ");
+        options.addOption("u", true, "The Url of the Helm Chart ");
         options.addOption("v", false, "Verbose");
         CommandLineParser parser = new DefaultParser();
         int count=0;
