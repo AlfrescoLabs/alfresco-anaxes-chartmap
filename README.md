@@ -30,29 +30,41 @@ The junit test cases rely on the environment variable *HELM_HOME* being set.
 
 ### Command Line Syntax
 
+```
+                                    
+java ---<filename>---+---a <apprspec>----+---o <filename>---d <directoryname>---+-------+---+-------+---+-------+
+                     |                   |                                      |       |   |       |   |       |
+                     +---c <chartname>---+                                      +---r---+   +---v---+   +---h---+
+                     |                   |
+                     +---f <filename>----+
+                     |                   |
+                     +---u <url>---------+
+                   
+```
+
 #### Parameters
 
 * **Required**
    * To specify the Helm Chart, one of the following input formats must be specified
-     * **-a** \<appr chart specification\>
+     * **-a** \<apprspec\>
           *  The name and version of the chart as an appr specification \<host\>/\<org\>/\<chart-name\>@\<chart-version\>   
-     * **-c** \<chart name\>
+     * **-c** \<chartname\>
           *  The name and version of the chart in the format \<chart-name\:chart-version\>
      * **-f** \<filename\>
           *  The location in the file system for a Helm Chart package (a tgz file)
-     * **-u** \<charturl\>
+     * **-u** \<urk\>
           *  A url for the Helm Chart
-   * **-d** \<directory name\>
+   * **-d** \<directoryname\>
       * The file system location of HELM_HOME 
-   * **-o** \<output file name\>
+   * **-o** \<filename\>
       * The name of the file to be generated.  If a file extension of 'puml' is specifed the format of the generated file will be PlantUML.  Otherwise it will be plain text. 
 * **Optional** 
    * **-h**
-      * Help
+      * Help.  Whenever specified, any other parameters are ignored.  When no parameters are specified, **-h** is assumed.
    * **-r**
-      * If specified, the Helm command *helm update dependencies* will be run for the chart
+      * Refresh.  If specified, the Helm command *helm update dependencies* will be run before generating the chart map
    * **-v**
-      * If specified, some extra command line output is shown
+      * Verbose.  If specified, some extra command line output is shown
  
 #### Example Commands
 
@@ -79,6 +91,7 @@ java -jar chartmap-1.0-SNAPSHOT.jar -a "quay.io/alfresco/alfresco-dbp@0.2.0" -d 
 ### Java Methods
 
 In addition to the command line interface, a Java API is provided.
+
 
 #### Constructor
 ```

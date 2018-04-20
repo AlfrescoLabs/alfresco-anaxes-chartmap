@@ -70,19 +70,19 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
     }
 
     /**
-     * Writes a line that shows the dependency of a Chart on a Container
+     * Writes a line that shows the dependency of a Chart on an Image
      *
      * @param   chart           a Helm Chart
-     * @param   container       a Docker Container on which the Helm Chart depends
+     * @param   imageName       the name of a Docker Image on which the Helm Chart depends
      * @throws  IOException     IOException
      */
-    public void printChartToContainerDependency(HelmChart chart, HelmDeploymentContainer container) throws IOException {
-        writeLine(getNameAsPlantUmlReference(chart.getNameFull()) + "--[#orange]-|>" + getNameAsPlantUmlReference(container.getImage()));
+    public void printChartToImageDependency(HelmChart chart, String imageName) throws IOException {
+        writeLine(getNameAsPlantUmlReference(chart.getNameFull()) + "--[#orange]-|>" + getNameAsPlantUmlReference(imageName));
     }
-
 
     /**
      * Writes a line to depict a Helm Chart
+     *
      * @param   chart   a Helm Chart
      * @throws  IOException     IOException
      */
@@ -91,11 +91,11 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
     }
 
     /**
-     * Writes a line to depict a Docker Container
+     * Writes a line to depict a Docker Image
      */
-    public void printContainer(HelmDeploymentContainer container)  throws IOException {
+    public void printImage(String imageName)  throws IOException {
         //     image: "quay.io/alfresco/service-sync:2.2-SNAPSHOT"
-        writeLine("usecase \"" + getContainerBody(container) + "\" as " + getNameAsPlantUmlReference(container.getImage()) + " " + getContainerArtifactColor(container));
+        writeLine("usecase \"" + getImageBody(imageName) + "\" as " + getNameAsPlantUmlReference(imageName) + " " + getImageArtifactColor(imageName));
     }
 
     /**
@@ -130,36 +130,35 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
 
     /**
      * Returns the text to use in a PlantUML artifact that
-     * describes a Docker Container
+     * describes a Docker Image
      *
-     * @param   container   a Docker Container
-     * @return               text that can be used for the body of
-     *                       a PlantUML artifact
+     * @param   i       the name of a Docker Image
+     * @return          text that can be used for the body of
+     *                  a PlantUML artifact
      */
-    private String getContainerBody(HelmDeploymentContainer container) {
-        String image = container.getImage();
+    private String getImageBody(String i) {
         String imageName=null;
         String body="Image";
         body += getSeparator();
         String repoHost="Docker Hub";
-        String s = image;
+        String s = i;
         int count = s.length() - s.replace("/", "").length();
         if (count == 0) { // e.g. postgres:9.6.2
-            imageName = image.substring(0,image.indexOf(':'));
+            imageName = i.substring(0,i.indexOf(':'));
         }
         else if (count == 1) { // e.g. : alfresco/process-services:1.8.0
-            imageName = image.substring(0,image.indexOf(':'));
+            imageName = i.substring(0,i.indexOf(':'));
         } else { // e.g. quay.io/alfresco/service:1.0.0
-            repoHost = image.substring(0,image.indexOf('/'));
-            imageName = image.substring(image.indexOf('/')+1, image.length());
+            repoHost = i.substring(0,i.indexOf('/'));
+            imageName = i.substring(i.indexOf('/')+1, i.length());
         }
         body += "\\t" + repoHost;
         body += getSeparator();
         body += "\\t" + imageName;
         body += getSeparator();
         String version="?";
-        if (container.getImage().contains(":")) {
-            version = image.substring(image.indexOf(':')+1,image.length());
+        if (i.contains(":")) {
+            version = i.substring(i.indexOf(':')+1,i.length());
         }
         body += "\\t" + version;
         return body;
@@ -257,6 +256,17 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
 
     /**
      *
+     * @param   imageName   the name of a Docker Image for which you want a background color
+     * @return              a PlantUML color attribute chosen from the colors
+     *                      table
+     */
+    private String getImageArtifactColor(String imageName) {
+        int hashValue = hashImageName(imageName);
+        return "#" + colors[hashValue];
+    }
+
+    /**
+     *
      * @param   h   a HelmChart from which a hash code will be
      *              generated (for the purpose of indexing into
      *              the colors array).   Only the name of the
@@ -282,13 +292,34 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      *              Containers is used to create the has because
      *              the main point of choosing a color is to associate
      *              visually a group of related Containers in the
-     *              diagram (e.g. all the Postgresql Images may be
+     *              diagram (e.g. all the Postgresql Containers may be
      *              colored as 'Chocolate').
      *
      * @return      a calculated hash value aa an unsigned int
      */
     private int hashHelmContainerName(HelmDeploymentContainer c) {
         String[] s = c.getImage().split(":");
+        String baseName = s[0];
+        int hashCode =  (baseName.hashCode() * Integer.MAX_VALUE) / (Integer.MAX_VALUE / (getColors().length) * 2);
+        hashCode = Math.abs(hashCode);
+        return hashCode;
+    }
+
+    /**
+     *
+     * @param   i   the name of a Docker Image from which a hash code will be
+     *              generated (for the purpose of indexing into
+     *              the colors array).   Only the name of the
+     *              Image is used to create the hash because
+     *              the main point of choosing a color is to associate
+     *              visually a group of related Images in the
+     *              diagram (e.g. all the Postgresql Images may be
+     *              colored as 'Chocolate').
+     *
+     * @return      a calculated hash value aa an unsigned int
+     */
+    private int hashImageName(String i) {
+        String[] s = i.split(":");
         String baseName = s[0];
         int hashCode =  (baseName.hashCode() * Integer.MAX_VALUE) / (Integer.MAX_VALUE / (getColors().length) * 2);
         hashCode = Math.abs(hashCode);
