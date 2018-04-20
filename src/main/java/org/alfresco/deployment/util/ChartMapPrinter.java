@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 
-import org.alfresco.deployment.util.model.HelmDeploymentContainer;
 import org.alfresco.deployment.util.model.HelmMaintainer;
 import org.apache.commons.collections4.map.MultiKeyMap;
 
@@ -49,8 +48,8 @@ public class ChartMapPrinter implements IChartMapPrinter {
         writeLine(parentChart.getNameFull() + " depends on " + dependentChart.getNameFull());
     }
 
-    public void printChartToContainerDependency(HelmChart chart, HelmDeploymentContainer container) throws IOException {
-        writeLine(chart.getNameFull() + " uses " + container.getImage());
+    public void printChartToImageDependency(HelmChart chart, String imageName) throws IOException {
+        writeLine(chart.getNameFull() + " uses " + imageName);
     }
 
     public void printChart(HelmChart chart) throws IOException {
@@ -70,8 +69,8 @@ public class ChartMapPrinter implements IChartMapPrinter {
         writeLine("\tversion: " + chart.getVersion());
     }
 
-    public void printContainer(HelmDeploymentContainer container) throws IOException {
-        writeLine("Image: " + container.getImage());
+    public void printImage(String c) throws IOException {
+        writeLine("Image: " + c);
     }
 
     public void printComment(String comment) throws IOException {

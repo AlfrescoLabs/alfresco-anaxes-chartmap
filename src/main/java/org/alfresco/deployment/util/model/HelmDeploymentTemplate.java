@@ -6,7 +6,7 @@ public class HelmDeploymentTemplate {
     // Rather it is used to find a template that may be used in a parent Helm Chart and thus should
     // supercede the template used in this Helm Chart
     private String _fileName;
-    // fileName is not part ofnot part of model ... used to find a superceding Deployment Template if one exists
+    // fileName is not part of model ... used to find a superceding Deployment Template if one exists
 
     public String _getFileName() {return _fileName;}
 

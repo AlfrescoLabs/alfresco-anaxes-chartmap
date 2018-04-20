@@ -1,9 +1,10 @@
 package org.alfresco.deployment.util;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.junit.AfterClass;
@@ -27,6 +28,7 @@ public class ChartMapTest {
     private static Path testOutputImageRNV = Paths.get("target/test/testChartFileRNV.png");
     private static Path testOutputImageNRNV = Paths.get("target/test/testChartFileNRNV.png");
     private static Path testInputFilePath = Paths.get("src/test/resource/testChartFile.tgz");
+    private static Path testHelp = Paths.get("target/test/help.out");
 
     @Test
     public void printTestPumlChartRefreshVerbose() {
@@ -136,8 +138,57 @@ public class ChartMapTest {
                 testMap.print();
             }
             Assert.assertTrue(Files.exists(testOutputTextFilePathNRNV));
+            // todo compare NR generated files with time stamp removed with a known good result for a better test
         } catch (Exception e) {
             fail("printTestTextChartNRefreshNoVerbose failed:" + e.getMessage());
+        }
+    }
+    @Test
+    public void testHelp() {
+        String command = "java -jar ./target/chartmap-1.0-SNAPSHOT.jar -h"; // todo make this version independent
+        File dir = new File("./target/test");
+        try {
+            Process p = Runtime.getRuntime().exec(command, null);
+            BufferedInputStream in = new BufferedInputStream(p.getInputStream());
+            File observed = new File(
+                    dir.getAbsolutePath() + File.separator + "help.out");
+            if (!observed.createNewFile()) {
+                throw new Exception("File: " + observed.getAbsolutePath() + " could not be created.");
+            }
+            BufferedOutputStream out =
+                    new BufferedOutputStream(
+                            new FileOutputStream(observed));
+            byte[] bytes = new byte[2000];
+            int len;
+            while ((len = in.read(bytes)) > 0) {
+                out.write(bytes, 0, len);
+            }
+            in.close();
+            out.close();
+            p.waitFor(2000, TimeUnit.MILLISECONDS);
+            int exitCode = p.exitValue();
+            if (exitCode != 0 ) {
+                throw new Exception("Command: " + command + " returned exit code: " + exitCode);
+            }
+            File expected = new File("./src/test/resource/expected-help-response.txt");
+            if (observed.length() != expected.length()) {
+                throw new Exception(
+                        "Test Case Failure: The length of expected help does not match the observed help. " +
+                        "See the content of the observed help in file: " + observed.getAbsolutePath());
+            }
+            byte[] observedBytes;
+            byte[] expectedBytes;
+            expectedBytes = Files.readAllBytes(expected.toPath());
+            observedBytes = Files.readAllBytes(observed.toPath());
+            for (int i=0; i < observedBytes.length && i < expectedBytes.length; i++) {
+                if (observedBytes[i] != expectedBytes[i]) {
+                    throw new Exception("Test Case Failure: The expected help does not match the observed help starting at character "
+                            + i + ".  See the content of the observed help in file: " + observed.getAbsolutePath());
+                }
+            }
+        }
+        catch (Exception e) {
+            fail("testing help failed:" + e.getMessage());
         }
     }
 
@@ -167,6 +218,7 @@ public class ChartMapTest {
 
     private static void deleteCreatedFiles() {
         try {
+            System.out.println("Deleting any previously created files");
             Files.deleteIfExists(testOutputPumlFilePathRV);
             Files.deleteIfExists(testOutputPumlFilePathNRV);
             Files.deleteIfExists(testOutputPumlFilePathRNV);
@@ -179,7 +231,7 @@ public class ChartMapTest {
             Files.deleteIfExists(testOutputImageNRV);
             Files.deleteIfExists(testOutputImageRNV);
             Files.deleteIfExists(testOutputImageNRNV);
-            Files.deleteIfExists(testOutputPumlFilePathRV.getParent());
+            Files.deleteIfExists(testHelp);
         } catch (IOException e) {
             System.out.println("Error deleting created files: " + e.getMessage());
         }

@@ -2,6 +2,7 @@ package org.alfresco.deployment.util.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import org.alfresco.deployment.util.ChartUtil;
 
@@ -10,8 +11,8 @@ public class HelmChart {
     private String appVersion;
     private String created;
     private String description;
-    private ArrayList<HelmChart> dependencies = new ArrayList<>();
-    private ArrayList<HelmDeploymentTemplate> deploymentTemplates = new ArrayList<>();
+    private HashSet<HelmChart> dependencies = new HashSet<>();
+    private HashSet<HelmDeploymentTemplate> deploymentTemplates = new HashSet<>();
     private String digest;
     private String icon;
     private String[] keywords;
@@ -28,10 +29,26 @@ public class HelmChart {
      *
      * @return a collection of the containers referenced by this chart
      */
+    /**
     public ArrayList<HelmDeploymentContainer> getContainers() {
         ArrayList<HelmDeploymentContainer> containers = new ArrayList<>();
         for (HelmDeploymentTemplate t : deploymentTemplates) {
             containers.addAll(Arrays.asList(t.getSpec().getTemplate().getSpec().getContainers()));
+        }
+        return containers;
+    }
+    **/
+    public HashSet<String> getContainers() {
+        HashSet<String> containers = new HashSet<String>();
+        for (HelmDeploymentTemplate t : deploymentTemplates) {
+            String image=null;
+            HelmDeploymentContainer[] hdc = t.getSpec().getTemplate().getSpec().getContainers();
+            if (hdc != null && hdc.length > 0) {
+               image = hdc[0].getImage();
+            }
+            if (image !=null) {
+                containers.add(image);
+            }
         }
         return containers;
     }
@@ -60,19 +77,19 @@ public class HelmChart {
         created = s;
     }
 
-    public ArrayList<HelmChart> getDependencies() {
+    public HashSet<HelmChart> getDependencies() {
         return dependencies;
     }
 
-    public void setDependencies(ArrayList<HelmChart> d) {
+    public void setDependencies(HashSet<HelmChart> d) {
         dependencies = d;
     }
 
-    public ArrayList<HelmDeploymentTemplate> getDeploymentTemplates() {
+    public HashSet<HelmDeploymentTemplate> getDeploymentTemplates() {
         return deploymentTemplates;
     }
 
-    public void setDeploymentTemplates(ArrayList<HelmDeploymentTemplate> deploymentTemplates) {
+    public void setDeploymentTemplates(HashSet<HelmDeploymentTemplate> deploymentTemplates) {
         this.deploymentTemplates = deploymentTemplates;
     }
 
