@@ -1,0 +1,5 @@
+# example chartmap environment specification
+environment:
+  alfresco-infrastructure.alfresco-api-gateway.keycloakURL : 'http://localhost/auth'
+  alfresco-api-gateway.keycloakURL : 'http://localhost/auth'
+  keycloakURL : 'http://localhost/auth'
