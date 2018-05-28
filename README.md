@@ -32,13 +32,13 @@ The junit test cases rely on the environment variable *HELM_HOME* being set.
 
 ```
                                     
-java ---<filename>---+---a <apprspec>----+---o <filename>---d <directoryname>---+-------+---+-------+---+-------+
-                     |                   |                                      |       |   |       |   |       |
-                     +---c <chartname>---+                                      +---r---+   +---v---+   +---h---+
-                     |                   |
-                     +---f <filename>----+
-                     |                   |
-                     +---u <url>---------+
+java ---<filename>---+---a <apprspec>----+---o <filename>---d <directoryname>---+------------------+--+-------+---+-------+---+-------+
+                     |                   |                                      |                  |  |       |   |       |   |       |
+                     +---c <chartname>---+                                      +---e <filename ---+  +---r---+   +---v---+   +---h---+
+                     |                   |                                                                       
+                     +---f <filename>----+                                                                       
+                     |                   |                                                                       
+                     +---u <url>---------+        
                    
 ```
 
@@ -52,13 +52,15 @@ java ---<filename>---+---a <apprspec>----+---o <filename>---d <directoryname>---
           *  The name and version of the chart in the format \<chart-name\:chart-version\>
      * **-f** \<filename\>
           *  The location in the file system for a Helm Chart package (a tgz file)
-     * **-u** \<urk\>
+     * **-u** \<url\>
           *  A url for the Helm Chart
    * **-d** \<directoryname\>
       * The file system location of HELM_HOME 
    * **-o** \<filename\>
       * The name of the file to be generated.  If a file extension of 'puml' is specifed the format of the generated file will be PlantUML.  Otherwise it will be plain text. 
-* **Optional** 
+* **Optional**
+   * **-e** \<filename\>
+      *  The location of an Environment Specification which is a yaml file containing a list of environment variables to set before rendering helm templates.  See the example environment specification provided in resource/example-env-spec.yaml to understand the format. 
    * **-h**
       * Help.  Whenever specified, any other parameters are ignored.  When no parameters are specified, **-h** is assumed.
    * **-r**
@@ -99,6 +101,7 @@ In addition to the command line interface, a Java API is provided.
                     String chart,
                     String outputFilename,
                     String helmHome,
+                    String envFilename,
                     boolean refresh,
                     boolean verbose)
                     
@@ -115,6 +118,8 @@ Constructs a new instance of the *org.alfresco.deployment.util.ChartMap* class
   * The name of the file to which to write the generated Chart Map.  Note the file is overwritten if it exists.
 * *helmHome*          
   * The location of Helm Home
+* *envSpecFilename*          
+    * The location of an Environment Specification which is a yaml file containing a list of environment variables to set before rendering helm templates, or <null>.  See the example environment specification provided in resource/example-env-spec.yaml to understand the format. 
 * *refresh*            
   * When *true*, refresh the local Helm repo (default *false*)
 * *verbose*           

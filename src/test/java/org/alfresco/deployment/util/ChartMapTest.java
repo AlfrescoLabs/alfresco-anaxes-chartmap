@@ -246,6 +246,7 @@ public class ChartMapTest {
                     inputPath.toAbsolutePath().toString(),
                     outputPath.toAbsolutePath().toString(),
                     System.getenv("HELM_HOME"),
+                    null,
                     refresh,
                     verbose);
         } catch (Exception e) {
