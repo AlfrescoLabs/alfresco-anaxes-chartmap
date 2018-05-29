@@ -870,7 +870,6 @@ public class ChartMap {
                 command = command.concat(" --set ").concat(envVar).concat(" ");
             }
             command = command.concat("template ").concat(h.getName());
-            System.out.println("Render command = " + command);
             Process p = Runtime.getRuntime().exec(command, null, dir);
             BufferedInputStream in = new BufferedInputStream(p.getInputStream());
             File f = new File(
