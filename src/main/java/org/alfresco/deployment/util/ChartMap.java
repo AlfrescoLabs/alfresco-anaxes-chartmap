@@ -130,7 +130,9 @@ public class ChartMap {
      * @param chart          The name of the Helm Chart in one of the formats specified by
      *                       the option parameter
      * @param outputFilename The name of the file to which to write the generated Chart Map.
-     *                       Note the file is overwritten if it exists.
+     *                       Note the file is overwritten if it exists
+     * @param envFilename    The name of a yaml file that contains a set of environment variables which
+     *                       may influence the way the charts are rendered by helm.
      * @param helmHome       The location of the user helm directory.  This is needed to find
      *                       the local cache of index files downloaded from the Helm Chart repos.
      * @param refresh        When true, refresh the local Helm repo
@@ -451,7 +453,6 @@ public class ChartMap {
 
     /**
      * Gets a chart from a Helm repo in one of four ways ...
-     * <p>
      * 1.  If the user specified an appr spec, pull the chart using the helm command line
      * 2.  If the user specified the url of a chart package (a tgz file), download the file using http and unpack it
      * 3.  If the user specified the name of a local tgz file, there is no need to fetch a chart
@@ -744,12 +745,12 @@ public class ChartMap {
                 }
             });
             if (directories != null) {
-                for (String s : directories) {
+                for (String directory : directories) {
                     if (h != null) {
                         parentHelmChart = (HelmChart) charts.get(h.getName(), h.getVersion());
                         chartsReferenced.put(parentHelmChart.getName(), parentHelmChart.getVersion(), parentHelmChart);
                     }
-                    File chartFile = new File(chartDirName + File.separator + s + File.separator + "Chart.yaml");
+                    File chartFile = new File(chartDirName + File.separator + directory + File.separator + "Chart.yaml");
                     if (chartFile.exists()) {
                         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
                         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -764,13 +765,27 @@ public class ChartMap {
                                     " Try running the command again with the '-r' option");
 
                         }
+                        // Check if there is a condition property in the parent Helm Chart that corresponds to the current Helm Chart.  If one
+                        // is found, then get its value
                         if (parentHelmChart != null) {
-                            parentHelmChart.getDependencies().add(currentHelmChart);   // add this chart as a dependent
-                            chartsReferenced.put(currentHelmChart.getName(), currentHelmChart.getVersion(), currentHelmChart); // may be redundant given we added parent already in an earlier iteration
-                            collectValues(chartDirName + File.separator + s, currentHelmChart);
+                            Boolean condition = Boolean.TRUE;
+                            String conditionPropertyName = getConditionPropertyName(chartDirName, currentHelmChart);
+                            if (conditionPropertyName != null) {
+                                Boolean foundCondition = getCondition(conditionPropertyName, parentHelmChart);
+                                if (foundCondition != null) {
+                                    condition = foundCondition;
+                                }
+                            }
+                            // If the Helm Chart wasn't excluded by a condition property in the parent Helm Chart, then attach it as a
+                            // reference.   Otherwise it will still be printed later, but won't have a parent
+                            if (condition) {
+                                parentHelmChart.getDependencies().add(currentHelmChart);   // add this chart as a dependent
+                                chartsReferenced.put(currentHelmChart.getName(), currentHelmChart.getVersion(), currentHelmChart); // may be redundant given we added parent already in an earlier iteration
+                            }
+                            collectValues(chartDirName + File.separator + directory, currentHelmChart);
                         }
                         renderTemplates(currentDirectory, currentHelmChart);
-                        File chartsDirectory = new File(chartDirName + File.separator + s + File.separator + "charts");
+                        File chartsDirectory = new File(chartDirName + File.separator + directory + File.separator + "charts");
                         if (chartsDirectory.exists()) {
                             collectDependencies(chartsDirectory.getAbsolutePath(), currentHelmChart);  // recursion
                         }
@@ -782,6 +797,75 @@ public class ChartMap {
             System.out.println("Exception getting Dependencies: " + e.getMessage());
         }
     }
+
+    /**
+     *
+     * Looks for a Boolean value in a Helm Chart's values map
+     *
+     * @param key   The key for a boolean map value that may or may or not exist in the Helm Chart
+     * @param h     The helm chart whose values will be inspected for the key
+     * @return      A Boolean.  If the key was found in the map and it was of a Boolean type. the return value will be the value
+     *              of that entry.  Otherwise returns TRUE.
+     */
+    Boolean getCondition(String key, HelmChart h) {
+        Boolean condition = Boolean.TRUE;
+        Object o = ChartUtil.getValue(key, h.getValues());
+        if (o != null) {
+            if (o instanceof Boolean) {
+                condition = (Boolean) o;
+            }
+        }
+        return condition;
+    }
+
+    /**
+     * Returns the name of a condition property for the chart in the Helm Chart's parent's requirements.yaml file
+     *
+     * @param chartDirName  The name of a directory containing the Helm Chart
+     * @param h             A Helm Chart
+     * @return              The name of a condition property if one exists, null otherwise
+     */
+    String getConditionPropertyName(String chartDirName, HelmChart h) {
+        Map<String, String> conditionMap = getConditionMap(chartDirName.substring(0,chartDirName.lastIndexOf(File.separator)));
+        return conditionMap.get(h.getName());
+    }
+
+    /**
+     *  Helm chart requirements may now include a condition property indicating whether the requirement
+     *  is true or false.   See https://github.com/kubernetes/helm/issues/1837
+     *
+     *  The purpose of this method is to parse a requirements file and answer a map of chart names to
+     *  their condition property name
+     *
+     *
+     * @param directoryName     the name of a directory that may contain a requirements.yaml file
+     * @return                  a hash map containing an element for each member of the requirements file
+     *                          that contains the name of the condition property.  The
+     *                          map may be empty.
+     */
+    HashMap<String, String> getConditionMap (String directoryName) {
+        File requirementsFile = new File(directoryName + File.separator + "requirements.yaml");
+        HashMap<String, String> conditionMap = new HashMap<>();
+        Map<String, Object> valuesMap = new HashMap<>();
+        if (requirementsFile.exists()) {
+            try {
+                ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                HelmRequirements requirements = mapper.readValue(requirementsFile, HelmRequirements.class);
+                List<HelmRequirement> dependents = new ArrayList<>();
+                dependents = Arrays.asList(requirements.getDependencies());
+                dependents.forEach(r -> {
+                    String c = r.getCondition();
+                    conditionMap.put(r.getName(), r.getCondition());
+                });
+            }
+            catch (Exception e) {
+                System.out.println("Error parsing requirements file " + requirementsFile.getAbsolutePath());
+            }
+        }
+        return conditionMap;
+    }
+
 
     /**
      * For each of the referenced charts, find the template that has the highest
@@ -830,8 +914,8 @@ public class ChartMap {
             Yaml yaml = new Yaml();
             Object o = yaml.load(fis);
             if (o instanceof Map<?, ?>) {
-                Map<String, Object> values = (Map<String, Object>) o;
-                h.setValues(values);
+                Map<String, Object> chartValues = (Map<String, Object>) o;
+                h.setValues(chartValues);
             } else {
                 throw new Exception("The values.yaml file:" + valuesFile.getAbsolutePath() + " could not be parsed");
             }
@@ -870,7 +954,6 @@ public class ChartMap {
                 command = command.concat(" --set ").concat(envVar).concat(" ");
             }
             command = command.concat("template ").concat(h.getName());
-            System.out.println("Render command = " + command);
             Process p = Runtime.getRuntime().exec(command, null, dir);
             BufferedInputStream in = new BufferedInputStream(p.getInputStream());
             File f = new File(
@@ -965,16 +1048,18 @@ public class ChartMap {
      */
     List<String> getEnvVars() throws Exception {
         ArrayList<String> envVars = new ArrayList<>();
-        try {
-            ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            File envFile = new File(envFilename);
-            EnvironmentSpecification env = mapper.readValue(envFile, EnvironmentSpecification.class);
-            Map<String, String> vars = env.getEnvironment();
-            vars.forEach((k,v)  -> envVars.add(k + ("=") + v));
-        } catch (Exception e) {
-            System.out.println("Error reading Environment Variables File " + envFilename + " : " + e.getMessage());
-            throw e;
+        if (envFilename != null) {
+            try {
+                ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                File envFile = new File(envFilename);
+                EnvironmentSpecification env = mapper.readValue(envFile, EnvironmentSpecification.class);
+                Map<String, String> vars = env.getEnvironment();
+                vars.forEach((k, v) -> envVars.add(k + ("=") + v));
+            } catch (Exception e) {
+                System.out.println("Error reading Environment Variables File " + envFilename + " : " + e.getMessage());
+                throw e;
+            }
         }
         return envVars;
     }
@@ -1317,7 +1402,7 @@ public class ChartMap {
 
     private void setTempDirName(String tempDirName) {
         this.tempDirName = tempDirName;
-    } // keep private since this directory gets recursively removed
+    } // keep private since this directory gets recursively removed and so its kinda dangerous
 
     private boolean isRefreshLocalRepo() {
         return refreshLocalRepo;

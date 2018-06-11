@@ -29,6 +29,52 @@ public class ChartMapTest {
     private static Path testOutputImageNRNV = Paths.get("target/test/testChartFileNRNV.png");
     private static Path testInputFilePath = Paths.get("src/test/resource/testChartFile.tgz");
     private static Path testHelp = Paths.get("target/test/help.out");
+    private static Path testEnvFilePath = Paths.get("resource/example/example-env-spec.yaml");
+
+    @AfterClass
+    public static void cleanUp() {
+        /**
+         * No cleanup to do after test.  I don't delete the generated files
+         * because they might be handy to have around to diagnose issues in
+         * test failures.   They are deleted anyway when the test is next run.
+         */
+        System.out.println("Test complete.  Any generated file can be found in " +
+                testOutputPumlFilePathRV.getParent().toAbsolutePath().toString());
+    }
+
+    @BeforeClass
+    public static void setUp() {
+        try {
+            if (!Files.exists(testInputFilePath)) {
+                throw new Exception("test Input File " + testInputFilePath.toAbsolutePath() + " does not exist");
+            }
+            deleteCreatedFiles();
+            Files.createDirectories(testOutputPumlFilePathRV.getParent());
+        } catch (Exception e) {
+            System.out.println("Test setup failed: " + e.getMessage());
+        }
+    }
+
+    private static void deleteCreatedFiles() {
+        try {
+            System.out.println("Deleting any previously created files");
+            Files.deleteIfExists(testOutputPumlFilePathRV);
+            Files.deleteIfExists(testOutputPumlFilePathNRV);
+            Files.deleteIfExists(testOutputPumlFilePathRNV);
+            Files.deleteIfExists(testOutputPumlFilePathNRNV);
+            Files.deleteIfExists(testOutputTextFilePathRV);
+            Files.deleteIfExists(testOutputTextFilePathNRV);
+            Files.deleteIfExists(testOutputTextFilePathRNV);
+            Files.deleteIfExists(testOutputTextFilePathNRNV);
+            Files.deleteIfExists(testOutputImageRV);
+            Files.deleteIfExists(testOutputImageNRV);
+            Files.deleteIfExists(testOutputImageRNV);
+            Files.deleteIfExists(testOutputImageNRNV);
+            Files.deleteIfExists(testHelp);
+        } catch (IOException e) {
+            System.out.println("Error deleting created files: " + e.getMessage());
+        }
+    }
 
     @Test
     public void printTestPumlChartRefreshVerbose() {
@@ -71,7 +117,6 @@ public class ChartMapTest {
             fail("printTestPumlChartRefreshNoVerbose failed:" + e.getMessage());
         }
     }
-
 
     @Test
     public void printTestPumlChartNoRefreshNoVerbose() {
@@ -143,6 +188,7 @@ public class ChartMapTest {
             fail("printTestTextChartNRefreshNoVerbose failed:" + e.getMessage());
         }
     }
+
     @Test
     public void testHelp() {
         String command = "java -jar ./target/chartmap-1.0-SNAPSHOT.jar -h"; // todo make this version independent
@@ -192,51 +238,6 @@ public class ChartMapTest {
         }
     }
 
-    @AfterClass
-    public static void cleanUp() {
-        /**
-         * No cleanup to do after test.  I don't delete the generated files
-         * because they might be handy to have around to diagnose issues in
-         * test failures.   They are deleted anyway when the test is next run.
-         */
-        System.out.println("Test complete.  Any generated file can be found in " +
-                testOutputPumlFilePathRV.getParent().toAbsolutePath().toString());
-    }
-
-    @BeforeClass
-    public static void setUp() {
-        try {
-            if (!Files.exists(testInputFilePath)) {
-                throw new Exception("test Input File " + testInputFilePath.toAbsolutePath() + " does not exist");
-            }
-            deleteCreatedFiles();
-            Files.createDirectories(testOutputPumlFilePathRV.getParent());
-        } catch (Exception e) {
-            System.out.println("Test setup failed: " + e.getMessage());
-        }
-    }
-
-    private static void deleteCreatedFiles() {
-        try {
-            System.out.println("Deleting any previously created files");
-            Files.deleteIfExists(testOutputPumlFilePathRV);
-            Files.deleteIfExists(testOutputPumlFilePathNRV);
-            Files.deleteIfExists(testOutputPumlFilePathRNV);
-            Files.deleteIfExists(testOutputPumlFilePathNRNV);
-            Files.deleteIfExists(testOutputTextFilePathRV);
-            Files.deleteIfExists(testOutputTextFilePathNRV);
-            Files.deleteIfExists(testOutputTextFilePathRNV);
-            Files.deleteIfExists(testOutputTextFilePathNRNV);
-            Files.deleteIfExists(testOutputImageRV);
-            Files.deleteIfExists(testOutputImageNRV);
-            Files.deleteIfExists(testOutputImageRNV);
-            Files.deleteIfExists(testOutputImageNRNV);
-            Files.deleteIfExists(testHelp);
-        } catch (IOException e) {
-            System.out.println("Error deleting created files: " + e.getMessage());
-        }
-    }
-
     private ChartMap createTestMap(ChartOption option, Path inputPath, Path outputPath,
                                    boolean refresh, boolean verbose) throws Exception {
         ChartMap testMap = null;
@@ -246,7 +247,7 @@ public class ChartMapTest {
                     inputPath.toAbsolutePath().toString(),
                     outputPath.toAbsolutePath().toString(),
                     System.getenv("HELM_HOME"),
-                    null,
+                    testEnvFilePath.toAbsolutePath().toString(),
                     refresh,
                     verbose);
         } catch (Exception e) {
