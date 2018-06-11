@@ -9,6 +9,7 @@ import org.alfresco.deployment.util.ChartUtil;
 public class HelmChart {
     private String apiVersion;
     private String appVersion;
+    private Boolean condition;
     private String created;
     private String description;
     private HashSet<HelmChart> dependencies = new HashSet<>();
@@ -23,21 +24,11 @@ public class HelmChart {
     private Map<String, Object> values;
     private String version;
 
-
     /**
      * Collects the containers referenced by this chart and returns a collection of them
      *
      * @return a collection of the containers referenced by this chart
      */
-    /**
-    public ArrayList<HelmDeploymentContainer> getContainers() {
-        ArrayList<HelmDeploymentContainer> containers = new ArrayList<>();
-        for (HelmDeploymentTemplate t : deploymentTemplates) {
-            containers.addAll(Arrays.asList(t.getSpec().getTemplate().getSpec().getContainers()));
-        }
-        return containers;
-    }
-    **/
     public HashSet<String> getContainers() {
         HashSet<String> containers = new HashSet<String>();
         for (HelmDeploymentTemplate t : deploymentTemplates) {
@@ -67,6 +58,14 @@ public class HelmChart {
 
     public void setAppVersion(String a) {
         appVersion = a;
+    }
+
+    public Boolean getCondition() {
+        return condition;
+    }
+
+    public void setCondition(Boolean condition) {
+        this.condition = condition;
     }
 
     public String getCreated() {
@@ -173,7 +172,7 @@ public class HelmChart {
         values = v;
     }
 
-    public String getValue(String k) {
+    public Object getValue(String k) {
         return ChartUtil.getValue(k, values);
     }
 }

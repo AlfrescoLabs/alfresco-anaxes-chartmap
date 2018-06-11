@@ -11,7 +11,7 @@ public class ChartUtil {
      * @param values    a map of values such as from a values.yaml file
      * @return          the value of the key
      */
-    @SuppressWarnings("unchecked") public static String getValue(String k, Map<String, Object> values) {
+    @SuppressWarnings("unchecked") public static Object getValue(String k, Map<String, Object> values) {
         if (values != null) {
             String head = k;
             String tail = "";
@@ -22,8 +22,8 @@ public class ChartUtil {
             if (!head.isEmpty()) {
                 for (Map.Entry<String, Object> entry : values.entrySet()) {
                     if (head.equals(entry.getKey())) {
-                        if (entry.getValue() instanceof String) {    // if this is a leaf
-                            return (String) entry.getValue(); // end the recursion
+                        if (!(entry.getValue() instanceof Map)) {    // if this is a leaf
+                            return entry.getValue(); // end the recursion
                         }
                         else if (!tail.isEmpty() && entry.getValue() instanceof Map) {
                             return getValue(tail, (Map<String, Object>) entry.getValue()); // continue the recursion
