@@ -200,8 +200,7 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      * Get the keywords for a Helm Chart, nicely formatted
      *
      * @param   k   an array of keywords discovered from a Helm Chart
-     * @return      a formatted String of the keywords separated by
-     *              commas
+     * @return      a formatted String of the keywords one per line
      */
     private String getKeywords(String[] k) {
         String keywords = "Keywords: ";
@@ -212,7 +211,7 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
                     keywords += aKeyword;
                     first = false;
                 } else {
-                    keywords += ", " + aKeyword;
+                    keywords += "\\n" + aKeyword;
                 }
             }
         }

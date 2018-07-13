@@ -543,18 +543,22 @@ public class ChartMap {
             HttpEntity entity = response.getEntity();
             int rc = response.getStatusLine().getStatusCode();
             String tgzFileName = tempDirName + this.getClass().getCanonicalName() + "_chart.tgz";
-            InputStream is = entity.getContent();
-            FileOutputStream fos = new FileOutputStream(new File(tgzFileName));
-            int b;
-            while ((b = is.read()) != -1) {
-                fos.write(b);
+            if (rc == 200) {
+                InputStream is = entity.getContent();
+                FileOutputStream fos = new FileOutputStream(new File(tgzFileName));
+                int b;
+                while ((b = is.read()) != -1) {
+                    fos.write(b);
+                }
+                is.close();
+                fos.close();
+                client.close();
+                chartDirName = unpackChart(tgzFileName);
+                createChart(chartDirName);
             }
-            is.close();
-            fos.close();
-            client.close();
-            chartDirName = unpackChart(tgzFileName);
-            createChart(chartDirName);
-            //updateLocalRepo(chartDirName);
+            else {
+                System.out.println("Error downloading chart from URL" + request.getURI() + " : " + rc);
+            }
         } catch (Exception e) {
             System.out.println("Error downloading chart " + chartDirName + " : " + e.getMessage());
         }
@@ -1033,7 +1037,7 @@ public class ChartMap {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Exception rendering template : " + e.getMessage());
+            System.out.println("Exception rendering template for " + h.getNameFull() + " : " + e.getMessage());
         }
     }
 
