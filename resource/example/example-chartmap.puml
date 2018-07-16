@@ -5,29 +5,29 @@ skinparam usecaseBorderColor black
 skinparam usecaseArrowColor LightSlateGray
 skinparam artifactBorderColor black
 skinparam artifactArrowColor LightSlateGray
-title Chart Map for alfresco-content-services:1.0.0
+title Chart Map for alfresco-content-services:1.0.1
 'There are 4 referenced Helm Charts
 artifact "alfresco-search:0.0.3\n====\n\talfresco-search\n====\n\t0.0.3\n====\n\tMaintainers: \n====\n\tKeywords: search\nsearch services\nalfresco search services\ninsight\ninsight engine\nalfresco insight engine" as alfresco_search_0_0_3 #GhostWhite
 artifact "postgresql:0.9.3\n====\n\tpostgresql\n====\n\t0.9.3\n====\n\tMaintainers: databus23\n====\n\tKeywords: postgresql\npostgres\ndatabase\nsql" as postgresql_0_9_3 #LightSteelBlue
 artifact "alfresco-infrastructure:1.0.0\n====\n\talfresco-infrastructure\n====\n\t1.0.0\n====\n\tMaintainers: \n====\n\tKeywords: " as alfresco_infrastructure_1_0_0 #Cornsilk
-artifact "alfresco-content-services:1.0.0\n====\n\talfresco-content-services\n====\n\t1.0.0\n====\n\tMaintainers: \n====\n\tKeywords: content\ncontent services\nalfresco\nalfresco content services" as alfresco_content_services_1_0_0 #Gainsboro
+artifact "alfresco-content-services:1.0.1\n====\n\talfresco-content-services\n====\n\t1.0.1\n====\n\tMaintainers: \n====\n\tKeywords: content\ncontent services\nalfresco\nalfresco content services" as alfresco_content_services_1_0_1 #Gainsboro
 'There are 7 referenced Docker Images
 usecase "Image\n====\n\tDocker Hub\n====\n\talfresco/alfresco-libreoffice\n====\n\t1.2" as alfresco_alfresco_libreoffice_1_2 #LightSkyBlue
-usecase "Image\n====\n\tDocker Hub\n====\n\talfresco/alfresco-share\n====\n\t6.0.b" as alfresco_alfresco_share_6_0_b #LightSalmon
 usecase "Image\n====\n\tDocker Hub\n====\n\tpostgres\n====\n\t10.1" as postgres_10_1 #Ivory
 usecase "Image\n====\n\tDocker Hub\n====\n\talfresco/alfresco-imagemagick\n====\n\t1.2" as alfresco_alfresco_imagemagick_1_2 #Aqua
 usecase "Image\n====\n\tDocker Hub\n====\n\talfresco/alfresco-pdf-renderer\n====\n\t1.2" as alfresco_alfresco_pdf_renderer_1_2 #Cornsilk
+usecase "Image\n====\n\tDocker Hub\n====\n\talfresco/alfresco-share\n====\n\t6.0" as alfresco_alfresco_share_6_0 #LightSalmon
 usecase "Image\n====\n\tDocker Hub\n====\n\talfresco/alfresco-search-services\n====\n\t1.1.1" as alfresco_alfresco_search_services_1_1_1 #Coral
 usecase "Image\n====\n\tDocker Hub\n====\n\talfresco/alfresco-content-repository\n====\n\t6.0.0" as alfresco_alfresco_content_repository_6_0_0 #FloralWhite
-alfresco_content_services_1_0_0--[#green]-|>alfresco_infrastructure_1_0_0
-alfresco_content_services_1_0_0--[#green]-|>postgresql_0_9_3
-alfresco_content_services_1_0_0--[#green]-|>alfresco_search_0_0_3
+alfresco_content_services_1_0_1--[#green]-|>alfresco_infrastructure_1_0_0
+alfresco_content_services_1_0_1--[#green]-|>postgresql_0_9_3
+alfresco_content_services_1_0_1--[#green]-|>alfresco_search_0_0_3
 alfresco_search_0_0_3--[#orange]-|>alfresco_alfresco_search_services_1_1_1
 postgresql_0_9_3--[#orange]-|>postgres_10_1
-alfresco_content_services_1_0_0--[#orange]-|>alfresco_alfresco_libreoffice_1_2
-alfresco_content_services_1_0_0--[#orange]-|>alfresco_alfresco_share_6_0_b
-alfresco_content_services_1_0_0--[#orange]-|>alfresco_alfresco_imagemagick_1_2
-alfresco_content_services_1_0_0--[#orange]-|>alfresco_alfresco_pdf_renderer_1_2
-alfresco_content_services_1_0_0--[#orange]-|>alfresco_alfresco_content_repository_6_0_0
-center footer Generated on 2018/07/13 15:43:13 by org.alfresco.deployment.util.PlantUmlChartMapPrinter\nhttps://github.com/Alfresco/alfresco-anaxes-chartmap
+alfresco_content_services_1_0_1--[#orange]-|>alfresco_alfresco_libreoffice_1_2
+alfresco_content_services_1_0_1--[#orange]-|>alfresco_alfresco_imagemagick_1_2
+alfresco_content_services_1_0_1--[#orange]-|>alfresco_alfresco_pdf_renderer_1_2
+alfresco_content_services_1_0_1--[#orange]-|>alfresco_alfresco_share_6_0
+alfresco_content_services_1_0_1--[#orange]-|>alfresco_alfresco_content_repository_6_0_0
+center footer Generated on 2018/07/15 15:55:28 by org.alfresco.deployment.util.PlantUmlChartMapPrinter\nhttps://github.com/Alfresco/alfresco-anaxes-chartmap
 @enduml

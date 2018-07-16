@@ -1,4 +1,4 @@
-Chart Map for alfresco-content-services:1.0.0
+Chart Map for alfresco-content-services:1.0.1
 There are 4 referenced Helm Charts
 Chart: alfresco-search:0.0.3
 	apiVersion: null
@@ -42,36 +42,36 @@ Chart: alfresco-infrastructure:1.0.0
 	sources: 
 	urls: http://kubernetes-charts.alfresco.com/stable/alfresco-infrastructure-1.0.0.tgz
 	version: 1.0.0
-Chart: alfresco-content-services:1.0.0
+Chart: alfresco-content-services:1.0.1
 	apiVersion: null
 	appVersion: 6.0.0
-	created: 2018-07-10T17:35:30.251693358Z
-	dependencies: [org.alfresco.deployment.util.model.HelmChart@52d645b1, org.alfresco.deployment.util.model.HelmChart@3d8bbcdc, org.alfresco.deployment.util.model.HelmChart@35390ee3]
+	created: null
+	dependencies: [org.alfresco.deployment.util.model.HelmChart@3f2ef586, org.alfresco.deployment.util.model.HelmChart@6256ac4f, org.alfresco.deployment.util.model.HelmChart@62c5bbdc]
 	description: A Helm chart for deploying Alfresco Content Services
-	digest: ceed320314a43c2a8ef4c1d8ba27e0faf6f5866c76f3cfa8b4e93adfcef16d8c
+	digest: null
 	icon: https://avatars0.githubusercontent.com/u/391127?s=200&v=4
 	keywords: content,content services,alfresco,alfresco content services
 	maintainers: 
 	name: alfresco-content-services
 	sources: https://github.com/Alfresco/acs-deployment
-	urls: http://kubernetes-charts.alfresco.com/stable/alfresco-content-services-1.0.0.tgz
-	version: 1.0.0
+	urls: 
+	version: 1.0.1
 There are 7 referenced Docker Images
 Image: alfresco/alfresco-libreoffice:1.2
-Image: alfresco/alfresco-share:6.0.b
 Image: postgres:10.1
 Image: alfresco/alfresco-imagemagick:1.2
 Image: alfresco/alfresco-pdf-renderer:1.2
+Image: alfresco/alfresco-share:6.0
 Image: alfresco/alfresco-search-services:1.1.1
 Image: alfresco/alfresco-content-repository:6.0.0
-alfresco-content-services:1.0.0 depends on alfresco-infrastructure:1.0.0
-alfresco-content-services:1.0.0 depends on postgresql:0.9.3
-alfresco-content-services:1.0.0 depends on alfresco-search:0.0.3
+alfresco-content-services:1.0.1 depends on alfresco-search:0.0.3
+alfresco-content-services:1.0.1 depends on alfresco-infrastructure:1.0.0
+alfresco-content-services:1.0.1 depends on postgresql:0.9.3
 alfresco-search:0.0.3 uses alfresco/alfresco-search-services:1.1.1
 postgresql:0.9.3 uses postgres:10.1
-alfresco-content-services:1.0.0 uses alfresco/alfresco-libreoffice:1.2
-alfresco-content-services:1.0.0 uses alfresco/alfresco-share:6.0.b
-alfresco-content-services:1.0.0 uses alfresco/alfresco-imagemagick:1.2
-alfresco-content-services:1.0.0 uses alfresco/alfresco-pdf-renderer:1.2
-alfresco-content-services:1.0.0 uses alfresco/alfresco-content-repository:6.0.0
-Generated on 2018/07/13 16:08:06 by org.alfresco.deployment.util.TextChartMapPrinter (https://github.com/Alfresco/alfresco-anaxes-chartmap)
+alfresco-content-services:1.0.1 uses alfresco/alfresco-libreoffice:1.2
+alfresco-content-services:1.0.1 uses alfresco/alfresco-imagemagick:1.2
+alfresco-content-services:1.0.1 uses alfresco/alfresco-pdf-renderer:1.2
+alfresco-content-services:1.0.1 uses alfresco/alfresco-share:6.0
+alfresco-content-services:1.0.1 uses alfresco/alfresco-content-repository:6.0.0
+Generated on 2018/07/16 08:45:25 by org.alfresco.deployment.util.TextChartMapPrinter (https://github.com/Alfresco/alfresco-anaxes-chartmap)

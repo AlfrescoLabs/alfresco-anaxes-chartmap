@@ -76,12 +76,12 @@ java -jar chartmap-1.0-SNAPSHOT.jar -c "wordpress:0.8.17" -r -v -o "wordpress.pu
 ```
 ##### Generating a Chartmap using a file specification
 ```
-java -jar chartmap-1.0-SNAPSHOT.jar -f "/Users/melahn/helm/alfresco-dbp-0.3.0.tgz" " -d "/Users/melahn/.helm" -o  alfresco-dbp.puml -v
+java -jar chartmap-1.0-SNAPSHOT.jar -f "/Users/melahn/helm/alfresco-content-services-1.0.1.tgz" " -d "/Users/melahn/.helm" -o  alfresco-dbp.puml -v
 
 ```
 ##### Generating a Chartmap using a url specification
 ```
-java -jar chartmap-1.0-SNAPSHOT.jar -u "http://kubernetes-charts.alfresco.com/incubator/alfresco-dbp-0.3.0.tgz" " -d "/Users/melahn/.helm" -o  alfresco-dbp.puml -v
+java -jar chartmap-1.0-SNAPSHOT.jar -u "http://kubernetes-charts.alfresco.com/stable/alfresco-content-services-1.0.1.tgz" " -d "/Users/melahn/.helm" -o  alfresco-dbp.puml -v
 
 ```
 ##### Generating a Chartmap using an appr specification
