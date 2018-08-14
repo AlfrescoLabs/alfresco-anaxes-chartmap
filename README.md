@@ -32,19 +32,21 @@ The junit test cases rely on the environment variable *HELM_HOME* being set.
 
 ```
                                     
-java ---<filename>---+---a <apprspec>----+---o <filename>---d <directoryname>---+------------------+--+-------+---+-------+---+-------+
-                     |                   |                                      |                  |  |       |   |       |   |       |
-                     +---c <chartname>---+                                      +---e <filename ---+  +---r---+   +---v---+   +---h---+
-                     |                   |                                                                       
-                     +---f <filename>----+                                                                       
-                     |                   |                                                                       
-                     +---u <url>---------+        
+java -jar ---<filename>---+---a <apprspec>----+---o <filename>---d <directoryname>---+------------------+--+-------+---+-------+---+-------+
+                          |                   |                                      |                  |  |       |   |       |   |       |
+                          +---c <chartname>---+                                      +---e <filename ---+  +---r---+   +---v---+   +---h---+
+                          |                   |                                                                       
+                          +---f <filename>----+                                                                       
+                          |                   |                                                                       
+                          +---u <url>---------+        
                    
 ```
 
 #### Parameters
 
 * **Required**
+   * \<filename\>
+     * The name of the jar file (e.g. target/chartmap-1.0-SNAPSHOT.jar)
    * To specify the Helm Chart, one of the following input formats must be specified
      * **-a** \<apprspec\>
           *  The name and version of the chart as an appr specification \<host\>/\<org\>/\<chart-name\>@\<chart-version\>   
