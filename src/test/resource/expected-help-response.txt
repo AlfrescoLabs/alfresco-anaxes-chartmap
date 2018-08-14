@@ -1,12 +1,12 @@
 
 Usage:
-java ---<filename>---+---a <apprspec>----+---o <filename>---d <directoryname>---+------------------+--+-------+---+-------+---+-------+
-                     |                   |                                      |                  |  |       |   |       |   |       |
-                     +---c <chartname>---+                                      +---e <filename ---+  +---r---+   +---v---+   +---h---+
-                     |                   |                                                                       
-                     +---f <filename>----+                                                                       
-                     |                   |                                                                       
-                     +---u <url>---------+                                                                       
+java -jar ---<filename>---+---  -a <apprspec>----+---  -o <filename>---  -d <directoryname>----+---------------------+--+------------+---+------------+---+------------+
+                          |                      |                                             |                     |  |            |   |            |   |            |
+                          +---  -c <chartname>---+                                             +---  -e <filename ---+  +---  -r  ---+   +---  -v  ---+   +---  -h  ---+
+                          |                      |
+                          +---  -f <filename>----+
+                          |                      |
+                          +---  -u <url>---------+
 
 See http://github.com/Alfresco/alfresco-anaxes-chartmap for more information
 

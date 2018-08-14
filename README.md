@@ -32,13 +32,13 @@ The junit test cases rely on the environment variable *HELM_HOME* being set.
 
 ```
                                     
-java -jar ---<filename>---+---a <apprspec>----+---o <filename>---d <directoryname>---+------------------+--+-------+---+-------+---+-------+
-                          |                   |                                      |                  |  |       |   |       |   |       |
-                          +---c <chartname>---+                                      +---e <filename ---+  +---r---+   +---v---+   +---h---+
-                          |                   |                                                                       
-                          +---f <filename>----+                                                                       
-                          |                   |                                                                       
-                          +---u <url>---------+        
+java -jar ---<filename>---+---  -a <apprspec>----+---  -o <filename>---  -d <directoryname>----+---------------------+--+------------+---+------------+---+------------+
+                          |                      |                                             |                     |  |            |   |            |   |            |
+                          +---  -c <chartname>---+                                             +---  -e <filename ---+  +---  -r  ---+   +---  -v  ---+   +---  -h  ---+
+                          |                      |                                                                       
+                          +---  -f <filename>----+                                                                       
+                          |                      |                                                                       
+                          +---  -u <url>---------+        
                    
 ```
 

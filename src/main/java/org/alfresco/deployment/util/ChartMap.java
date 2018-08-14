@@ -327,13 +327,13 @@ public class ChartMap {
      */
     private static String getHelp() {
         String help = "\nUsage:\n";
-        help += "java ---<filename>---+---a <apprspec>----+---o <filename>---d <directoryname>---+------------------+--+-------+---+-------+---+-------+\n";
-        help += "                     |                   |                                      |                  |  |       |   |       |   |       |\n";
-        help += "                     +---c <chartname>---+                                      +---e <filename ---+  +---r---+   +---v---+   +---h---+\n";
-        help += "                     |                   |                                                                       \n";
-        help += "                     +---f <filename>----+                                                                       \n";
-        help += "                     |                   |                                                                       \n";
-        help += "                     +---u <url>---------+                                                                       \n";
+        help += "java -jar ---<filename>---+---  -a <apprspec>----+---  -o <filename>---  -d <directoryname>----+---------------------+--+------------+---+------------+---+------------+\n";
+        help += "                          |                      |                                             |                     |  |            |   |            |   |            |\n";
+        help += "                          +---  -c <chartname>---+                                             +---  -e <filename ---+  +---  -r  ---+   +---  -v  ---+   +---  -h  ---+\n";
+        help += "                          |                      |\n";
+        help += "                          +---  -f <filename>----+\n";
+        help += "                          |                      |\n";
+        help += "                          +---  -u <url>---------+\n";
         help += "\nSee http://github.com/Alfresco/alfresco-anaxes-chartmap for more information\n";
         return help;
     }
