@@ -1,5 +1,9 @@
 # Chart Map
 
+![alt text][image] 
+
+[image]: ./resource/image/Arbor_scientiae_(Ramon_Llull)_using_A_porphyrii_structure.png "Image by Jost_Amman ... Eygentliche Beschreibung aller Stände auff Erden, hoher und nidriger, geistlicher und weltlicher, aller Künsten, Handwercken und Händeln ... from https://commons.wikimedia.org/w/index.php?curid=207246"
+
 ## Overview
 
 This project generates a file that shows the recursive dependencies of a Helm Chart.  
@@ -13,7 +17,7 @@ Note that although this project was created in the Alfresco GitHub org, ChartMap
 
 ## Prerequisites
 
-The Helm Client is required since the chart map is based on the dependencies discovered by the Kubernetes Helm client. I have tested it with v2.7.2 of the Helm Client though other versions may also work. 
+The Helm Client is required since the chart map is based on the dependencies discovered by the Kubernetes Helm client. I have tested it with version 2.9.1 of the Helm Client though other versions may also work. 
 
 For instructions on installing the Helm Client, see https://docs.helm.sh/using_helm/#installing-helm
 
@@ -26,7 +30,7 @@ The junit test cases rely on the environment variable *HELM_HOME* being set.
 
 1. Download the executable jar from the [resource directory](./resource/jar), or build it yourself from source (see below).
 
-2. Run the command line, or write a Java program, to generate a chart.  See Syntax and Examples below.
+2. Run the command line, or write a Java program using the API, to generate a chart.  See Syntax and Examples below.
 
 ### Command Line Syntax
 
@@ -140,8 +144,6 @@ Prints a *ChartMap*
     public void print ()
                     
 ```    
-##### Parameters
-* None
 
 ##### Throws
 * *java.io.Exception*
@@ -156,9 +158,10 @@ public class ChartMapExample {
         try {
             ChartMap testMap = new ChartMap(
                     ChartOption.FILENAME,
-                    "/examples/example-chart.tgz",
-                    "/examples/example-chart.puml",
+                    "src/test/resource/testChartFile.tgz",
+                    "my-chartmap.puml",
                     System.getenv("HELM_HOME"),
+                    "resource/example/example-env-spec.yaml",
                     false,
                     true);
             testMap.print();

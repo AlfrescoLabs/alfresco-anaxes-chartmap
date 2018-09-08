@@ -176,6 +176,9 @@ public class ChartMap {
         args.add(outputFilename);
         args.add("-d");
         args.add(helmHome);
+        if (helmHome == null) {
+            throw new Exception("HELM HOME is not set");
+        }
         parseArgs(args.toArray(new String[args.size()]));
     }
 

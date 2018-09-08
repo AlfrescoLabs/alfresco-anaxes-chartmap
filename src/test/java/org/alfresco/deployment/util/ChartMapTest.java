@@ -11,6 +11,8 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 public class ChartMapTest {
@@ -27,7 +29,7 @@ public class ChartMapTest {
     private static Path testOutputImageNRV = Paths.get("target/test/testChartFileNRV.png");
     private static Path testOutputImageRNV = Paths.get("target/test/testChartFileRNV.png");
     private static Path testOutputImageNRNV = Paths.get("target/test/testChartFileNRNV.png");
-    private static Path testInputFilePath = Paths.get("src/test/resource/testChartFile.tgz");
+    private static Path testInputFilePath = Paths.get("src/test/resource/test-chart-file.tgz");
     private static Path testHelp = Paths.get("target/test/help.out");
     private static Path testEnvFilePath = Paths.get("resource/example/example-env-spec.yaml");
 
@@ -50,8 +52,9 @@ public class ChartMapTest {
             }
             deleteCreatedFiles();
             Files.createDirectories(testOutputPumlFilePathRV.getParent());
+            assertNotNull(System.getenv("HELM_HOME"));
         } catch (Exception e) {
-            System.out.println("Test setup failed: " + e.getMessage());
+            fail("Test setup failed: " + e.getMessage());
         }
     }
 
@@ -164,7 +167,7 @@ public class ChartMapTest {
     public void printTestTextChartRefreshNoVerbose() {
         try {
             ChartMap testMap = createTestMap(ChartOption.FILENAME, testInputFilePath, testOutputTextFilePathRNV,
-                    false, true);
+                    true, false);
             if (testMap != null) {
                 testMap.print();
             }
@@ -175,10 +178,10 @@ public class ChartMapTest {
     }
 
     @Test
-    public void printTestTextChartNRefreshNoVerbose() {
+    public void printTestTextChartNoRefreshNoVerbose() {
         try {
             ChartMap testMap = createTestMap(ChartOption.FILENAME, testInputFilePath, testOutputTextFilePathNRNV,
-                    false, true);
+                    false, false);
             if (testMap != null) {
                 testMap.print();
             }
