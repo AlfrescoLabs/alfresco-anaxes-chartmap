@@ -122,6 +122,10 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
         body += getSeparator();
         body += "\\t" + chart.getVersion();
         body += getSeparator();
+        if (chart.getRepoUrl() != null) {
+            body += "\\t" + chart.getRepoUrl();
+        }
+        body += getSeparator();
         body += "\\t" + getMaintainers(chart.getMaintainers());
         body += getSeparator();
         body += "\\t" + getKeywords(chart.getKeywords());
