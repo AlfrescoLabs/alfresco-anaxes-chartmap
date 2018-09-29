@@ -388,7 +388,7 @@ public class ChartMap {
         HelmChartRepoLocal[] repos = localRepos.getRepositories();
         for (HelmChartRepoLocal r : repos) {
             File cache = new File(r.getCache());
-            loadChartsFromCache(cache);
+            loadChartsFromCache(r, cache);
         }
     }
 
@@ -399,7 +399,7 @@ public class ChartMap {
      *
      * @param c a Directory containing Helm Charts in yaml form
      */
-    private void loadChartsFromCache(File c) {
+    private void loadChartsFromCache(HelmChartRepoLocal r, File c) {
         HelmChartLocalCache cache;
         try {
             ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -408,6 +408,9 @@ public class ChartMap {
             Map<String, HelmChart[]> entries = cache.getEntries();
             for (Map.Entry<String, HelmChart[]> entry : entries.entrySet()) {
                 for (HelmChart h : entry.getValue()) {
+                    // Here we remember the url of the chart repo in which we found the chart.
+                    // Note that this url cannot be inferred from the url of
+                    h.setRepoUrl(r.getUrl());
                     charts.put(h.getName(), h.getVersion(), h);
                 }
             }
@@ -520,7 +523,6 @@ public class ChartMap {
             } else {
                 throw new Exception("Error Code: " + exitCode + " executing command \"" + command + "\"");
             }
-            //updateLocalRepo(chartDirName);
         } catch (Exception e) {
             System.out.println("Exception pulling chart from appr using specification " + apprSpec + " : " + e.getMessage());
         }
@@ -607,8 +609,14 @@ public class ChartMap {
             HelmChart h = mapper.readValue(new File(yamlChartFilename), HelmChart.class);
             chartName = h.getName();
             chartVersion = h.getVersion();
+            // If the chart is already in the charts map we want to transfer any extra information
+            // from that chart into the chart we create from the yaml file since otherwise we
+            // will lose it. Currently there is only such piece of information, the repo url
+            HelmChart foundChart =  (HelmChart) charts.get(h.getName(), h.getVersion());
+            if (foundChart != null) {
+                h.setRepoUrl(foundChart.getRepoUrl());
+            }
             charts.put(h.getName(), h.getVersion(), h);
-
         } catch (IOException e) {
             System.out.println("Error extracting Chart information from " + yamlChartFilename);
         }

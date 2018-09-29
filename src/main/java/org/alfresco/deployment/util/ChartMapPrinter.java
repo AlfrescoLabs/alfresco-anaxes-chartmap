@@ -63,6 +63,9 @@ public class ChartMapPrinter implements IChartMapPrinter {
         writeLine("\ticon: " + chart.getIcon());
         writeLine("\tkeywords: " + printArray(chart.getKeywords()));
         writeLine("\tmaintainers: " + printMaintainers(chart.getMaintainers()));
+        if (chart.getRepoUrl() != null) {
+            writeLine("\trepo url: " + chart.getRepoUrl());
+        }
         writeLine("\tname: " + chart.getName());
         writeLine("\tsources: " + printArray(chart.getSources()));
         writeLine("\turls: " + printArray(chart.getUrls()));

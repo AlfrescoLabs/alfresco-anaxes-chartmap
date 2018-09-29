@@ -19,6 +19,8 @@ public class HelmChart {
     private String[] keywords;
     private HelmMaintainer[] maintainers;
     private String name;
+    private String repoUrl;  // This is information that is not to be found in the Chart.yaml file
+                             // We add it if we can after we load the chart from the yaml file
     private String[] sources;
     private String[] urls;
     private Map<String, Object> values;
@@ -139,6 +141,10 @@ public class HelmChart {
     public void setName(String n) {
         name = n;
     }
+
+    public String getRepoUrl() { return repoUrl; }
+
+    public void setRepoUrl(String repoUrl) { this.repoUrl = repoUrl; }
 
     public String[] getSources() {
         return sources;
