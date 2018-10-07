@@ -616,8 +616,10 @@ public class ChartMap {
             if (foundChart != null) {
                 h.setRepoUrl(foundChart.getRepoUrl());
             }
+            // Don't forget the values
+            collectValues(chartDirName,h);
             charts.put(h.getName(), h.getVersion(), h);
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Error extracting Chart information from " + yamlChartFilename);
         }
     }
@@ -780,10 +782,10 @@ public class ChartMap {
                                     " Try running the command again with the '-r' option");
 
                         }
-                        // Check if there is a condition property in the parent Helm Chart that corresponds to the current Helm Chart.  If one
-                        // is found, then get its value
+                        // If this is not the root chart, check if there is a condition property in the parent Helm Chart
+                        // that corresponds to the current Helm Chart.  If found, get the value
+                        Boolean condition = Boolean.TRUE;
                         if (parentHelmChart != null) {
-                            Boolean condition = Boolean.TRUE;
                             String conditionPropertyName = getConditionPropertyName(chartDirName, currentHelmChart);
                             if (conditionPropertyName != null) {
                                 Boolean foundCondition = getCondition(conditionPropertyName, parentHelmChart);
@@ -791,18 +793,22 @@ public class ChartMap {
                                     condition = foundCondition;
                                 }
                             }
-                            // If the Helm Chart wasn't excluded by a condition property in the parent Helm Chart, then attach it as a
-                            // reference.   Otherwise it will still be printed later, but won't have a parent
-                            if (condition) {
-                                parentHelmChart.getDependencies().add(currentHelmChart);   // add this chart as a dependent
-                                chartsReferenced.put(currentHelmChart.getName(), currentHelmChart.getVersion(), currentHelmChart); // may be redundant given we added parent already in an earlier iteration
-                            }
-                            collectValues(chartDirName + File.separator + directory, currentHelmChart);
                         }
-                        renderTemplates(currentDirectory, currentHelmChart);
-                        File chartsDirectory = new File(chartDirName + File.separator + directory + File.separator + "charts");
-                        if (chartsDirectory.exists()) {
-                            collectDependencies(chartsDirectory.getAbsolutePath(), currentHelmChart);  // recursion
+                        // If the Helm Chart wasn't excluded by a condition property in a parent Helm Chart, then add it to
+                        // the referenced charts map and attach it as a dependent of the parent
+                        //
+                        // Note that a chart with a false condition property will thus not be printed at all
+                        if (condition) {
+                            collectValues(chartDirName + File.separator + directory, currentHelmChart);
+                            if (parentHelmChart != null) {
+                               parentHelmChart.getDependencies().add(currentHelmChart);   // add this chart as a dependent
+                            }
+                            chartsReferenced.put(currentHelmChart.getName(), currentHelmChart.getVersion(), currentHelmChart); // may be redundant given we added parent already in an earlier iteration
+                            renderTemplates(currentDirectory, currentHelmChart);
+                            File chartsDirectory = new File(chartDirName + File.separator + directory + File.separator + "charts");
+                            if (chartsDirectory.exists()) {
+                                collectDependencies(chartsDirectory.getAbsolutePath(), currentHelmChart);  // recursion }
+                            }
                         }
                     }
                 }
@@ -908,7 +914,7 @@ public class ChartMap {
     }
 
     /**
-     * Collects the values of all the properties found in the Values.yaml file in a directory
+     * vals the values of all the properties found in the Values.yaml file in a directory
      * and attaches the result to a Helm Chart object
      * <p>
      * Note one cannot just load the values file into a known model because it is
