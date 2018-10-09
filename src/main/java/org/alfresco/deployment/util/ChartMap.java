@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+import jdk.nashorn.internal.runtime.ECMAException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -55,6 +56,7 @@ public class ChartMap {
     private String chartUrl;
     HashSet<String> chartsDependenciesPrinted;
     private MultiKeyMap chartsReferenced;
+    private boolean debug;
     private HashMap<String, WeightedDeploymentTemplate> deploymentTemplatesReferenced;
     private String envFilename;
     HashSet<String> env;
@@ -239,6 +241,7 @@ public class ChartMap {
         options.addOption("r", false, "Update the Helm Chart dependencies");
         options.addOption("u", true, "The Url of the Helm Chart ");
         options.addOption("v", false, "Verbose");
+        options.addOption("z", false, "Debug Mode");
         CommandLineParser parser = new DefaultParser();
         int count = 0;
         try {
@@ -275,6 +278,9 @@ public class ChartMap {
             }
             if (cmd.hasOption("v")) {
                 setVerbose(true);
+            }
+            if (cmd.hasOption("z")) {
+                setDebug(true);
             }
             if (args.length == 0
                     || cmd.hasOption("h")
@@ -830,10 +836,33 @@ public class ChartMap {
      */
     Boolean getCondition(String key, HelmChart h) {
         Boolean condition = Boolean.TRUE;
-        Object o = ChartUtil.getValue(key, h.getValues());
-        if (o != null) {
-            if (o instanceof Boolean) {
-                condition = (Boolean) o;
+        Boolean envCondition = Boolean.FALSE;
+        // Check if it was specified as an environment variable, overriding what may be in
+        // the chart
+        try {
+            List<String> env = getEnvVars();
+            for (String s : env) {
+                String n = s.substring(0,s.indexOf('='));
+                if (key.equals(n)) {
+                    envCondition = Boolean.TRUE;
+                    String v = s.substring(s.indexOf('=')+1,s.length());
+                    if (v.toLowerCase().equals("false")) {
+                        condition = Boolean.FALSE;
+                    }
+                }
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Exception getting condition of " + key);
+        }
+        // If the condition was not found in the environment variable set, look in the
+        // chart
+        if (!envCondition) {
+            Object o = ChartUtil.getValue(key, h.getValues());
+            if (o != null) {
+                if (o instanceof Boolean) {
+                    condition = (Boolean) o;
+                }
             }
         }
         return condition;
@@ -1318,28 +1347,31 @@ public class ChartMap {
      * Removes the temporary directory created by createTempDir()
      */
     private void removeTempDir() throws IOException {
-        Path directory = Paths.get(getTempDirName());
-        try {
-            Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    Files.delete(file);
-                    return FileVisitResult.CONTINUE;
-                }
+        if (isDebug()) {
+            System.out.println("Temporary Directory " + getTempDirName() + " was not removed");
+        } else {
+            Path directory = Paths.get(getTempDirName());
+            try {
+                Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        Files.delete(file);
+                        return FileVisitResult.CONTINUE;
+                    }
 
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    Files.delete(dir);
-                    return FileVisitResult.CONTINUE;
+                    @Override
+                    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                        Files.delete(dir);
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
+                if (isVerbose()) {
+                    System.out.println("Temporary Directory " + getTempDirName() + " removed");
                 }
-            });
-            if (isVerbose()) {
-                System.out.println("Temporary Directory " + getTempDirName() + " removed");
+            } catch (IOException e) {
+                System.out.println("Error <" + e.getMessage() + "> removing temporary directory " + getTempDirName());
+                throw (e);
             }
-        } catch (IOException e) {
-            System.out.println("Error <" + e.getMessage() + "> removing temporary directory " + getTempDirName());
-            throw (e);
-
         }
     }
 
@@ -1391,6 +1423,14 @@ public class ChartMap {
 
     private void setVerbose(boolean verbose) {
         this.verbose = verbose;
+    }
+
+    private boolean isDebug() {
+        return debug;
+    }
+
+    private void setDebug(boolean debug) {
+        this.debug = debug;
     }
 
     private String getOutputFilename() {
