@@ -1,5 +1,12 @@
 # example chartmap environment specification
 environment:
-  alfresco-infrastructure.alfresco-api-gateway.keycloakURL : 'http://localhost/auth'
-  alfresco-api-gateway.keycloakURL : 'http://localhost/auth'
-  keycloakURL : 'http://localhost/auth'
+  alfresco-infrastructure.alfresco-api-gateway.keycloakURL : 'http://localhost-k8s/auth'
+  alfresco-api-gateway.keycloakURL : 'http://localhost-k8s/auth'
+  keycloakURL : 'http://localhost-k8s/auth'
+  alfresco-process-services-infrastructure.enabled : 'true'
+  alfresco-infrastructure.alfresco-activiti-cloud-registry.enabled: 'false'
+  alfresco-infrastructure.alfresco-api-gateway.enabled: 'false'
+  alfresco-content-services.externalHost: 'localhost-k8s'
+  alfresco-content-services.networkpolicysetting.enabled: 'false'
+  alfresco-content-services.repository.environment.IDENTITY_SERVICE_URI: 'http://localhost-k8s/auth'
+  alfresco-process-services.processEngine.environment.IDENTITY_SERVICE_AUTH: 'http://localhost-k8s/auth'
