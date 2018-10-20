@@ -225,3 +225,20 @@ mvn test
 mvn com.github.jeluard:plantuml-maven-plugin:generate
 ```
 
+### Generating Images from PlantUML files outside of Maven
+
+Having generated some PlantUML files, if you want to generate image files from the PlantUML files outside of Maven, there are several options. 
+*  Use the online [PlantUML Service](http://www.plantuml.com/plantuml/uml/SyfFKj2rKt3CoKnELR1Io4ZDoSa70000).
+Just copy/paste the generated PlantUML text and click 'Submit'.  Then you can view the resulting image as PNG, SVG or Ascii Art. 
+*  Download the [PlantUML jar](http://plantuml.com/download) and use 
+the command line like this ...
+ ```
+java -DPLANTUML_LIMIT_SIZE=8192 -jar ~/Downloads/plantuml.jar alfresco-dbp-0.8.0.puml
+ ```
+*  Build PlantUML from [source](https://github.com/plantuml/plantuml) and then use the command line like this ...
+```
+java -DPLANTUML_LIMIT_SIZE=8192 -jar ~/IdeaProjects/plantuml/target/plantuml-1.2018.11-SNAPSHOT.jar -tsvg alfresco-dbp-0.8.0.puml
+```
+**Notes about a local deployment of PlantUML:**
+ * Setting the optional property *PLANTUML_LIMIT_SIZE=8192* as illustrated in the above examples is useful when creating large images to avoid image truncation.
+ * [Graphviz](https://www.graphviz.org/) is a prerequisite
