@@ -942,7 +942,7 @@ public class ChartMap {
     }
 
     /**
-     * vals the values of all the properties found in the Values.yaml file in a directory
+     * vals the values of all the properties found in the values.yaml file in a directory
      * and attaches the result to a Helm Chart object
      * <p>
      * Note one cannot just load the values file into a known model because it is
@@ -950,7 +950,7 @@ public class ChartMap {
      *
      * @param dirName the name of the directory in which the values file exists
      * @param h       the Helm Chart object to which these values apply
-     * @throws Exception Exception
+     * @throws Exception Exception if the values file does not exist
      */
     @SuppressWarnings("unchecked")
     private void collectValues(String dirName, HelmChart h) throws Exception {
@@ -966,9 +966,15 @@ public class ChartMap {
                 Map<String, Object> chartValues = (Map<String, Object>) o;
                 h.setValues(chartValues);
             } else {
-                throw new Exception("The values.yaml file:" + valuesFile.getAbsolutePath() + " could not be parsed");
+                if (isVerbose()) {
+                    System.out.println("The values.yaml file:" + valuesFile.getAbsolutePath() + " could not be parsed. Possibly it is empty.");
+                }
             }
         }
+        else {
+            throw new Exception("Values file does not exist: " + valuesFile.getAbsolutePath());
+        }
+
     }
 
     /**
