@@ -657,17 +657,26 @@ public class ChartMap {
                 byte[] data = new byte[bufferSize];
                 String fileName = chartFilename.substring(0, chartFilename.lastIndexOf(File.separator)) + File.separator + entry.getName();
                 File file = new File(fileName);
-                if (!file.createNewFile()) {
+                // The reason for this curious logic is that sometimes the tgz file may have a directory entry by itself so
+                // I test for the existence of the file beforehand (as it may have been created already)
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+                if (!file.exists()) {
                     throw new Exception("Error creating file: " + file.getAbsolutePath());
                 }
-                FileOutputStream fos = new FileOutputStream(file);
-                BufferedOutputStream dos = new BufferedOutputStream(fos, bufferSize);
-                while ((count = tis.read(data, 0, bufferSize)) != -1) {
-                    dos.write(data, 0, count);
-                }
-                dos.close();
-                if (baseUnpackDirName == null) {
-                    baseUnpackDirName = tempDirName + chartName;
+                // At this point the entry must have a file entry, either a directory or a file.  If it is a file, then
+                // get the content
+                if (!file.isDirectory()) {
+                    FileOutputStream fos = new FileOutputStream(file);
+                    BufferedOutputStream dos = new BufferedOutputStream(fos, bufferSize);
+                    while ((count = tis.read(data, 0, bufferSize)) != -1) {
+                        dos.write(data, 0, count);
+                    }
+                    dos.close();
+                    if (baseUnpackDirName == null) {
+                        baseUnpackDirName = tempDirName + chartName;
+                    }
                 }
             }
             tis.close();
