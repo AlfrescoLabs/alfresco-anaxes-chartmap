@@ -10,3 +10,5 @@ environment:
   alfresco-content-services.networkpolicysetting.enabled: 'false'
   alfresco-content-services.repository.environment.IDENTITY_SERVICE_URI: 'http://localhost-k8s/auth'
   alfresco-process-services.processEngine.environment.IDENTITY_SERVICE_AUTH: 'http://localhost-k8s/auth'
+  keycloak.persistence.deployPostgres: 'true'
+  keycloak.persistence.dbVendor: 'postgres'
