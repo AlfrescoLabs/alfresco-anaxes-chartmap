@@ -1026,10 +1026,12 @@ public class ChartMap {
             command = command.concat("template ").concat(h.getName());
             Process p = Runtime.getRuntime().exec(command, null, dir);
             BufferedInputStream in = new BufferedInputStream(p.getInputStream());
-            File f = new File(
+            File templateDir = new File(
                     dir.getAbsolutePath() + File.separator + h.getName()
-                            + File.separator + "templates"
-                            + File.separator + this.getClass().getCanonicalName() + RENDERED_TEMPLATE_FILE);
+                    + File.separator + "templates");
+            templateDir.mkdirs();
+            String templateFilename = this.getClass().getCanonicalName() + RENDERED_TEMPLATE_FILE;
+            File f = new File(templateDir, templateFilename);
             if (!f.createNewFile()) {
                 throw new Exception("File: " + f.getAbsolutePath() + " could not be created.");
             }
