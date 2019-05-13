@@ -201,19 +201,12 @@ Dependencies of Helm Charts on other Helm Charts are shown as green lines.   Dep
 
 ### Maven Commands
 
-#### Building the jar from source
+#### Building the jar from source and running tests
 
 1.  git clone this repository
 2.  Run Maven
 ```
-mvn clean package -Dmaven.test.skip=true 
-
-```
-#### Running Tests
-1.  git clone this repository
-2.  Run Maven
-```
-mvn test
+mvn clean install 
 
 ```
 

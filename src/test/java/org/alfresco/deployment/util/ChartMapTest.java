@@ -30,9 +30,17 @@ public class ChartMapTest {
     private static Path testOutputImageRNV = Paths.get("target/test/testChartFileRNV.png");
     private static Path testOutputImageNRNV = Paths.get("target/test/testChartFileNRNV.png");
     private static Path testInputFilePath = Paths.get("src/test/resource/test-chart-file.tgz");
-    private static Path testHelp = Paths.get("target/test/help.out");
     private static Path testEnvFilePath = Paths.get("resource/example/example-env-spec.yaml");
-
+    private static String helpTextExpected = "\nUsage:\n" +
+            "java -jar ---<filename>---+---  -a <apprspec>----+---  -o <filename>---  -d <directoryname>----+---------------------+--+------------+---+------------+---+------------+\n" +
+            "                          |                      |                                             |                     |  |            |   |            |   |            |\n" +
+            "                          +---  -c <chartname>---+                                             +---  -e <filename ---+  +---  -r  ---+   +---  -v  ---+   +---  -h  ---+\n" +
+            "                          |                      |\n" +
+            "                          +---  -f <filename>----+\n" +
+            "                          |                      |\n" +
+            "                          +---  -u <url>---------+\n" +
+            "\n" +
+            "See http://github.com/Alfresco/alfresco-anaxes-chartmap for more information\n";
     @AfterClass
     public static void cleanUp() {
         /**
@@ -73,7 +81,7 @@ public class ChartMapTest {
             Files.deleteIfExists(testOutputImageNRV);
             Files.deleteIfExists(testOutputImageRNV);
             Files.deleteIfExists(testOutputImageNRNV);
-            Files.deleteIfExists(testHelp);
+            //Files.deleteIfExists(testHelp);
         } catch (IOException e) {
             System.out.println("Error deleting created files: " + e.getMessage());
         }
@@ -194,50 +202,13 @@ public class ChartMapTest {
 
     @Test
     public void testHelp() {
-        String command = "java -jar ./target/chartmap-1.0-SNAPSHOT.jar -h"; // todo make this version independent
-        File dir = new File("./target/test");
         try {
-            Process p = Runtime.getRuntime().exec(command, null);
-            BufferedInputStream in = new BufferedInputStream(p.getInputStream());
-            File observed = new File(
-                    dir.getAbsolutePath() + File.separator + "help.out");
-            if (!observed.createNewFile()) {
-                throw new Exception("File: " + observed.getAbsolutePath() + " could not be created.");
-            }
-            BufferedOutputStream out =
-                    new BufferedOutputStream(
-                            new FileOutputStream(observed));
-            byte[] bytes = new byte[2000];
-            int len;
-            while ((len = in.read(bytes)) > 0) {
-                out.write(bytes, 0, len);
-            }
-            in.close();
-            out.close();
-            p.waitFor(2000, TimeUnit.MILLISECONDS);
-            int exitCode = p.exitValue();
-            if (exitCode != 0 ) {
-                throw new Exception("Command: " + command + " returned exit code: " + exitCode);
-            }
-            File expected = new File("./src/test/resource/expected-help-response.txt");
-            if (observed.length() != expected.length()) {
-                throw new Exception(
-                        "Test Case Failure: The length of expected help does not match the observed help. " +
-                        "See the content of the observed help in file: " + observed.getAbsolutePath());
-            }
-            byte[] observedBytes;
-            byte[] expectedBytes;
-            expectedBytes = Files.readAllBytes(expected.toPath());
-            observedBytes = Files.readAllBytes(observed.toPath());
-            for (int i=0; i < observedBytes.length && i < expectedBytes.length; i++) {
-                if (observedBytes[i] != expectedBytes[i]) {
-                    throw new Exception("Test Case Failure: The expected help does not match the observed help starting at character "
-                            + i + ".  See the content of the observed help in file: " + observed.getAbsolutePath());
-                }
-            }
-        }
-        catch (Exception e) {
-            fail("testing help failed:" + e.getMessage());
+            ChartMap testMap = createTestMap(ChartOption.FILENAME, testInputFilePath, testOutputPumlFilePathRV,
+                    true, true);
+            String helpText = testMap.getHelp();
+            assert(helpText.equals(helpTextExpected));
+        } catch (Exception e) {
+        fail("testHelp failed:" + e.getMessage());
         }
     }
 

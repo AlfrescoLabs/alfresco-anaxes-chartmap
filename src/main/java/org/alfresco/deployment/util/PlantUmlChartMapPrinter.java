@@ -273,7 +273,7 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      * @param   h   a HelmChart from which a hash code will be
      *              generated (for the purpose of indexing into
      *              the colors array).   Only the name of the
-     *              Helm chart is used to create the has because
+     *              Helm chart is used to create the hash because
      *              the main point of choosing a color is to associate
      *              visually a group of related Helm Charts in the
      *              diagram (e.g. all the Postgresql Charts may be
@@ -292,7 +292,7 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      * @param   c  a HelmDeploymentContainer from which a hash code will be
      *              generated (for the purpose of indexing into
      *              the colors array).   Only the name of the
-     *              Containers is used to create the has because
+     *              Containers is used to create the hash because
      *              the main point of choosing a color is to associate
      *              visually a group of related Containers in the
      *              diagram (e.g. all the Postgresql Containers may be
@@ -319,7 +319,7 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      *              diagram (e.g. all the Postgresql Images may be
      *              colored as 'Chocolate').
      *
-     * @return      a calculated hash value aa an unsigned int
+     * @return      a calculated hash value as an unsigned int
      */
     private int hashImageName(String i) {
         String[] s = i.split(":");

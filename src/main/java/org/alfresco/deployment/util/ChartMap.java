@@ -339,7 +339,7 @@ public class ChartMap {
      *
      * @return a string containing some help
      */
-    private static String getHelp() {
+    public static String getHelp() {
         String help = "\nUsage:\n";
         help += "java -jar ---<filename>---+---  -a <apprspec>----+---  -o <filename>---  -d <directoryname>----+---------------------+--+------------+---+------------+---+------------+\n";
         help += "                          |                      |                                             |                     |  |            |   |            |   |            |\n";
@@ -525,7 +525,7 @@ public class ChartMap {
             String command = "helm registry pull ";
             command += apprSpec + " -t helm ";
             Process p = Runtime.getRuntime().exec(command, null, new File(getTempDirName()));
-            p.waitFor(10000, TimeUnit.MILLISECONDS);
+            p.waitFor(30000, TimeUnit.MILLISECONDS);
             int exitCode = p.exitValue();
             if (exitCode == 0) {
                 chartDirName = getTempDirName() + apprSpec.substring(apprSpec.indexOf('/') + 1, apprSpec.length()).replace('@', '_').replace('/', '_') + File.separator + chartName;
@@ -593,7 +593,7 @@ public class ChartMap {
         if (this.isRefreshLocalRepo()) {
             String command = "helm dep update";
             Process p = Runtime.getRuntime().exec(command, null, new File(dirName));
-            p.waitFor(10000, TimeUnit.MILLISECONDS);
+            p.waitFor(30000, TimeUnit.MILLISECONDS);
             int exitCode = p.exitValue();
             if (exitCode != 0) {
                 throw new Exception("Exception updating chart repo in " + dirName + ".  Exit code: " +
@@ -1045,7 +1045,7 @@ public class ChartMap {
             }
             in.close();
             out.close();
-            p.waitFor(3000, TimeUnit.MILLISECONDS);
+            p.waitFor(30000, TimeUnit.MILLISECONDS);
             int exitCode = p.exitValue();
             // If an error occurs it is likely due to a helm chart like a missing required property so
             // let the user know about it.  It's not fatal but could result in an incomplete chart map
