@@ -15,7 +15,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.1.1</version>
+        <version>3.2.1</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -38,7 +38,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
+        <version>3.8.1</version>
         <configuration>
           <release>11</release>
           <compilerArgument>-Xlint:unchecked</compilerArgument>
@@ -76,15 +76,18 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.0.2</version>
+        <version>3.1.0</version>
         <executions>
           <execution>
             <id>copy-resources</id>
-            <phase>validate</phase>
+            <phase>package</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+              <nonFilteredFileExtensions>
+                <nonFilteredFileExtension>jar</nonFilteredFileExtension>
+              </nonFilteredFileExtensions>
               <outputDirectory>${basedir}/resource/jar</outputDirectory>
               <resources>
                 <resource>
@@ -92,7 +95,6 @@
                   <includes>
                     <include>${project.artifactId}-${project.version}.jar</include>
                   </includes>
-                  <filtering>true</filtering>
                 </resource>
               </resources>
             </configuration>

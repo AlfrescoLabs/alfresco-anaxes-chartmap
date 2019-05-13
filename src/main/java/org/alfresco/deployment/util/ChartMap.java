@@ -339,7 +339,7 @@ public class ChartMap {
      *
      * @return a string containing some help
      */
-    private static String getHelp() {
+    public static String getHelp() {
         String help = "\nUsage:\n";
         help += "java -jar ---<filename>---+---  -a <apprspec>----+---  -o <filename>---  -d <directoryname>----+---------------------+--+------------+---+------------+---+------------+\n";
         help += "                          |                      |                                             |                     |  |            |   |            |   |            |\n";
