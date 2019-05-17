@@ -341,9 +341,9 @@ public class ChartMap {
      */
     public static String getHelp() {
         String help = "\nUsage:\n";
-        help += "java -jar ---<filename>---+---  -a <apprspec>----+---  -o <filename>---  -d <directoryname>----+---------------------+--+------------+---+------------+---+------------+\n";
-        help += "                          |                      |                                             |                     |  |            |   |            |   |            |\n";
-        help += "                          +---  -c <chartname>---+                                             +---  -e <filename ---+  +---  -r  ---+   +---  -v  ---+   +---  -h  ---+\n";
+        help += "java -jar ---<filename>---+---  -a <apprspec>----+---  -o <filename>---  -d <directoryname>----+----------------------+--+------------+---+------------+---+------------+\n";
+        help += "                          |                      |                                             |                      |  |            |   |            |   |            |\n";
+        help += "                          +---  -c <chartname>---+                                             +---  -e <filename> ---+  +---  -r  ---+   +---  -v  ---+   +---  -h  ---+\n";
         help += "                          |                      |\n";
         help += "                          +---  -f <filename>----+\n";
         help += "                          |                      |\n";
