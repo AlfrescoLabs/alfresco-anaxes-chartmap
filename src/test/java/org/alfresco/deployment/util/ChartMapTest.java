@@ -31,16 +31,7 @@ public class ChartMapTest {
     private static Path testOutputImageNRNV = Paths.get("target/test/testChartFileNRNV.png");
     private static Path testInputFilePath = Paths.get("src/test/resource/test-chart-file.tgz");
     private static Path testEnvFilePath = Paths.get("resource/example/example-env-spec.yaml");
-    private static String helpTextExpected = "\nUsage:\n" +
-            "java -jar ---<filename>---+---  -a <apprspec>----+---  -o <filename>---  -d <directoryname>----+---------------------+--+------------+---+------------+---+------------+\n" +
-            "                          |                      |                                             |                     |  |            |   |            |   |            |\n" +
-            "                          +---  -c <chartname>---+                                             +---  -e <filename ---+  +---  -r  ---+   +---  -v  ---+   +---  -h  ---+\n" +
-            "                          |                      |\n" +
-            "                          +---  -f <filename>----+\n" +
-            "                          |                      |\n" +
-            "                          +---  -u <url>---------+\n" +
-            "\n" +
-            "See http://github.com/Alfresco/alfresco-anaxes-chartmap for more information\n";
+
     @AfterClass
     public static void cleanUp() {
         /**
@@ -202,10 +193,18 @@ public class ChartMapTest {
 
     @Test
     public void testHelp() {
+        String helpTextExpected = "\nUsage:\n" +
+                "java -jar ---<filename>---+---  -a <apprspec>----+---  -o <filename>---  -d <directoryname>----+----------------------+--+------------+---+------------+---+------------+\n" +
+                "                          |                      |                                             |                      |  |            |   |            |   |            |\n" +
+                "                          +---  -c <chartname>---+                                             +---  -e <filename> ---+  +---  -r  ---+   +---  -v  ---+   +---  -h  ---+\n" +
+                "                          |                      |\n" +
+                "                          +---  -f <filename>----+\n" +
+                "                          |                      |\n" +
+                "                          +---  -u <url>---------+\n" +
+                "\n" +
+                "See http://github.com/Alfresco/alfresco-anaxes-chartmap for more information\n";
         try {
-            ChartMap testMap = createTestMap(ChartOption.FILENAME, testInputFilePath, testOutputPumlFilePathRV,
-                    true, true);
-            String helpText = testMap.getHelp();
+            String helpText = ChartMap.getHelp();
             assert(helpText.equals(helpTextExpected));
         } catch (Exception e) {
         fail("testHelp failed:" + e.getMessage());

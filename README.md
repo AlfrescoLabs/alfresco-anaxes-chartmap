@@ -17,7 +17,9 @@ Note that although this project was created in the Alfresco GitHub org, ChartMap
 
 ## Prerequisites
 
-The Helm Client is required since the chart map is based on the dependencies discovered by the Kubernetes Helm client. I have tested it with version 2.9.1 of the Helm Client though other versions may also work. 
+Java 8 or later.  
+
+Helm Client 2.9.1.  The Helm Client is required since the chart map is based on the dependencies discovered by the Kubernetes Helm client. I have tested it with version 2.9.1 of the Helm Client though other versions may also work. 
 
 For instructions on installing the Helm Client, see https://docs.helm.sh/using_helm/#installing-helm
 
@@ -208,6 +210,11 @@ Dependencies of Helm Charts on other Helm Charts are shown as green lines.   Dep
 ```
 mvn clean install 
 
+```
+Note: The [prebuilt jar](resource/jar/chartmap-1.0-SNAPSHOT.jar) that is included in the ./resources directory targets Java 8 for the widest compatibiity. You can target a different
+version of Java by modifying the configuration in the maven-compiler-plugin to use a different target like in the example below.
+```
+<target>11</target>
 ```
 
 #### Building Image files from PUML source
