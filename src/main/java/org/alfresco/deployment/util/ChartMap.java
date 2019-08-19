@@ -573,7 +573,7 @@ public class ChartMap {
                 createChart(chartDirName);
             }
             else {
-                System.out.println("Error downloading chart from URL" + request.getURI() + " : " + rc);
+                System.out.println("Error downloading chart from URL: " + request.getURI() + " : " + rc);
             }
         } catch (Exception e) {
             System.out.println("Error downloading chart " + chartDirName + " : " + e.getMessage());
