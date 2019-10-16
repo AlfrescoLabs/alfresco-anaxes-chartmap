@@ -19,7 +19,7 @@ Note that although this project was created in the Alfresco GitHub org, ChartMap
 
 Java 8 or later.  
 
-Helm Client 2.9.1.  The Helm Client is required since the chart map is based on the dependencies discovered by the Kubernetes Helm client. I have tested it with version 2.9.1 of the Helm Client though other versions may also work. 
+Helm Client 2.9.1 or later.  The Helm Client is required since the chart map is based on the dependencies discovered by the Kubernetes Helm client. I have tested it with version 2.9.1 of the Helm Client though other versions may also work. 
 
 For instructions on installing the Helm Client, see https://docs.helm.sh/using_helm/#installing-helm
 
