@@ -4,6 +4,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import org.alfresco.deployment.util.model.HelmMaintainer;
 import org.apache.commons.collections4.map.MultiKeyMap;
@@ -36,6 +38,15 @@ public class ChartMapPrinter implements IChartMapPrinter {
         }
     }
 
+    String formatString(String v) {
+        if (v == null || v.trim().isEmpty() ) {
+            return "Not specified";
+        }
+        else {
+            return v;
+        }
+    }
+
     public void printHeader() throws IOException {
         writeLine("Chart Map for " + chart.getNameFull());
     }
@@ -54,22 +65,22 @@ public class ChartMapPrinter implements IChartMapPrinter {
 
     public void printChart(HelmChart chart) throws IOException {
         writeLine("Chart: " + chart.getNameFull());
-        writeLine("\tapiVersion: " + chart.getApiVersion());
-        writeLine("\tappVersion: " + chart.getAppVersion());
+        writeLine("\tapiVersion: " + formatString(chart.getApiVersion()));
+        writeLine("\tappVersion: " + formatString(chart.getAppVersion()));
         writeLine("\tcreated: " + chart.getCreated());
-        writeLine("\tdependencies: " + chart.getDependencies());
-        writeLine("\tdescription: " + chart.getDescription());
-        writeLine("\tdigest: " + chart.getDigest());
-        writeLine("\ticon: " + chart.getIcon());
-        writeLine("\tkeywords: " + printArray(chart.getKeywords()));
-        writeLine("\tmaintainers: " + printMaintainers(chart.getMaintainers()));
+        writeLine("\tdependencies: " + formatDependencies(chart.getDependencies()));
+        writeLine("\tdescription: " + formatString(chart.getDescription()));
+        writeLine("\tdigest: " + formatString(chart.getDigest()));
+        writeLine("\ticon: " + formatString(chart.getIcon()));
+        writeLine("\tkeywords: " + formatArray(chart.getKeywords()));
+        writeLine("\tmaintainers: " + formatMaintainers(chart.getMaintainers()));
         if (chart.getRepoUrl() != null) {
             writeLine("\trepo url: " + chart.getRepoUrl());
         }
-        writeLine("\tname: " + chart.getName());
-        writeLine("\tsources: " + printArray(chart.getSources()));
-        writeLine("\turls: " + printArray(chart.getUrls()));
-        writeLine("\tversion: " + chart.getVersion());
+        writeLine("\tname: " + formatString(chart.getName()));
+        writeLine("\tsources: " + formatArray(chart.getSources()));
+        writeLine("\turls: " + formatArray(chart.getUrls()));
+        writeLine("\tversion: " + formatString(chart.getVersion()));
     }
 
     public void printImage(String c) throws IOException {
@@ -107,7 +118,7 @@ public class ChartMapPrinter implements IChartMapPrinter {
      * @param a the array to be formatted
      * @return the string form of the array
      */
-    private String printArray(String[] a) {
+    private String formatArray(String[] a) {
         StringBuilder sb = new StringBuilder("");
         if (a !=null) {
             for (int i = 0; i < a.length; i++) {
@@ -116,6 +127,9 @@ public class ChartMapPrinter implements IChartMapPrinter {
                     sb.append(",");
                 }
             }
+        }
+        else {
+            sb = sb.append("Not specified");
         }
         return sb.toString();
     }
@@ -127,17 +141,42 @@ public class ChartMapPrinter implements IChartMapPrinter {
      * @param m an array of Helm Maintainers
      * @return the string form of the maintainers array
      */
-    private String printMaintainers(HelmMaintainer[] m) {
+    private String formatMaintainers(HelmMaintainer[] m) {
         StringBuilder sb = new StringBuilder("");
         if (m != null) {
             for (int i = 0; i < m.length; i++) {
                 sb.append(m[i].getName());
-                sb.append(":");
-                sb.append(m[i].getEmail());
+                String email = m[i].getEmail();
+                if (email != null) {
+                    sb.append(":");
+                    sb.append(email);
+                }
                 if (i != m.length - 1) {
                     sb.append(",");
                 }
             }
+        }
+        else {
+            sb = sb.append(("Not specified"));
+        }
+        return sb.toString();
+    }
+
+    private String formatDependencies(HashSet<HelmChart> d) {
+        StringBuilder sb = new StringBuilder("");
+        if (d.size() == 0) {
+            sb.append("None");
+        } else {
+            boolean first = true;
+            Iterator<HelmChart> i = d.iterator();
+            while (i.hasNext()) {
+                if (!first) {
+                    sb.append(", ");
+                }
+                sb.append(i.next().getNameFull());
+                first = false;
+            }
+            return sb.toString();
         }
         return sb.toString();
     }
