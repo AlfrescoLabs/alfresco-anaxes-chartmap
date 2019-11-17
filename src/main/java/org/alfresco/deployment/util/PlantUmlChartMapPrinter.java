@@ -44,6 +44,7 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
         writeLine("skinparam usecaseArrowColor LightSlateGray");
         writeLine("skinparam artifactBorderColor black");
         writeLine("skinparam artifactArrowColor LightSlateGray");
+        writeLine("");
         writeLine("title Chart Map for " + chart.getNameFull());
     }
 
@@ -54,6 +55,7 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      * @throws IOException      IOException
      */
     public void printFooter() throws IOException {
+        writeLine("");
         writeLine("center footer Generated on " + getCurrentDateTime() + " by " + this.getClass().getCanonicalName() + "\\nhttps://github.com/Alfresco/alfresco-anaxes-chartmap");
         writeLine("@enduml");
     }
@@ -105,8 +107,20 @@ public class PlantUmlChartMapPrinter extends ChartMapPrinter {
      * @throws  IOException     IOException
      */
     public void printComment(String comment) throws IOException {
-        writer.write("'" + comment + "\n");
+        writeLine("'" + comment);
     }
+
+    /**
+     * Writes a section header
+     *
+     * @param   header the header to be written
+     * @throws  IOException     IOException
+     */
+    public void printSectionHeader(String header) throws IOException {
+        writeLine("");
+        writer.write("'" + header + "\n");
+    }
+
 
     /**
      * Returns the text to use in a PlantUML artifact that

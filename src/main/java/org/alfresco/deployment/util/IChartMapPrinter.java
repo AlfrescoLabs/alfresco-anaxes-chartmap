@@ -20,6 +20,8 @@ public interface IChartMapPrinter {
 
     void printComment(String comment) throws IOException;
 
+    void printSectionHeader(String header) throws IOException;
+
     void setOutputFilename (String outputFilename);
 
     String getOutputFilename ();

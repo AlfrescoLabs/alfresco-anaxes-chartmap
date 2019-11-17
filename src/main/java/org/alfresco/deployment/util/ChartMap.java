@@ -438,9 +438,9 @@ public class ChartMap {
         MapIterator it = chartsReferenced.mapIterator();
         try {
             if (chartsReferenced.size() == 1) {
-                printer.printComment("There is one referenced Helm Chart");
+                printer.printSectionHeader("There is one referenced Helm Chart");
             } else {
-                printer.printComment("There are " + chartsReferenced.size() + " referenced Helm Charts");
+                printer.printSectionHeader("There are " + chartsReferenced.size() + " referenced Helm Charts");
             }
             while (it.hasNext()) {
                 it.next();
@@ -1284,6 +1284,9 @@ public class ChartMap {
      */
     private void printChartDependencies(HelmChart parent) {
         try {
+            if (parent.getNameFull().equals(chart.getNameFull())) {
+                printer.printSectionHeader("Chart Dependencies");
+            }
             if (parent.getDependencies() != null) {
                 // Print the chart to chart dependencies recursively
                 for (HelmChart dependent : parent.getDependencies()) {
@@ -1324,9 +1327,9 @@ public class ChartMap {
     private void printContainers() {
         try {
             if (imagesReferenced.size() == 1) {
-                printer.printComment("There is one referenced Docker Image");
+                printer.printSectionHeader("There is one referenced Docker Image");
             } else {
-                printer.printComment("There are " + imagesReferenced.size() + " referenced Docker Images");
+                printer.printSectionHeader("There are " + imagesReferenced.size() + " referenced Docker Images");
             }
             for (String s : imagesReferenced) {
                 printer.printImage(s);
