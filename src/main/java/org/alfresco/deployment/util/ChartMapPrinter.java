@@ -52,6 +52,7 @@ public class ChartMapPrinter implements IChartMapPrinter {
     }
 
     public void printFooter() throws IOException {
+        writeLine("");
         writeLine("Generated on " + getCurrentDateTime() + " by " + this.getClass().getCanonicalName() + " (https://github.com/Alfresco/alfresco-anaxes-chartmap)");
     }
 
@@ -67,7 +68,7 @@ public class ChartMapPrinter implements IChartMapPrinter {
         writeLine("Chart: " + chart.getNameFull());
         writeLine("\tapiVersion: " + formatString(chart.getApiVersion()));
         writeLine("\tappVersion: " + formatString(chart.getAppVersion()));
-        writeLine("\tcreated: " + chart.getCreated());
+        writeLine("\tcreated: " + formatString(chart.getCreated()));
         writeLine("\tdependencies: " + formatDependencies(chart.getDependencies()));
         writeLine("\tdescription: " + formatString(chart.getDescription()));
         writeLine("\tdigest: " + formatString(chart.getDigest()));
@@ -89,6 +90,16 @@ public class ChartMapPrinter implements IChartMapPrinter {
 
     public void printComment(String comment) throws IOException {
         writeLine(comment);
+    }
+
+    public void printSectionHeader(String header) throws IOException {
+        StringBuffer sb = new StringBuffer();
+        for(int c = 1; c <= header.length(); c++){
+            sb.append('-');
+        }
+        writeLine("");
+        writeLine(header);
+        writeLine(sb.toString());
     }
 
     public void setOutputFilename(String outputFilename) {
