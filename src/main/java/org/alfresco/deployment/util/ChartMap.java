@@ -1289,9 +1289,15 @@ public class ChartMap {
             }
             if (parent.getDependencies() != null) {
                 // Print the chart to chart dependencies recursively
+                boolean stable=isStable(parent);
                 for (HelmChart dependent : parent.getDependencies()) {
                     if (!chartsDependenciesPrinted.contains(parent.getNameFull() + "_" + dependent.getNameFull())) {
                         printer.printChartToChartDependency(parent, dependent);
+                        if (stable) { // if the parent is stable and the child is not then print a message if verbose
+                            if (!isStable(dependent) && isVerbose()) {
+                                System.out.println("Chart " + parent.getNameFull() + " is stable but depends on " + dependent.getNameFull() + " which may not be stable");
+                            }
+                        }
                         chartsDependenciesPrinted.add(parent.getNameFull() + "_" + dependent.getNameFull());
                     }
                     printChartDependencies(dependent);   // recursion
@@ -1350,6 +1356,17 @@ public class ChartMap {
         } else {
             printFormat = PrintFormat.TEXT;
         }
+    }
+
+    /**
+     * Determines whether a Helm Chart is stable based on a very
+     * simple heuristic.
+     *
+     * @param chart the Helm Chart to be inspected
+     */
+    private boolean isStable(HelmChart chart) {
+        if (!chart.getRepoUrl().contains("/incubator")) return true;
+        return false;
     }
 
     /**
