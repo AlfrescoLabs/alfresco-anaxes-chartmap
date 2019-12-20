@@ -162,7 +162,6 @@ public class ChartMap {
             args.add("-c");
         } else if (option.equals(ChartOption.FILENAME)) {
             args.add("-f");
-            ;
         } else if (option.equals(ChartOption.URL)) {
             args.add("-u");
         } else {
@@ -1289,12 +1288,12 @@ public class ChartMap {
             }
             if (parent.getDependencies() != null) {
                 // Print the chart to chart dependencies recursively
-                boolean stable=isStable(parent);
+                boolean stable=isStable(parent, false); // check if the parent chart is stable
                 for (HelmChart dependent : parent.getDependencies()) {
                     if (!chartsDependenciesPrinted.contains(parent.getNameFull() + "_" + dependent.getNameFull())) {
                         printer.printChartToChartDependency(parent, dependent);
                         if (stable) { // if the parent is stable and the child is not then print a message if verbose
-                            if (!isStable(dependent) && isVerbose()) {
+                            if (!isStable(dependent, true) && isVerbose()) {
                                 System.out.println("Chart " + parent.getNameFull() + " is stable but depends on " + dependent.getNameFull() + " which may not be stable");
                             }
                         }
@@ -1362,11 +1361,32 @@ public class ChartMap {
      * Determines whether a Helm Chart is stable based on a very
      * simple heuristic.
      *
-     * @param chart the Helm Chart to be inspected
+     * @param h               the Helm Chart to be inspected
+     * @param checkContainers check images if true
      */
-    private boolean isStable(HelmChart chart) {
-        if (!chart.getRepoUrl().contains("/incubator")) return true;
-        return false;
+    private boolean isStable(HelmChart h, boolean checkContainers) {
+        boolean stable = true;
+        if (h.getRepoUrl().contains("/incubator")) {
+            if (isDebug()) {
+                System.out.println("chart " + h.getNameFull() + " does not appear to be stable");
+            }
+            stable = false;
+        } else if (checkContainers) {  // also check the images if needed
+            for (String s : h.getContainers()) {
+                String imageName = s.toLowerCase();
+                if (imageName.contains("-snapshot") ||
+                        imageName.contains("-alpha") ||
+                        imageName.contains("-beta") ||
+                        imageName.contains("-trial") ||
+                        imageName.contains("-rc")) {
+                    stable = false;
+                    if (isDebug()) {
+                        System.out.println("image " + s + " does not appear to be stable");
+                    }
+                }
+            }
+        }
+        return stable;
     }
 
     /**
