@@ -19,23 +19,23 @@ Chart: postgresql:0.9.3
 	version: 0.9.3
 Chart: alfresco-process-services:0.2.0
 	apiVersion: v1
-	appVersion: 1.10.0-RC1
-	created: 2019-11-15T18:07:40.07759275Z
-	dependencies: postgresql:3.11.3
-	description: A Helm chart for Alresco Process Services
-	digest: 095b7464d0df10fdb10282d974fa8077a74462c424e05d8cb842068df4ee5bad
+	appVersion: 1.10.0
+	created: 2020-01-15T14:59:16.557547443Z
+	dependencies: postgresql:1.0.0
+	description: A Helm chart for Alfresco Process Services
+	digest: 41da94b3b907186fd25c056da57ac8d1f174e31bb0a327626ccd83c48313286a
 	icon: Not specified
 	keywords: Not specified
 	maintainers: Alfresco
-	repo url: https://kubernetes-charts.alfresco.com/incubator
+	repo url: https://kubernetes-charts.alfresco.com/stable
 	name: alfresco-process-services
 	sources: Not specified
-	urls: http://kubernetes-charts.alfresco.com/incubator/alfresco-process-services-0.2.0.tgz
+	urls: http://kubernetes-charts.alfresco.com/stable/alfresco-process-services-0.2.0.tgz
 	version: 0.2.0
 Chart: alfresco-sync-service:1.1.1
 	apiVersion: Not specified
 	appVersion: 3.1.2
-	created: 2019-11-15T18:07:43.078345083Z
+	created: 2020-01-15T14:59:16.568692931Z
 	dependencies: postgresql:0.9.3
 	description: Alfresco Syncservice
 	digest: be82940299c4d50c72c0982ab43cd9d16d7707c8a755028636d9847dc4f69851
@@ -47,10 +47,25 @@ Chart: alfresco-sync-service:1.1.1
 	sources: Not specified
 	urls: http://kubernetes-charts.alfresco.com/stable/alfresco-sync-service-1.1.1.tgz
 	version: 1.1.1
+Chart: alfresco-digital-workspace:2.2.0
+	apiVersion: Not specified
+	appVersion: v1.3.0
+	created: 2020-01-15T14:59:16.437936177Z
+	dependencies: None
+	description: A Helm chart for deploying Alfresco Digital Workspace application
+	digest: e6bc87f0b3f15f61877efb0987b08151f5c893afed5d8508b7cd3e109a99b396
+	icon: https://avatars0.githubusercontent.com/u/391127?s=200&v=4
+	keywords: alfresco,digital workspace
+	maintainers: Not specified
+	repo url: https://kubernetes-charts.alfresco.com/stable
+	name: alfresco-digital-workspace
+	sources: https://git.alfresco.com/client-applications/digital-workspace-deployment
+	urls: http://kubernetes-charts.alfresco.com/stable/alfresco-digital-workspace-2.2.0.tgz
+	version: 2.2.0
 Chart: alfresco-identity-service:1.1.0
 	apiVersion: Not specified
 	appVersion: Not specified
-	created: 2019-11-15T18:07:42.970693973Z
+	created: 2020-01-15T14:59:16.442804407Z
 	dependencies: keycloak:4.3.0
 	description: The Alfresco Identity Service will become the central component responsible for identity-related capabilities needed by other Alfresco software, such as managing users, groups, roles, profiles, and authentication. Currently it deals just with authentication.
 	digest: b2a78226902981bccaf40b147e376bd827238c9836df53c9fe24de0fd1192359
@@ -72,7 +87,7 @@ Chart: alfresco-dbp:1.5.0
 	icon: Not specified
 	keywords: alfresco,dbp,platform
 	maintainers: Alfresco Platform Services Team
-	repo url: https://kubernetes-charts.alfresco.com/incubator
+	repo url: https://kubernetes-charts.alfresco.com/stable
 	name: alfresco-dbp
 	sources: Not specified
 	urls: Not specified
@@ -80,22 +95,22 @@ Chart: alfresco-dbp:1.5.0
 Chart: alfresco-content-services:2.1.3
 	apiVersion: Not specified
 	appVersion: 6.1.1.2
-	created: 2019-11-15T18:27:46.493634362Z
-	dependencies: alfresco-digital-workspace:2.1.1, alfresco-search:1.0.1, alfresco-sync-service:1.1.1, postgresql:0.9.3
+	created: 2020-01-15T14:59:16.375186923Z
+	dependencies: alfresco-sync-service:1.1.1, alfresco-digital-workspace:2.2.0, alfresco-search:1.0.1, postgresql:0.9.3
 	description: A Helm chart for deploying Alfresco Content Services
-	digest: 736d3fe4c51aa519b7658da24b382232ef806479976f548d05caaae9a4eed020
+	digest: 1da20b49dd8cb532bec4ddb0fe1a6a713f1a6b68d3ea258ba9878ce5ea509cfe
 	icon: https://avatars0.githubusercontent.com/u/391127?s=200&v=4
 	keywords: content,content services,alfresco,alfresco content services
 	maintainers: Not specified
-	repo url: https://kubernetes-charts.alfresco.com/incubator
+	repo url: https://kubernetes-charts.alfresco.com/stable
 	name: alfresco-content-services
 	sources: https://github.com/Alfresco/acs-deployment
-	urls: http://kubernetes-charts.alfresco.com/incubator/alfresco-content-services-2.1.3.tgz
+	urls: http://kubernetes-charts.alfresco.com/stable/alfresco-content-services-2.1.3.tgz
 	version: 2.1.3
 Chart: activemq:1.1.1
 	apiVersion: v1
 	appVersion: 5.15.8
-	created: 2019-11-15T18:07:42.870682927Z
+	created: 2020-01-15T14:59:16.307911839Z
 	dependencies: None
 	description: A Helm chart Providing Apache ActiveMQ.
 	digest: 28a35a28b9dc29fb99a110072cb200f92849c80beb5688c3b1f3fbb3f42fae08
@@ -110,8 +125,8 @@ Chart: activemq:1.1.1
 Chart: alfresco-infrastructure:4.1.1
 	apiVersion: v1
 	appVersion: Not specified
-	created: 2019-11-15T18:07:42.986591163Z
-	dependencies: alfresco-identity-service:1.1.0, activemq:1.1.1, nginx-ingress:0.14.0
+	created: 2020-01-15T14:59:16.456736149Z
+	dependencies: activemq:1.1.1, nginx-ingress:0.14.0, alfresco-identity-service:1.1.0
 	description: A Helm chart Providing the required Alfresco infrastructure for the Digital Business Platform. This includes activemq, alfresco-identity-service, nginx-ingress and a persistent volume to use with the DBP chart.
 	digest: 65bb324a6af05a2b2e87bf3f3817596fbac565a74b47440ad7b0459c30e9b201
 	icon: https://avatars0.githubusercontent.com/u/391127?s=200&v=4
@@ -137,28 +152,13 @@ Chart: postgresql:0.15.0
 	sources: https://github.com/kubernetes/charts,https://github.com/docker-library/postgres
 	urls: https://kubernetes-charts.storage.googleapis.com/postgresql-0.15.0.tgz
 	version: 0.15.0
-Chart: alfresco-digital-workspace:2.1.1
-	apiVersion: Not specified
-	appVersion: v1.3.0-beta
-	created: 2019-11-15T18:07:39.693953388Z
-	dependencies: None
-	description: A Helm chart for deploying Alfresco Digital Workspace application
-	digest: e74ecb22464f74b314006e1f6dd6e8c07053ccdf3737f954799d7fd699b91245
-	icon: https://avatars0.githubusercontent.com/u/391127?s=200&v=4
-	keywords: alfresco,digital workskspace
-	maintainers: Not specified
-	repo url: https://kubernetes-charts.alfresco.com/incubator
-	name: alfresco-digital-workspace
-	sources: https://git.alfresco.com/client-applications/digital-workspace-deployment
-	urls: http://kubernetes-charts.alfresco.com/incubator/alfresco-digital-workspace-2.1.1.tgz
-	version: 2.1.1
 Chart: alfresco-search:1.0.1
 	apiVersion: Not specified
 	appVersion: Not specified
-	created: 2019-11-15T18:07:43.074195094Z
+	created: 2020-01-15T14:59:16.563743245Z
 	dependencies: None
 	description: A Helm chart for deploying Alfresco Search
-	digest: 418088cc92917810d85998cb1fd45665da19a1205012428f49227a77cb5e5774
+	digest: c7111413f0b8e7af1ef52e96128149314398ed8407b1df56b29b56e4d80dfb53
 	icon: https://avatars0.githubusercontent.com/u/391127?s=200&v=4
 	keywords: search,search services,alfresco search services,insight,insight engine,alfresco insight engine
 	maintainers: Not specified
@@ -167,21 +167,21 @@ Chart: alfresco-search:1.0.1
 	sources: https://github.com/alfresco/alfresco-search-deployment
 	urls: http://kubernetes-charts.alfresco.com/stable/alfresco-search-1.0.1.tgz
 	version: 1.0.1
-Chart: postgresql:3.11.3
+Chart: postgresql:1.0.0
 	apiVersion: Not specified
-	appVersion: 10.7.0
-	created: 2019-02-18T10:25:57.729232907Z
+	appVersion: 9.6.2
+	created: 2018-10-24T07:24:55.390759352Z
 	dependencies: None
-	description: Chart for PostgreSQL, an object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
-	digest: 2e0796234d243d08e2f4f24932b8b6693f041f7d1e284f8ed0de113895da393e
-	icon: https://bitnami.com/assets/stacks/postgresql/img/postgresql-stack-110x117.png
-	keywords: postgresql,postgres,database,sql,replication,cluster
-	maintainers: Bitnami:containers@bitnami.com,desaintmartin:cedric@desaintmartin.fr
+	description: Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
+	digest: c9202bdeff429be22c9ca19aa39fb57c418d548803c20e33aa6035feffc49dab
+	icon: https://www.postgresql.org/media/img/about/press/elephant.png
+	keywords: postgresql,postgres,database,sql
+	maintainers: Not specified
 	repo url: https://kubernetes-charts.storage.googleapis.com
 	name: postgresql
-	sources: https://github.com/bitnami/bitnami-docker-postgresql
-	urls: https://kubernetes-charts.storage.googleapis.com/postgresql-3.11.3.tgz
-	version: 3.11.3
+	sources: https://github.com/kubernetes/charts,https://github.com/docker-library/postgres
+	urls: https://kubernetes-charts.storage.googleapis.com/postgresql-1.0.0.tgz
+	version: 1.0.0
 Chart: nginx-ingress:0.14.0
 	apiVersion: Not specified
 	appVersion: 0.12.0
@@ -215,17 +215,18 @@ Chart: keycloak:4.3.0
 
 There are 21 referenced Docker Images
 -------------------------------------
-Image: quay.io/alfresco/alfresco-process-services:1.10.0-RC1
 Image: postgres:11.4
-Image: docker.io/bitnami/postgresql:10.7.0
+Image: quay.io/alfresco/alfresco-digital-workspace:1.3.0
 Image: postgres:10.1
-Image: quay.io/alfresco/alfresco-dbp-repository:6.1.1
 Image: quay.io/alfresco/alfresco-transform-router:1.0.2.1
+Image: quay.io/alfresco/alfresco-dbp-repository:6.1.1
+Image: quay.io/alfresco/alfresco-process-services-admin:1.10.0
 Image: alfresco/alfresco-shared-file-store:0.5.3
+Image: postgres:9.4.6
 Image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.12.0
+Image: quay.io/alfresco/alfresco-process-services:1.10.0
 Image: quay.io/alfresco/alfresco-dbp-share:6.1.1
 Image: alfresco/alfresco-activemq:5.15.8-java-8-oracle-centos-7-87b15e37ce8b
-Image: quay.io/alfresco/alfresco-process-services-admin:1.10.0-RC1
 Image: quay.io/alfresco/alfresco-process-workspace-app:1.3.4
 Image: quay.io/alfresco/alfresco-pdf-renderer:2.0.17
 Image: quay.io/alfresco/service-sync:3.1.2
@@ -235,33 +236,33 @@ Image: k8s.gcr.io/defaultbackend:1.3
 Image: quay.io/alfresco/alfresco-tika:2.0.17
 Image: alfresco/alfresco-search-services:1.4.0
 Image: quay.io/alfresco/alfresco-libreoffice:2.0.17
-Image: quay.io/alfresco/alfresco-digital-workspace:1.3.0-beta
 
 Chart Dependencies
 ------------------
 alfresco-dbp:1.5.0 depends on alfresco-infrastructure:4.1.1
+alfresco-infrastructure:4.1.1 depends on activemq:1.1.1
+alfresco-infrastructure:4.1.1 depends on nginx-ingress:0.14.0
 alfresco-infrastructure:4.1.1 depends on alfresco-identity-service:1.1.0
 alfresco-identity-service:1.1.0 depends on keycloak:4.3.0
 keycloak:4.3.0 depends on postgresql:0.15.0
-alfresco-infrastructure:4.1.1 depends on activemq:1.1.1
-alfresco-infrastructure:4.1.1 depends on nginx-ingress:0.14.0
 alfresco-dbp:1.5.0 depends on alfresco-process-services:0.2.0
-alfresco-process-services:0.2.0 depends on postgresql:3.11.3
+alfresco-process-services:0.2.0 depends on postgresql:1.0.0
 alfresco-dbp:1.5.0 depends on alfresco-content-services:2.1.3
-alfresco-content-services:2.1.3 depends on alfresco-digital-workspace:2.1.1
-alfresco-content-services:2.1.3 depends on alfresco-search:1.0.1
 alfresco-content-services:2.1.3 depends on alfresco-sync-service:1.1.1
 alfresco-sync-service:1.1.1 depends on postgresql:0.9.3
+alfresco-content-services:2.1.3 depends on alfresco-digital-workspace:2.2.0
+alfresco-content-services:2.1.3 depends on alfresco-search:1.0.1
 alfresco-content-services:2.1.3 depends on postgresql:0.9.3
 postgresql:0.9.3 uses postgres:11.4
 postgresql:0.9.3 uses postgres:10.1
 alfresco-process-services:0.2.0 uses quay.io/alfresco/alfresco-process-workspace-app:1.3.4
-alfresco-process-services:0.2.0 uses quay.io/alfresco/alfresco-process-services:1.10.0-RC1
-alfresco-process-services:0.2.0 uses quay.io/alfresco/alfresco-process-services-admin:1.10.0-RC1
+alfresco-process-services:0.2.0 uses quay.io/alfresco/alfresco-process-services-admin:1.10.0
+alfresco-process-services:0.2.0 uses quay.io/alfresco/alfresco-process-services:1.10.0
 alfresco-sync-service:1.1.1 uses quay.io/alfresco/service-sync:3.1.2
+alfresco-digital-workspace:2.2.0 uses quay.io/alfresco/alfresco-digital-workspace:1.3.0
 alfresco-content-services:2.1.3 uses quay.io/alfresco/alfresco-pdf-renderer:2.0.17
-alfresco-content-services:2.1.3 uses quay.io/alfresco/alfresco-dbp-repository:6.1.1
 alfresco-content-services:2.1.3 uses quay.io/alfresco/alfresco-transform-router:1.0.2.1
+alfresco-content-services:2.1.3 uses quay.io/alfresco/alfresco-dbp-repository:6.1.1
 alfresco-content-services:2.1.3 uses quay.io/alfresco/alfresco-imagemagick:2.0.17
 alfresco-content-services:2.1.3 uses alfresco/alfresco-shared-file-store:0.5.3
 alfresco-content-services:2.1.3 uses quay.io/alfresco/alfresco-tika:2.0.17
@@ -269,11 +270,10 @@ alfresco-content-services:2.1.3 uses quay.io/alfresco/alfresco-libreoffice:2.0.1
 alfresco-content-services:2.1.3 uses quay.io/alfresco/alfresco-dbp-share:6.1.1
 activemq:1.1.1 uses alfresco/alfresco-activemq:5.15.8-java-8-oracle-centos-7-87b15e37ce8b
 postgresql:0.15.0 uses postgres:10.1
-alfresco-digital-workspace:2.1.1 uses quay.io/alfresco/alfresco-digital-workspace:1.3.0-beta
 alfresco-search:1.0.1 uses alfresco/alfresco-search-services:1.4.0
-postgresql:3.11.3 uses docker.io/bitnami/postgresql:10.7.0
+postgresql:1.0.0 uses postgres:9.4.6
 nginx-ingress:0.14.0 uses k8s.gcr.io/defaultbackend:1.3
 nginx-ingress:0.14.0 uses quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.12.0
 keycloak:4.3.0 uses jboss/keycloak:4.8.3.Final
 
-Generated on 2019/11/17 16:00:36 by org.alfresco.deployment.util.TextChartMapPrinter (https://github.com/Alfresco/alfresco-anaxes-chartmap)
+Generated on 2020/01/20 16:46:59 by org.alfresco.deployment.util.TextChartMapPrinter (https://github.com/Alfresco/alfresco-anaxes-chartmap)
