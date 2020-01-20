@@ -14,9 +14,10 @@ import org.alfresco.deployment.util.model.HelmChart;
 
 public class ChartMapPrinter implements IChartMapPrinter {
 
-    HelmChart chart;
-    private String outputFilename;
-    FileWriter writer;
+    protected HelmChart chart;
+    protected String outputFilename;
+    protected int indent=2; // indent for tree view
+    protected FileWriter writer;
 
     ChartMapPrinter(String outputFilename, MultiKeyMap charts, HelmChart chart) {
         this.outputFilename = outputFilename;
@@ -102,12 +103,20 @@ public class ChartMapPrinter implements IChartMapPrinter {
         writeLine(sb.toString());
     }
 
-    public void setOutputFilename(String outputFilename) {
-        this.outputFilename = outputFilename;
+    public void setOutputFilename(String o) {
+        this.outputFilename = o;
     }
 
     public String getOutputFilename() {
         return outputFilename;
+    }
+
+    public void setIndent(int i) {
+        indent = i;
+    }
+
+    public int getIndent() {
+        return indent;
     }
 
     public void setChart(HelmChart chart) {
@@ -191,4 +200,9 @@ public class ChartMapPrinter implements IChartMapPrinter {
         }
         return sb.toString();
     }
+
+    public void printTree(HelmChart c) throws IOException {
+        // TODO add a generic printTree method
+    }
+
 }

@@ -39,12 +39,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import org.yaml.snakeyaml.Yaml;
@@ -1259,15 +1254,26 @@ public class ChartMap {
                 detectPrintFormat(outputFilename);
                 if (printFormat.equals(PrintFormat.PLANTUML)) {
                     printer = new PlantUmlChartMapPrinter(outputFilename, charts, chart);
+                } else if (printFormat.equals(PrintFormat.JSON)) {
+                    printer = new JSONChartMapPrinter(outputFilename, charts, chart);
                 } else {
                     printer = new TextChartMapPrinter(outputFilename, charts, chart);
                 }
-                printer.printHeader();
-                printCharts();
-                printContainers();
-                printChartDependencies(chart);
-                printContainerDependencies();
-                printer.printFooter();
+                // JSON print formats are handled differently because the charts, images
+                // and dependencies are intermingled in a tree
+                if (printFormat.equals(PrintFormat.JSON)) {
+                    printer.printTree(chart);
+                }
+                // Plantuml and Text print formats follow a common pattern of printing
+                // first the charts, then the images, then the dependencies
+                else{
+                    printer.printHeader();
+                    printCharts();
+                    printContainers();
+                    printChartDependencies(chart);
+                    printContainerDependencies();
+                    printer.printFooter();
+                }
                 System.out.println("File " + outputFilename + " generated");
             }
         } catch (IOException e) {
@@ -1350,13 +1356,14 @@ public class ChartMap {
      * @param fileName the name of the file to which the chart map will be printed
      */
     private void detectPrintFormat(String fileName) {
-        if (fileName != null && fileName.endsWith(".puml")) {
-            printFormat = PrintFormat.PLANTUML;
-        } else {
-            printFormat = PrintFormat.TEXT;
+        if (fileName != null) {
+            if (fileName.endsWith(".puml")) {
+                printFormat = PrintFormat.PLANTUML;
+            } else if (fileName.endsWith(".json")) {
+                printFormat = PrintFormat.JSON;
+            }
         }
     }
-
     /**
      * Determines whether a Helm Chart is stable based on a very
      * simple heuristic.
@@ -1452,7 +1459,7 @@ public class ChartMap {
     }
 
     private String getDefaultOutputFilename() {
-        return "chartmap.puml";
+        return "chartmap.text";
     }
 
     private void setChartName(String chartName) {
