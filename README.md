@@ -8,7 +8,7 @@
 
 This project generates a file that shows the recursive dependencies of a Helm Chart.  
 
-The generated file can be in either PlantUML text format, JSON format or in a plain text format.  
+The generated file can be in either PlantUML text format, JSON format or plain text format.  
 
 The most useful format is PlantUML since this offers a visual representation of the chart dependencies.  See the example below.
 For more information about PlantUML, see http://plantuml.com/.  
