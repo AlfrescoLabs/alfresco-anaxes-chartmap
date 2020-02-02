@@ -818,7 +818,7 @@ public class ChartMap {
                                parentHelmChart.getDependencies().add(currentHelmChart);   // add this chart as a dependent
                             }
                             chartsReferenced.put(currentHelmChart.getName(), currentHelmChart.getVersion(), currentHelmChart); // may be redundant given we added parent already in an earlier iteration
-                            renderTemplates(currentDirectory, currentHelmChart);
+                            renderTemplates(currentDirectory, currentHelmChart, parentHelmChart);
                             File chartsDirectory = new File(chartDirName + File.separator + directory + File.separator + "charts");
                             if (chartsDirectory.exists()) {
                                 collectDependencies(chartsDirectory.getAbsolutePath(), currentHelmChart);  // recursion }
@@ -942,6 +942,10 @@ public class ChartMap {
                 WeightedDeploymentTemplate w = deploymentTemplatesReferenced.get(t._getFileName());
                 if (w != null) {
                     // and use that instead of what the Chart was using.  Usually they are not different
+                    HelmDeploymentContainer[] helmDeploymentContainers = w.getTemplate().getSpec().getTemplate().getSpec().getContainers();
+                    for (HelmDeploymentContainer c: helmDeploymentContainers) {
+                        c._setParent(t.getSpec().getTemplate().getSpec().getContainers()[0]._getParent());
+                    }
                     a.add(w.getTemplate());
                 }
             }
@@ -994,9 +998,9 @@ public class ChartMap {
      * @param h The current Helm Chart
      */
     private void collectContainers(HelmChart h) {
-        HashSet<String> containers = h.getContainers();
-        for (String c : containers) {
-            imagesReferenced.add(c);
+        HashSet<HelmDeploymentContainer> containers = h.getContainers();
+        for (HelmDeploymentContainer c : containers) {
+            imagesReferenced.add(c.getImage());
         }
     }
 
@@ -1008,7 +1012,7 @@ public class ChartMap {
      * @param dir The directory in which the chart directory exists
      * @param h   The Helm Chart containing the templates
      */
-    private void renderTemplates(File dir, HelmChart h) {
+    private void renderTemplates(File dir, HelmChart h, HelmChart p) {
         try {
             String command = "helm ";
             // Get any environment variables the user may have specified and
@@ -1018,8 +1022,8 @@ public class ChartMap {
                 command = command.concat(" --set ").concat(envVar).concat(" ");
             }
             command = command.concat("template ").concat(h.getName());
-            Process p = Runtime.getRuntime().exec(command, null, dir);
-            BufferedInputStream in = new BufferedInputStream(p.getInputStream());
+            Process r = Runtime.getRuntime().exec(command, null, dir);
+            BufferedInputStream in = new BufferedInputStream(r.getInputStream());
             File templateDir = new File(
                     dir.getAbsolutePath() + File.separator + h.getName()
                     + File.separator + "templates");
@@ -1039,13 +1043,13 @@ public class ChartMap {
             }
             in.close();
             out.close();
-            p.waitFor(30000, TimeUnit.MILLISECONDS);
-            int exitCode = p.exitValue();
+            r.waitFor(30000, TimeUnit.MILLISECONDS);
+            int exitCode = r.exitValue();
             // If an error occurs it is likely due to a helm chart like a missing required property so
             // let the user know about it.  It's not fatal but could result in an incomplete chart map
             if (exitCode != 0) {
                 String message;
-                InputStream err = p.getErrorStream();
+                InputStream err = r.getErrorStream();
                 BufferedReader br =
                         new BufferedReader(new java.io.InputStreamReader(err));
                 while ((message = br.readLine()) != null) {
@@ -1060,7 +1064,7 @@ public class ChartMap {
                 Yaml yaml = new Yaml();
                 InputStream input = new FileInputStream(f);
                 for (Object data : yaml.loadAll(input)) {  // there may multiple yaml documents in this one document
-                    // inspect the object to see if it is a deployment template
+                    // inspect the object to see if it is a Deployment or a StatefulSet template
                     // if it is add to the deploymentTemplates array
                     if (data instanceof Map) { // todo is this needed?   should it not always be a Map?
                         Map m = (Map) data;
@@ -1072,9 +1076,14 @@ public class ChartMap {
                                 ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
                                 mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                                 HelmDeploymentTemplate template = mapper.readValue(s, HelmDeploymentTemplate.class);
+                                // remember the parent
+                                HelmDeploymentContainer[] containers = template.getSpec().getTemplate().getSpec().getContainers();
+                                for (HelmDeploymentContainer c: containers) {
+                                    c._setParent(p);
+                                }
                                 // if this template is a child of this chart remember that fact
                                 if (a.get(i)) {
-                                    template._setFileName(b.get(i));
+                                    template._setFileName(b.get(i));  // is this needed?
                                     h.getDeploymentTemplates().add(template);
                                 }
                                 // cases:
@@ -1086,6 +1095,11 @@ public class ChartMap {
                                     weightedTemplate = new WeightedDeploymentTemplate(dir.getAbsolutePath(), template);
                                     deploymentTemplatesReferenced.put(b.get(i), weightedTemplate);
                                 } else {
+                                    // remember the parent
+                                    containers = weightedTemplate.getTemplate().getSpec().getTemplate().getSpec().getContainers();
+                                    for (HelmDeploymentContainer c: containers) {
+                                        c._setParent(p);
+                                    }
                                     if (weightedTemplate.getWeight() > getWeight(dir.getAbsolutePath())) {
                                         // a superceding template was found so replace the template that is referenced in the
                                         // global list of templates
@@ -1323,8 +1337,8 @@ public class ChartMap {
             while (it.hasNext()) {
                 it.next();
                 HelmChart h = (HelmChart) it.getValue();
-                for (String image : h.getContainers()) {
-                    printer.printChartToImageDependency(h, image);
+                for (HelmDeploymentContainer c : h.getContainers()) {
+                    printer.printChartToImageDependency(h, c.getImage());
                 }
             }
         } catch (IOException e) {
@@ -1379,8 +1393,8 @@ public class ChartMap {
             }
             stable = false;
         } else if (checkContainers) {  // also check the images if needed
-            for (String s : h.getContainers()) {
-                String imageName = s.toLowerCase();
+            for (HelmDeploymentContainer c : h.getContainers()) {
+                String imageName = c.getImage().toLowerCase();
                 if (imageName.contains("-snapshot") ||
                         imageName.contains("-alpha") ||
                         imageName.contains("-beta") ||
@@ -1388,7 +1402,7 @@ public class ChartMap {
                         imageName.contains("-rc")) {
                     stable = false;
                     if (isDebug()) {
-                        System.out.println("image " + s + " does not appear to be stable");
+                        System.out.println("image " + c.getImage() + " does not appear to be stable");
                     }
                 }
             }

@@ -4,7 +4,7 @@ public class HelmDeploymentSpec {
     private HelmDeploymentSpecTemplate template;
     private String replicas;
 
-    HelmDeploymentSpecTemplate getTemplate() {
+    public HelmDeploymentSpecTemplate getTemplate() {
         return template;
     }
 

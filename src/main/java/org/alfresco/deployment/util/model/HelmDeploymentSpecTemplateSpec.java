@@ -4,7 +4,7 @@ public class HelmDeploymentSpecTemplateSpec {
     private HelmDeploymentContainer[] containers;
     private String hostNetwork;
 
-    HelmDeploymentContainer[] getContainers() {
+    public HelmDeploymentContainer[] getContainers() {
         return containers;
     }
 

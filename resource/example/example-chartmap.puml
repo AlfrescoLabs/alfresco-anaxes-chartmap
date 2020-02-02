@@ -55,35 +55,35 @@ alfresco_identity_service_1_1_0--[#green]-|>keycloak_4_3_0
 keycloak_4_3_0--[#green]-|>postgresql_0_15_0
 alfresco_infrastructure_4_1_1--[#green]-|>activemq_1_1_1
 alfresco_dbp_1_5_0--[#green]-|>alfresco_content_services_2_1_3
-alfresco_content_services_2_1_3--[#green]-|>postgresql_0_9_3
 alfresco_content_services_2_1_3--[#green]-|>alfresco_sync_service_1_1_1
 alfresco_sync_service_1_1_1--[#green]-|>postgresql_0_9_3
-alfresco_content_services_2_1_3--[#green]-|>alfresco_search_1_0_1
 alfresco_content_services_2_1_3--[#green]-|>alfresco_digital_workspace_2_2_0
+alfresco_content_services_2_1_3--[#green]-|>alfresco_search_1_0_1
+alfresco_content_services_2_1_3--[#green]-|>postgresql_0_9_3
 alfresco_dbp_1_5_0--[#green]-|>alfresco_process_services_0_2_0
 alfresco_process_services_0_2_0--[#green]-|>postgresql_1_0_0
 postgresql_0_9_3--[#orange]-|>postgres_11_4
 postgresql_0_9_3--[#orange]-|>postgres_10_1
 alfresco_process_services_0_2_0--[#orange]-|>quay_io_alfresco_alfresco_process_workspace_app_1_3_4
-alfresco_process_services_0_2_0--[#orange]-|>quay_io_alfresco_alfresco_process_services_admin_1_10_0
 alfresco_process_services_0_2_0--[#orange]-|>quay_io_alfresco_alfresco_process_services_1_10_0
+alfresco_process_services_0_2_0--[#orange]-|>quay_io_alfresco_alfresco_process_services_admin_1_10_0
 alfresco_sync_service_1_1_1--[#orange]-|>quay_io_alfresco_service_sync_3_1_2
 alfresco_digital_workspace_2_2_0--[#orange]-|>quay_io_alfresco_alfresco_digital_workspace_1_3_0
-alfresco_content_services_2_1_3--[#orange]-|>quay_io_alfresco_alfresco_pdf_renderer_2_0_17
-alfresco_content_services_2_1_3--[#orange]-|>quay_io_alfresco_alfresco_dbp_repository_6_1_1
-alfresco_content_services_2_1_3--[#orange]-|>quay_io_alfresco_alfresco_transform_router_1_0_2_1
-alfresco_content_services_2_1_3--[#orange]-|>quay_io_alfresco_alfresco_imagemagick_2_0_17
-alfresco_content_services_2_1_3--[#orange]-|>alfresco_alfresco_shared_file_store_0_5_3
-alfresco_content_services_2_1_3--[#orange]-|>quay_io_alfresco_alfresco_tika_2_0_17
 alfresco_content_services_2_1_3--[#orange]-|>quay_io_alfresco_alfresco_libreoffice_2_0_17
 alfresco_content_services_2_1_3--[#orange]-|>quay_io_alfresco_alfresco_dbp_share_6_1_1
+alfresco_content_services_2_1_3--[#orange]-|>quay_io_alfresco_alfresco_imagemagick_2_0_17
+alfresco_content_services_2_1_3--[#orange]-|>quay_io_alfresco_alfresco_tika_2_0_17
+alfresco_content_services_2_1_3--[#orange]-|>quay_io_alfresco_alfresco_dbp_repository_6_1_1
+alfresco_content_services_2_1_3--[#orange]-|>quay_io_alfresco_alfresco_transform_router_1_0_2_1
+alfresco_content_services_2_1_3--[#orange]-|>quay_io_alfresco_alfresco_pdf_renderer_2_0_17
+alfresco_content_services_2_1_3--[#orange]-|>alfresco_alfresco_shared_file_store_0_5_3
 activemq_1_1_1--[#orange]-|>alfresco_alfresco_activemq_5_15_8_java_8_oracle_centos_7_87b15e37ce8b
 postgresql_0_15_0--[#orange]-|>postgres_10_1
 alfresco_search_1_0_1--[#orange]-|>alfresco_alfresco_search_services_1_4_0
 postgresql_1_0_0--[#orange]-|>postgres_9_4_6
-nginx_ingress_0_14_0--[#orange]-|>k8s_gcr_io_defaultbackend_1_3
 nginx_ingress_0_14_0--[#orange]-|>quay_io_kubernetes_ingress_controller_nginx_ingress_controller_0_12_0
+nginx_ingress_0_14_0--[#orange]-|>k8s_gcr_io_defaultbackend_1_3
 keycloak_4_3_0--[#orange]-|>jboss_keycloak_4_8_3_Final
 
-center footer Generated on 2020/01/20 16:44:31 by org.alfresco.deployment.util.PlantUmlChartMapPrinter\nhttps://github.com/Alfresco/alfresco-anaxes-chartmap
+center footer Generated on 2020/02/02 09:58:09 by org.alfresco.deployment.util.PlantUmlChartMapPrinter\nhttps://github.com/Alfresco/alfresco-anaxes-chartmap
 @enduml
