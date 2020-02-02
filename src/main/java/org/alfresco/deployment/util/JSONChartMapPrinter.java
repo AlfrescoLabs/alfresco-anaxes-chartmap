@@ -1,6 +1,7 @@
 package org.alfresco.deployment.util;
 
 import org.alfresco.deployment.util.model.HelmChart;
+import org.alfresco.deployment.util.model.HelmDeploymentContainer;
 import org.alfresco.deployment.util.model.HelmMaintainer;
 import org.apache.commons.collections4.map.MultiKeyMap;
 import org.json.*;
@@ -8,7 +9,6 @@ import org.json.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Iterator;
 
 /**
@@ -58,8 +58,8 @@ public class JSONChartMapPrinter extends ChartMapPrinter {
     public void printTree(HelmChart c) throws IOException {
         // create a root JSON object to get started
         JSONObject j = new JSONObject();  // root object
-        addChartToObject(c, j);
-        printObject(j);
+        addChartToObject(c, null, j); // recursively fill out the  rest of the tree
+        printObject(j);  // print it all
     }
 
     /**
@@ -70,14 +70,14 @@ public class JSONChartMapPrinter extends ChartMapPrinter {
      *              be written
      * @throws  IOException     IOException
      */
-    public void addChartToObject(HelmChart h, JSONObject j) {
+    public void addChartToObject(HelmChart h, HelmChart p, JSONObject j) {
         addProperties(h, j);
         JSONArray a = new JSONArray(); // array of children
-        addContainers(h, a);
+        addContainers(h, p, a);
         Iterator<HelmChart> itr = h.getDependencies().iterator();
         while(itr.hasNext()){
             JSONObject c = new JSONObject(); // new child object
-            addChartToObject(itr.next(),c);
+            addChartToObject(itr.next(),h, c);
             a.put(c);  // add new child to array
         }
         j.put("children", a);  // add the array to the object
@@ -102,17 +102,39 @@ public class JSONChartMapPrinter extends ChartMapPrinter {
     }
 
     /**
-     * Adds the dependent containers to an array
+     * Adds the dependent containers to an array.
+     *
+     * Checks if the parent of the helm chart was the same
+     * parent that caused the dependent chart to be added.  This
+     * check is necessary because there are cases where a chart
+     * is common between two charts in a dependency tree but in each
+     * usage the image that is used may be different (because of
+     * the use of the imageTag for example).
+     *
      *
      * @param   h   a Helm Chart
+     * @param   p   the parent of h
      * @param   a   a JSONArray to which the container
      *              will be added
      * @throws  IOException     IOException
      */
-    private void addContainers(HelmChart h, JSONArray a) {
-        HashSet<String> c = h.getContainers();
-        for (String s : h.getContainers()) {
-            addContainer(s, a);;
+    private void addContainers(HelmChart h, HelmChart p, JSONArray a) {
+        for (HelmDeploymentContainer c : h.getContainers()) {
+            String ignf = "";
+            String pgnf = "";
+            if (c._getParent() != null) {
+                ignf = c._getParent().getNameFull();
+            }
+            if (p != null) {
+                pgnf = p.getNameFull();
+            }
+            // If the parent chart matches the parent that was found
+            // when the image was collected, then add it to the returned
+            // containers so it can be printed with this chart.  Otherwise
+            // ignore because it will be printed elsewhere in the tree.
+            if (ignf.equals(pgnf)) {
+                addContainer(c.getImage(), a);
+            }
         }
     }
 

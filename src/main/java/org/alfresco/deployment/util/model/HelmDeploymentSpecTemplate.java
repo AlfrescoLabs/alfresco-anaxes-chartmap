@@ -3,7 +3,7 @@ package org.alfresco.deployment.util.model;
 public class HelmDeploymentSpecTemplate {
     private HelmDeploymentSpecTemplateSpec spec;
 
-    HelmDeploymentSpecTemplateSpec getSpec() {
+    public HelmDeploymentSpecTemplateSpec getSpec() {
         return spec;
     }
 

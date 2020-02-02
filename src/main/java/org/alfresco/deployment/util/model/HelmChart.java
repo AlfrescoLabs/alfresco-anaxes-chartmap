@@ -27,20 +27,23 @@ public class HelmChart {
     private String version;
 
     /**
-     * Collects the containers referenced by this chart and returns a collection of them
+     * Collects all the containers referenced by this chart and returns a collection of them
      *
      * @return a collection of the containers referenced by this chart
      */
-    public HashSet<String> getContainers() {
-        HashSet<String> containers = new HashSet<String>();
+    public HashSet<HelmDeploymentContainer> getContainers() {
+        HashSet<HelmDeploymentContainer> containers = new HashSet<HelmDeploymentContainer>();
         for (HelmDeploymentTemplate t : deploymentTemplates) {
-            String image=null;
+            HelmDeploymentContainer c=null;
             HelmDeploymentContainer[] hdc = t.getSpec().getTemplate().getSpec().getContainers();
             if (hdc != null && hdc.length > 0) {
-               image = hdc[0].getImage();
+                c = new HelmDeploymentContainer();
+                c.setImage(hdc[0].getImage());
+                c._setParent(hdc[0]._getParent()); // remember the parent of the chart that caused this image to
+                                                   // be included
             }
-            if (image !=null) {
-                containers.add(image);
+            if (c !=null) {
+                containers.add(c);
             }
         }
         return containers;

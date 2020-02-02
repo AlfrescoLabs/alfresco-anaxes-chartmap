@@ -5,8 +5,7 @@ public class HelmDeploymentTemplate {
     // fileName is not part of the model of a deployment template used in the Helm Chart.
     // Rather it is used to find a template that may be used in a parent Helm Chart and thus should
     // supercede the template used in this Helm Chart
-    private String _fileName;
-    // fileName is not part of model ... used to find a superceding Deployment Template if one exists
+    private String _fileName; // fileName is not part of model ... used to find a superceding Deployment Template if one exists
 
     public String _getFileName() {return _fileName;}
 
@@ -34,7 +33,7 @@ public class HelmDeploymentTemplate {
         this.kind=kind;
     }
 
-    HelmDeploymentSpec getSpec() {return spec;}
+    public HelmDeploymentSpec getSpec() {return spec;}
 
     public void setSpec(HelmDeploymentSpec spec) { this.spec = spec;}
 }
