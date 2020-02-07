@@ -1,5 +1,7 @@
 package org.alfresco.deployment.util.model;
 
+import java.util.Objects;
+
 public class HelmDeploymentContainer {
     private String name;
     private String image;
@@ -28,6 +30,23 @@ public class HelmDeploymentContainer {
 
     public void setImage(String image) {
         this.image = image;
+    }
+    // the equals and hashCode overrides are needed to make comparisons when adding to arrays that
+    // are used for the chart maps since there are cases where the same container be be used by multiple
+    // templates that are used by a helm chart.  For an example, see the StateFul Sets in wordpress:8.1.2.
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HelmDeploymentContainer that = (HelmDeploymentContainer) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(image, that.image) &&
+                Objects.equals(imagePullPolicy, that.imagePullPolicy);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, image, imagePullPolicy);
     }
 
     public HelmChart _getParent() {return this._parent;}
