@@ -138,10 +138,19 @@ public class JSONChartMapPrinter extends ChartMapPrinter {
         }
     }
 
+    /**
+     * Adds a container to a JSONArray
+     *
+     * @param   s   the name of the container
+     * @param   a   a JSONArray to which the container will
+     *              be added, if not already present in the
+     *              array
+     * @throws  IOException     IOException
+     */
     private void addContainer(String s, JSONArray a) {
         JSONObject c = new JSONObject(); // new child object for the container
-        c.put("type","image");
-        addImageDetails(s,c);
+        c.put("type", "image");
+        addImageDetails(s, c);
         c.put("children", new JSONArray());  // add an empty child array (containers have no children)
         a.put(c); // add the container to the parent children array
     }
