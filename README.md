@@ -2,8 +2,6 @@
 
 See some examples &#8594; [https://alfresco.github.io/alfresco-anaxes-chartmap/](https://melahn.github.io/alfresco-anaxes-chartmap/) 
 
-[image]: ./resource/image/Arbor_scientiae_(Ramon_Llull)_using_A_porphyrii_structure.png "Image by Jost_Amman ... Eygentliche Beschreibung aller Stände auff Erden, hoher und nidriger, geistlicher und weltlicher, aller Künsten, Handwercken und Händeln ... from https://commons.wikimedia.org/w/index.php?curid=207246"
-
 ## Overview
 
 This project generates a file that shows the recursive dependencies of a Helm Chart.  
