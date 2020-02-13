@@ -1,0 +1,62 @@
+{
+  "maintainers": [{"name": "Alfresco"}],
+  "keywords": [
+    "alfresco",
+    "keycloak",
+    "identity-service"
+  ],
+  "children": [{
+    "maintainers": [{
+      "name": "unguiculus",
+      "email": "unguiculus@gmail.com"
+    }],
+    "keywords": [
+      "sso",
+      "idm",
+      "openid connect",
+      "saml",
+      "kerberos",
+      "ldap"
+    ],
+    "children": [
+      {
+        "repoHost": "Docker Hub",
+        "children": [],
+        "name": "jboss/keycloak",
+        "type": "image",
+        "version": "4.5.0.Final"
+      },
+      {
+        "maintainers": [{"name": "databus23"}],
+        "keywords": [
+          "postgresql",
+          "postgres",
+          "database",
+          "sql"
+        ],
+        "children": [{
+          "repoHost": "Docker Hub",
+          "children": [],
+          "name": "postgres",
+          "type": "image",
+          "version": "10.1"
+        }],
+        "name": "postgresql:0.15.0",
+        "description": "Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.",
+        "type": "chart",
+        "shortName": "postgresql",
+        "version": "0.15.0"
+      }
+    ],
+    "name": "keycloak:4.0.3",
+    "description": "Open Source Identity and Access Management For Modern Applications and Services",
+    "type": "chart",
+    "shortName": "keycloak",
+    "version": "4.0.3"
+  }],
+  "name": "alfresco-identity-service:1.0.0",
+  "description": "The Alfresco Identity Service will become the central component responsible for identity-related capabilities needed by other Alfresco software, such as managing users, groups, roles, profiles, and authentication. Currently it deals just with authentication.",
+  "type": "chart",
+  "shortName": "alfresco-identity-service",
+  "version": "1.0.0"
+}

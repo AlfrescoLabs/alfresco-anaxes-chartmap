@@ -1,0 +1,63 @@
+Chart Map for alfresco-identity-service:1.1.0
+
+There are 3 referenced Helm Charts
+----------------------------------
+Chart: postgresql:0.15.0
+	apiVersion: Not specified
+	appVersion: 9.6.2
+	created: 2018-08-27T18:56:06.643545837Z
+	dependencies: None
+	description: Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
+	digest: 6083155dd4d79178afe9b0413e70747ee22c514b56797d478d1976d995634f6e
+	icon: https://www.postgresql.org/media/img/about/press/elephant.png
+	keywords: postgresql,postgres,database,sql
+	maintainers: databus23
+	repo url: https://kubernetes-charts.storage.googleapis.com
+	name: postgresql
+	sources: https://github.com/kubernetes/charts,https://github.com/docker-library/postgres
+	urls: https://kubernetes-charts.storage.googleapis.com/postgresql-0.15.0.tgz
+	version: 0.15.0
+Chart: alfresco-identity-service:1.1.0
+	apiVersion: Not specified
+	appVersion: Not specified
+	created: Not specified
+	dependencies: keycloak:4.3.0
+	description: The Alfresco Identity Service will become the central component responsible for identity-related capabilities needed by other Alfresco software, such as managing users, groups, roles, profiles, and authentication. Currently it deals just with authentication.
+	digest: Not specified
+	icon: Not specified
+	keywords: alfresco,keycloak,identity-service
+	maintainers: Alfresco
+	repo url: https://kubernetes-charts.alfresco.com/stable
+	name: alfresco-identity-service
+	sources: https://github.com/Alfresco/alfresco-identity-service/helm
+	urls: Not specified
+	version: 1.1.0
+Chart: keycloak:4.3.0
+	apiVersion: Not specified
+	appVersion: 4.8.3.Final
+	created: 2019-02-07T13:26:11.548377387Z
+	dependencies: postgresql:0.15.0
+	description: Open Source Identity and Access Management For Modern Applications and Services
+	digest: fc74a8d9172b8b4647f383a8b087c3d27f95b68b587b97088dddacc102d9c5d7
+	icon: https://www.keycloak.org/resources/images/keycloak_logo_480x108.png
+	keywords: sso,idm,openid connect,saml,kerberos,ldap
+	maintainers: unguiculus:unguiculus@gmail.com,thomasdarimont:thomas.darimont+github@gmail.com
+	repo url: https://kubernetes-charts.storage.googleapis.com
+	name: keycloak
+	sources: https://github.com/jboss-dockerfiles/keycloak
+	urls: https://kubernetes-charts.storage.googleapis.com/keycloak-4.3.0.tgz
+	version: 4.3.0
+
+There are 2 referenced Docker Images
+------------------------------------
+Image: postgres:10.1
+Image: jboss/keycloak:4.8.3.Final
+
+Chart Dependencies
+------------------
+alfresco-identity-service:1.1.0 depends on keycloak:4.3.0
+keycloak:4.3.0 depends on postgresql:0.15.0
+postgresql:0.15.0 uses postgres:10.1
+keycloak:4.3.0 uses jboss/keycloak:4.8.3.Final
+
+Generated on 2020/02/13 10:22:53 by org.alfresco.deployment.util.TextChartMapPrinter (https://github.com/Alfresco/alfresco-anaxes-chartmap)
