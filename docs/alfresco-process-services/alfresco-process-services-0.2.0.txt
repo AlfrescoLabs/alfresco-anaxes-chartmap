@@ -1,0 +1,51 @@
+Chart Map for alfresco-process-services:0.2.0
+
+There are 2 referenced Helm Charts
+----------------------------------
+Chart: alfresco-process-services:0.2.0
+	apiVersion: v1
+	appVersion: 1.10.0
+	created: Not specified
+	dependencies: postgresql:1.0.0
+	description: A Helm chart for Alfresco Process Services
+	digest: Not specified
+	icon: Not specified
+	keywords: Not specified
+	maintainers: Alfresco
+	repo url: https://kubernetes-charts.alfresco.com/stable
+	name: alfresco-process-services
+	sources: Not specified
+	urls: Not specified
+	version: 0.2.0
+Chart: postgresql:1.0.0
+	apiVersion: Not specified
+	appVersion: 9.6.2
+	created: 2018-10-24T07:24:55.390759352Z
+	dependencies: None
+	description: Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
+	digest: c9202bdeff429be22c9ca19aa39fb57c418d548803c20e33aa6035feffc49dab
+	icon: https://www.postgresql.org/media/img/about/press/elephant.png
+	keywords: postgresql,postgres,database,sql
+	maintainers: Not specified
+	repo url: https://kubernetes-charts.storage.googleapis.com
+	name: postgresql
+	sources: https://github.com/kubernetes/charts,https://github.com/docker-library/postgres
+	urls: https://kubernetes-charts.storage.googleapis.com/postgresql-1.0.0.tgz
+	version: 1.0.0
+
+There are 4 referenced Docker Images
+------------------------------------
+Image: quay.io/alfresco/alfresco-process-workspace-app:1.3.4
+Image: quay.io/alfresco/alfresco-process-services-admin:1.10.0
+Image: postgres:9.4.6
+Image: quay.io/alfresco/alfresco-process-services:1.10.0
+
+Chart Dependencies
+------------------
+alfresco-process-services:0.2.0 depends on postgresql:1.0.0
+alfresco-process-services:0.2.0 uses quay.io/alfresco/alfresco-process-services-admin:1.10.0
+alfresco-process-services:0.2.0 uses quay.io/alfresco/alfresco-process-services:1.10.0
+alfresco-process-services:0.2.0 uses quay.io/alfresco/alfresco-process-workspace-app:1.3.4
+postgresql:1.0.0 uses postgres:9.4.6
+
+Generated on 2020/02/13 07:20:17 by org.alfresco.deployment.util.TextChartMapPrinter (https://github.com/Alfresco/alfresco-anaxes-chartmap)

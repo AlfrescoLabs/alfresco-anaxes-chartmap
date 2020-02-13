@@ -1,0 +1,9 @@
+* {
+    font-family: "Arial", Helvetica, san-serif;
+    color: lightgray;
+    background-color: black;
+}
+
+a:visited {
+    color: grey;
+}
