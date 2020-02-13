@@ -1,0 +1,27 @@
+@startuml
+skinparam linetype ortho
+skinparam backgroundColor white
+skinparam usecaseBorderColor black
+skinparam usecaseArrowColor LightSlateGray
+skinparam artifactBorderColor black
+skinparam artifactArrowColor LightSlateGray
+
+title Chart Map for alfresco-identity-service:2.0.0
+
+'There are 3 referenced Helm Charts
+artifact "postgresql:6.3.13\n====\n\tpostgresql\n====\n\t6.3.13\n====\n\thttps://kubernetes-charts.storage.googleapis.com\n====\n\tMaintainers: Bitnami, desaintmartin\n====\n\tKeywords: postgresql\npostgres\ndatabase\nsql\nreplication\ncluster" as postgresql_6_3_13 #LightSteelBlue
+artifact "keycloak:6.0.0\n====\n\tkeycloak\n====\n\t6.0.0\n====\n\thttps://codecentric.github.io/helm-charts\n====\n\tMaintainers: unguiculus, thomasdarimont\n====\n\tKeywords: sso\nidm\nopenid connect\nsaml\nkerberos\nldap" as keycloak_6_0_0 #LightBlue
+artifact "alfresco-identity-service:2.0.0\n====\n\talfresco-identity-service\n====\n\t2.0.0\n====\n\thttps://kubernetes-charts.alfresco.com/stable\n====\n\tMaintainers: Alfresco\n====\n\tKeywords: alfresco\nkeycloak\nidentity-service" as alfresco_identity_service_2_0_0 #Chartreuse
+
+'There are 2 referenced Docker Images
+usecase "Image\n====\n\tdocker.io\n====\n\tbitnami/postgresql:11.5.0-debian-9-r60\n====\n\t11.5.0-debian-9-r60" as docker_io_bitnami_postgresql_11_5_0_debian_9_r60 #DarkSalmon
+usecase "Image\n====\n\tDocker Hub\n====\n\talfresco/alfresco-identity-service\n====\n\t1.2" as alfresco_alfresco_identity_service_1_2 #BlanchedAlmond
+
+'Chart Dependencies
+alfresco_identity_service_2_0_0--[#green]-|>keycloak_6_0_0
+keycloak_6_0_0--[#green]-|>postgresql_6_3_13
+postgresql_6_3_13--[#orange]-|>docker_io_bitnami_postgresql_11_5_0_debian_9_r60
+keycloak_6_0_0--[#orange]-|>alfresco_alfresco_identity_service_1_2
+
+center footer Generated on 2020/02/11 09:11:58 by org.alfresco.deployment.util.PlantUmlChartMapPrinter\nhttps://github.com/Alfresco/alfresco-anaxes-chartmap
+@enduml

@@ -1,0 +1,377 @@
+{
+  "maintainers": [{"name": "Alfresco Platform Services Team"}],
+  "keywords": [
+    "alfresco",
+    "dbp",
+    "platform"
+  ],
+  "children": [
+    {
+      "maintainers": [{"name": "Alfresco"}],
+      "children": [
+        {
+          "repoHost": "quay.io",
+          "children": [],
+          "name": "alfresco/alfresco-process-services-admin",
+          "type": "image",
+          "version": "1.10.0"
+        },
+        {
+          "repoHost": "quay.io",
+          "children": [],
+          "name": "alfresco/alfresco-process-services",
+          "type": "image",
+          "version": "1.10.0"
+        },
+        {
+          "repoHost": "quay.io",
+          "children": [],
+          "name": "alfresco/alfresco-process-workspace-app",
+          "type": "image",
+          "version": "1.3.4"
+        },
+        {
+          "keywords": [
+            "postgresql",
+            "postgres",
+            "database",
+            "sql"
+          ],
+          "children": [{
+            "repoHost": "Docker Hub",
+            "children": [],
+            "name": "postgres",
+            "type": "image",
+            "version": "9.4.6"
+          }],
+          "name": "postgresql:1.0.0",
+          "description": "Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.",
+          "type": "chart",
+          "shortName": "postgresql",
+          "version": "1.0.0"
+        }
+      ],
+      "name": "alfresco-process-services:0.2.0",
+      "description": "A Helm chart for Alfresco Process Services",
+      "type": "chart",
+      "shortName": "alfresco-process-services",
+      "version": "0.2.0"
+    },
+    {
+      "children": [
+        {
+          "maintainers": [{"name": "Alfresco"}],
+          "keywords": [
+            "alfresco",
+            "keycloak",
+            "identity-service"
+          ],
+          "children": [{
+            "maintainers": [
+              {
+                "name": "unguiculus",
+                "email": "unguiculus@gmail.com"
+              },
+              {
+                "name": "thomasdarimont",
+                "email": "thomas.darimont+github@gmail.com"
+              }
+            ],
+            "keywords": [
+              "sso",
+              "idm",
+              "openid connect",
+              "saml",
+              "kerberos",
+              "ldap"
+            ],
+            "children": [
+              {
+                "repoHost": "Docker Hub",
+                "children": [],
+                "name": "jboss/keycloak",
+                "type": "image",
+                "version": "4.8.3.Final"
+              },
+              {
+                "maintainers": [{"name": "databus23"}],
+                "keywords": [
+                  "postgresql",
+                  "postgres",
+                  "database",
+                  "sql"
+                ],
+                "children": [{
+                  "repoHost": "Docker Hub",
+                  "children": [],
+                  "name": "postgres",
+                  "type": "image",
+                  "version": "10.1"
+                }],
+                "name": "postgresql:0.15.0",
+                "description": "Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.",
+                "type": "chart",
+                "shortName": "postgresql",
+                "version": "0.15.0"
+              }
+            ],
+            "name": "keycloak:4.3.0",
+            "description": "Open Source Identity and Access Management For Modern Applications and Services",
+            "type": "chart",
+            "shortName": "keycloak",
+            "version": "4.3.0"
+          }],
+          "name": "alfresco-identity-service:1.1.0",
+          "description": "The Alfresco Identity Service will become the central component responsible for identity-related capabilities needed by other Alfresco software, such as managing users, groups, roles, profiles, and authentication. Currently it deals just with authentication.",
+          "type": "chart",
+          "shortName": "alfresco-identity-service",
+          "version": "1.1.0"
+        },
+        {
+          "keywords": [
+            "activemq",
+            "message broker"
+          ],
+          "children": [{
+            "repoHost": "Docker Hub",
+            "children": [],
+            "name": "alfresco/alfresco-activemq",
+            "type": "image",
+            "version": "5.15.8-java-8-oracle-centos-7-87b15e37ce8b"
+          }],
+          "name": "activemq:1.1.1",
+          "description": "A Helm chart Providing Apache ActiveMQ.",
+          "type": "chart",
+          "shortName": "activemq",
+          "version": "1.1.1"
+        },
+        {
+          "maintainers": [
+            {
+              "name": "jackzampolin",
+              "email": "jack.zampolin@gmail.com"
+            },
+            {
+              "name": "mgoodness",
+              "email": "mgoodness@gmail.com"
+            },
+            {
+              "name": "chancez",
+              "email": "chance.zibolski@coreos.com"
+            }
+          ],
+          "keywords": [
+            "ingress",
+            "nginx"
+          ],
+          "children": [
+            {
+              "repoHost": "Docker Hub",
+              "children": [],
+              "name": "k8s.gcr.io/defaultbackend",
+              "type": "image",
+              "version": "1.3"
+            },
+            {
+              "repoHost": "quay.io",
+              "children": [],
+              "name": "kubernetes-ingress-controller/nginx-ingress-controller",
+              "type": "image",
+              "version": "0.12.0"
+            }
+          ],
+          "name": "nginx-ingress:0.14.0",
+          "description": "An nginx Ingress controller that uses ConfigMap to store the nginx configuration.",
+          "type": "chart",
+          "shortName": "nginx-ingress",
+          "version": "0.14.0"
+        }
+      ],
+      "name": "alfresco-infrastructure:4.1.1",
+      "description": "A Helm chart Providing the required Alfresco infrastructure for the Digital Business Platform. This includes activemq, alfresco-identity-service, nginx-ingress and a persistent volume to use with the DBP chart.",
+      "type": "chart",
+      "shortName": "alfresco-infrastructure",
+      "version": "4.1.1"
+    },
+    {
+      "keywords": [
+        "content",
+        "content services",
+        "alfresco",
+        "alfresco content services"
+      ],
+      "children": [
+        {
+          "repoHost": "quay.io",
+          "children": [],
+          "name": "alfresco/alfresco-tika",
+          "type": "image",
+          "version": "2.0.17"
+        },
+        {
+          "repoHost": "quay.io",
+          "children": [],
+          "name": "alfresco/alfresco-dbp-repository",
+          "type": "image",
+          "version": "6.1.1"
+        },
+        {
+          "repoHost": "quay.io",
+          "children": [],
+          "name": "alfresco/alfresco-pdf-renderer",
+          "type": "image",
+          "version": "2.0.17"
+        },
+        {
+          "repoHost": "Docker Hub",
+          "children": [],
+          "name": "alfresco/alfresco-shared-file-store",
+          "type": "image",
+          "version": "0.5.3"
+        },
+        {
+          "repoHost": "quay.io",
+          "children": [],
+          "name": "alfresco/alfresco-dbp-share",
+          "type": "image",
+          "version": "6.1.1"
+        },
+        {
+          "repoHost": "quay.io",
+          "children": [],
+          "name": "alfresco/alfresco-transform-router",
+          "type": "image",
+          "version": "1.0.2.1"
+        },
+        {
+          "repoHost": "quay.io",
+          "children": [],
+          "name": "alfresco/alfresco-libreoffice",
+          "type": "image",
+          "version": "2.0.17"
+        },
+        {
+          "repoHost": "quay.io",
+          "children": [],
+          "name": "alfresco/alfresco-imagemagick",
+          "type": "image",
+          "version": "2.0.17"
+        },
+        {
+          "keywords": [
+            "alfresco",
+            "digital workspace"
+          ],
+          "children": [{
+            "repoHost": "quay.io",
+            "children": [],
+            "name": "alfresco/alfresco-digital-workspace",
+            "type": "image",
+            "version": "1.3.0"
+          }],
+          "name": "alfresco-digital-workspace:2.2.0",
+          "description": "A Helm chart for deploying Alfresco Digital Workspace application",
+          "type": "chart",
+          "shortName": "alfresco-digital-workspace",
+          "version": "2.2.0"
+        },
+        {
+          "keywords": [
+            "search",
+            "search services",
+            "alfresco search services",
+            "insight",
+            "insight engine",
+            "alfresco insight engine"
+          ],
+          "children": [{
+            "repoHost": "Docker Hub",
+            "children": [],
+            "name": "alfresco/alfresco-search-services",
+            "type": "image",
+            "version": "1.4.0"
+          }],
+          "name": "alfresco-search:1.0.1",
+          "description": "A Helm chart for deploying Alfresco Search",
+          "type": "chart",
+          "shortName": "alfresco-search",
+          "version": "1.0.1"
+        },
+        {
+          "maintainers": [{"name": "Alfresco Apps Repo Team"}],
+          "keywords": [
+            "syncservice",
+            "alfresco",
+            "application"
+          ],
+          "children": [
+            {
+              "repoHost": "quay.io",
+              "children": [],
+              "name": "alfresco/service-sync",
+              "type": "image",
+              "version": "3.1.2"
+            },
+            {
+              "maintainers": [{"name": "databus23"}],
+              "keywords": [
+                "postgresql",
+                "postgres",
+                "database",
+                "sql"
+              ],
+              "children": [{
+                "repoHost": "Docker Hub",
+                "children": [],
+                "name": "postgres",
+                "type": "image",
+                "version": "10.1"
+              }],
+              "name": "postgresql:0.9.3",
+              "description": "Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.",
+              "type": "chart",
+              "shortName": "postgresql",
+              "version": "0.9.3"
+            }
+          ],
+          "name": "alfresco-sync-service:1.1.1",
+          "description": "Alfresco Syncservice",
+          "type": "chart",
+          "shortName": "alfresco-sync-service",
+          "version": "1.1.1"
+        },
+        {
+          "maintainers": [{"name": "databus23"}],
+          "keywords": [
+            "postgresql",
+            "postgres",
+            "database",
+            "sql"
+          ],
+          "children": [{
+            "repoHost": "Docker Hub",
+            "children": [],
+            "name": "postgres",
+            "type": "image",
+            "version": "11.4"
+          }],
+          "name": "postgresql:0.9.3",
+          "description": "Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.",
+          "type": "chart",
+          "shortName": "postgresql",
+          "version": "0.9.3"
+        }
+      ],
+      "name": "alfresco-content-services:2.1.3",
+      "description": "A Helm chart for deploying Alfresco Content Services",
+      "type": "chart",
+      "shortName": "alfresco-content-services",
+      "version": "2.1.3"
+    }
+  ],
+  "name": "alfresco-dbp:1.5.0",
+  "description": "A Helm chart for the Alfresco Digital Business Platform",
+  "type": "chart",
+  "shortName": "alfresco-dbp",
+  "version": "1.5.0"
+}

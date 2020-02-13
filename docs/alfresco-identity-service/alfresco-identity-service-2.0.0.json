@@ -1,0 +1,79 @@
+{
+  "maintainers": [{"name": "Alfresco"}],
+  "keywords": [
+    "alfresco",
+    "keycloak",
+    "identity-service"
+  ],
+  "children": [{
+    "maintainers": [
+      {
+        "name": "unguiculus",
+        "email": "unguiculus@gmail.com"
+      },
+      {
+        "name": "thomasdarimont",
+        "email": "thomas.darimont+github@gmail.com"
+      }
+    ],
+    "keywords": [
+      "sso",
+      "idm",
+      "openid connect",
+      "saml",
+      "kerberos",
+      "ldap"
+    ],
+    "children": [
+      {
+        "repoHost": "Docker Hub",
+        "children": [],
+        "name": "alfresco/alfresco-identity-service",
+        "type": "image",
+        "version": "1.2"
+      },
+      {
+        "maintainers": [
+          {
+            "name": "Bitnami",
+            "email": "containers@bitnami.com"
+          },
+          {
+            "name": "desaintmartin",
+            "email": "cedric@desaintmartin.fr"
+          }
+        ],
+        "keywords": [
+          "postgresql",
+          "postgres",
+          "database",
+          "sql",
+          "replication",
+          "cluster"
+        ],
+        "children": [{
+          "repoHost": "docker.io",
+          "children": [],
+          "name": "bitnami/postgresql",
+          "type": "image",
+          "version": "11.5.0-debian-9-r60"
+        }],
+        "name": "postgresql:6.3.13",
+        "description": "Chart for PostgreSQL, an object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.",
+        "type": "chart",
+        "shortName": "postgresql",
+        "version": "6.3.13"
+      }
+    ],
+    "name": "keycloak:6.0.0",
+    "description": "Open Source Identity and Access Management For Modern Applications and Services",
+    "type": "chart",
+    "shortName": "keycloak",
+    "version": "6.0.0"
+  }],
+  "name": "alfresco-identity-service:2.0.0",
+  "description": "The Alfresco Identity Service will become the central component responsible for identity-related capabilities needed by other Alfresco software, such as managing users, groups, roles, profiles, and authentication. Currently it deals just with authentication.",
+  "type": "chart",
+  "shortName": "alfresco-identity-service",
+  "version": "2.0.0"
+}

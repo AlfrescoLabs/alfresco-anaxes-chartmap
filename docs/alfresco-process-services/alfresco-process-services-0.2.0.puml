@@ -1,0 +1,29 @@
+@startuml
+skinparam linetype ortho
+skinparam backgroundColor white
+skinparam usecaseBorderColor black
+skinparam usecaseArrowColor LightSlateGray
+skinparam artifactBorderColor black
+skinparam artifactArrowColor LightSlateGray
+
+title Chart Map for alfresco-process-services:0.2.0
+
+'There are 2 referenced Helm Charts
+artifact "alfresco-process-services:0.2.0\n====\n\talfresco-process-services\n====\n\t0.2.0\n====\n\thttps://kubernetes-charts.alfresco.com/stable\n====\n\tMaintainers: Alfresco\n====\n\tKeywords: " as alfresco_process_services_0_2_0 #Gainsboro
+artifact "postgresql:1.0.0\n====\n\tpostgresql\n====\n\t1.0.0\n====\n\thttps://kubernetes-charts.storage.googleapis.com\n====\n\tMaintainers: \n====\n\tKeywords: postgresql\npostgres\ndatabase\nsql" as postgresql_1_0_0 #LightSteelBlue
+
+'There are 4 referenced Docker Images
+usecase "Image\n====\n\tquay.io\n====\n\talfresco/alfresco-process-workspace-app:1.3.4\n====\n\t1.3.4" as quay_io_alfresco_alfresco_process_workspace_app_1_3_4 #Azure
+usecase "Image\n====\n\tquay.io\n====\n\talfresco/alfresco-process-services-admin:1.10.0\n====\n\t1.10.0" as quay_io_alfresco_alfresco_process_services_admin_1_10_0 #CadetBlue
+usecase "Image\n====\n\tDocker Hub\n====\n\tpostgres\n====\n\t9.4.6" as postgres_9_4_6 #Ivory
+usecase "Image\n====\n\tquay.io\n====\n\talfresco/alfresco-process-services:1.10.0\n====\n\t1.10.0" as quay_io_alfresco_alfresco_process_services_1_10_0 #LightCoral
+
+'Chart Dependencies
+alfresco_process_services_0_2_0--[#green]-|>postgresql_1_0_0
+alfresco_process_services_0_2_0--[#orange]-|>quay_io_alfresco_alfresco_process_services_admin_1_10_0
+alfresco_process_services_0_2_0--[#orange]-|>quay_io_alfresco_alfresco_process_services_1_10_0
+alfresco_process_services_0_2_0--[#orange]-|>quay_io_alfresco_alfresco_process_workspace_app_1_3_4
+postgresql_1_0_0--[#orange]-|>postgres_9_4_6
+
+center footer Generated on 2020/02/13 07:23:01 by org.alfresco.deployment.util.PlantUmlChartMapPrinter\nhttps://github.com/Alfresco/alfresco-anaxes-chartmap
+@enduml

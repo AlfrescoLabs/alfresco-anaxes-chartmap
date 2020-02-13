@@ -1,0 +1,63 @@
+Chart Map for alfresco-identity-service:2.0.0
+
+There are 3 referenced Helm Charts
+----------------------------------
+Chart: postgresql:6.3.13
+	apiVersion: v1
+	appVersion: 11.5.0
+	created: 2019-10-16T13:28:09.613097647Z
+	dependencies: None
+	description: Chart for PostgreSQL, an object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
+	digest: f0ff25e75937255b8c297642e0b6f5e11159163901278afdb89dd18b84e888f2
+	icon: https://bitnami.com/assets/stacks/postgresql/img/postgresql-stack-110x117.png
+	keywords: postgresql,postgres,database,sql,replication,cluster
+	maintainers: Bitnami:containers@bitnami.com,desaintmartin:cedric@desaintmartin.fr
+	repo url: https://kubernetes-charts.storage.googleapis.com
+	name: postgresql
+	sources: https://github.com/bitnami/bitnami-docker-postgresql
+	urls: https://kubernetes-charts.storage.googleapis.com/postgresql-6.3.13.tgz
+	version: 6.3.13
+Chart: keycloak:6.0.0
+	apiVersion: Not specified
+	appVersion: 7.0.0
+	created: 2019-10-17T18:39:10.656455999Z
+	dependencies: postgresql:6.3.13
+	description: Open Source Identity and Access Management For Modern Applications and Services
+	digest: 3950a8b674629d2c164422db66fe59963a56a35c17f74d731a209cf761302b56
+	icon: https://www.keycloak.org/resources/images/keycloak_logo_480x108.png
+	keywords: sso,idm,openid connect,saml,kerberos,ldap
+	maintainers: unguiculus:unguiculus@gmail.com,thomasdarimont:thomas.darimont+github@gmail.com
+	repo url: https://codecentric.github.io/helm-charts
+	name: keycloak
+	sources: https://github.com/codecentric/helm-charts,https://github.com/jboss-dockerfiles/keycloak
+	urls: https://github.com/codecentric/helm-charts/releases/download/keycloak-6.0.0/keycloak-6.0.0.tgz
+	version: 6.0.0
+Chart: alfresco-identity-service:2.0.0
+	apiVersion: Not specified
+	appVersion: 1.2.0
+	created: Not specified
+	dependencies: keycloak:6.0.0
+	description: The Alfresco Identity Service will become the central component responsible for identity-related capabilities needed by other Alfresco software, such as managing users, groups, roles, profiles, and authentication. Currently it deals just with authentication.
+	digest: Not specified
+	icon: Not specified
+	keywords: alfresco,keycloak,identity-service
+	maintainers: Alfresco
+	repo url: https://kubernetes-charts.alfresco.com/stable
+	name: alfresco-identity-service
+	sources: https://github.com/Alfresco/alfresco-identity-service/helm
+	urls: Not specified
+	version: 2.0.0
+
+There are 2 referenced Docker Images
+------------------------------------
+Image: docker.io/bitnami/postgresql:11.5.0-debian-9-r60
+Image: alfresco/alfresco-identity-service:1.2
+
+Chart Dependencies
+------------------
+alfresco-identity-service:2.0.0 depends on keycloak:6.0.0
+keycloak:6.0.0 depends on postgresql:6.3.13
+postgresql:6.3.13 uses docker.io/bitnami/postgresql:11.5.0-debian-9-r60
+keycloak:6.0.0 uses alfresco/alfresco-identity-service:1.2
+
+Generated on 2020/02/11 09:12:33 by org.alfresco.deployment.util.TextChartMapPrinter (https://github.com/Alfresco/alfresco-anaxes-chartmap)

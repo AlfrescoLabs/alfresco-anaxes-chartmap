@@ -1,0 +1,51 @@
+{
+  "maintainers": [{"name": "Alfresco"}],
+  "children": [
+    {
+      "repoHost": "quay.io",
+      "children": [],
+      "name": "alfresco/alfresco-process-services-admin",
+      "type": "image",
+      "version": "1.10.0"
+    },
+    {
+      "repoHost": "quay.io",
+      "children": [],
+      "name": "alfresco/alfresco-process-services",
+      "type": "image",
+      "version": "1.10.0"
+    },
+    {
+      "repoHost": "quay.io",
+      "children": [],
+      "name": "alfresco/alfresco-process-workspace-app",
+      "type": "image",
+      "version": "1.3.4"
+    },
+    {
+      "keywords": [
+        "postgresql",
+        "postgres",
+        "database",
+        "sql"
+      ],
+      "children": [{
+        "repoHost": "Docker Hub",
+        "children": [],
+        "name": "postgres",
+        "type": "image",
+        "version": "9.4.6"
+      }],
+      "name": "postgresql:1.0.0",
+      "description": "Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.",
+      "type": "chart",
+      "shortName": "postgresql",
+      "version": "1.0.0"
+    }
+  ],
+  "name": "alfresco-process-services:0.2.0",
+  "description": "A Helm chart for Alfresco Process Services",
+  "type": "chart",
+  "shortName": "alfresco-process-services",
+  "version": "0.2.0"
+}

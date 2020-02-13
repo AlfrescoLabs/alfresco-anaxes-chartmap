@@ -1,0 +1,25 @@
+@startuml
+skinparam linetype ortho
+skinparam backgroundColor white
+skinparam usecaseBorderColor black
+skinparam usecaseArrowColor LightSlateGray
+skinparam artifactBorderColor black
+skinparam artifactArrowColor LightSlateGray
+
+title Chart Map for wordpress:8.1.2
+
+'There are 2 referenced Helm Charts
+artifact "mariadb:7.3.6\n====\n\tmariadb\n====\n\t7.3.6\n====\n\thttps://kubernetes-charts.storage.googleapis.com\n====\n\tMaintainers: Bitnami\n====\n\tKeywords: mariadb\nmysql\ndatabase\nsql\nprometheus" as mariadb_7_3_6 #DarkTurquoise
+artifact "wordpress:8.1.2\n====\n\twordpress\n====\n\t8.1.2\n====\n\thttps://kubernetes-charts.storage.googleapis.com\n====\n\tMaintainers: Bitnami\n====\n\tKeywords: wordpress\ncms\nblog\nhttp\nweb\napplication\nphp" as wordpress_8_1_2 #GreenYellow
+
+'There are 2 referenced Docker Images
+usecase "Image\n====\n\tdocker.io\n====\n\tbitnami/mariadb:10.3.21-debian-10-r0\n====\n\t10.3.21-debian-10-r0" as docker_io_bitnami_mariadb_10_3_21_debian_10_r0 #DarkGoldenRod
+usecase "Image\n====\n\tdocker.io\n====\n\tbitnami/wordpress:5.3.2-debian-10-r0\n====\n\t5.3.2-debian-10-r0" as docker_io_bitnami_wordpress_5_3_2_debian_10_r0 #Darkorange
+
+'Chart Dependencies
+wordpress_8_1_2--[#green]-|>mariadb_7_3_6
+mariadb_7_3_6--[#orange]-|>docker_io_bitnami_mariadb_10_3_21_debian_10_r0
+wordpress_8_1_2--[#orange]-|>docker_io_bitnami_wordpress_5_3_2_debian_10_r0
+
+center footer Generated on 2020/02/07 13:44:22 by org.alfresco.deployment.util.PlantUmlChartMapPrinter\nhttps://github.com/Alfresco/alfresco-anaxes-chartmap
+@enduml
