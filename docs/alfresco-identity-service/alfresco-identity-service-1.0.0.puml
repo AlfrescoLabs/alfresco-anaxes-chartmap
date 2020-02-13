@@ -1,0 +1,27 @@
+@startuml
+skinparam linetype ortho
+skinparam backgroundColor white
+skinparam usecaseBorderColor black
+skinparam usecaseArrowColor LightSlateGray
+skinparam artifactBorderColor black
+skinparam artifactArrowColor LightSlateGray
+
+title Chart Map for alfresco-identity-service:1.0.0
+
+'There are 3 referenced Helm Charts
+artifact "keycloak:4.0.3\n====\n\tkeycloak\n====\n\t4.0.3\n====\n\thttps://kubernetes-charts.storage.googleapis.com\n====\n\tMaintainers: unguiculus\n====\n\tKeywords: sso\nidm\nopenid connect\nsaml\nkerberos\nldap" as keycloak_4_0_3 #LightBlue
+artifact "alfresco-identity-service:1.0.0\n====\n\talfresco-identity-service\n====\n\t1.0.0\n====\n\thttps://kubernetes-charts.alfresco.com/stable\n====\n\tMaintainers: Alfresco\n====\n\tKeywords: alfresco\nkeycloak\nidentity-service" as alfresco_identity_service_1_0_0 #Chartreuse
+artifact "postgresql:0.15.0\n====\n\tpostgresql\n====\n\t0.15.0\n====\n\thttps://kubernetes-charts.storage.googleapis.com\n====\n\tMaintainers: databus23\n====\n\tKeywords: postgresql\npostgres\ndatabase\nsql" as postgresql_0_15_0 #LightSteelBlue
+
+'There are 2 referenced Docker Images
+usecase "Image\n====\n\tDocker Hub\n====\n\tpostgres\n====\n\t10.1" as postgres_10_1 #Ivory
+usecase "Image\n====\n\tDocker Hub\n====\n\tjboss/keycloak\n====\n\t4.5.0.Final" as jboss_keycloak_4_5_0_Final #LemonChiffon
+
+'Chart Dependencies
+alfresco_identity_service_1_0_0--[#green]-|>keycloak_4_0_3
+keycloak_4_0_3--[#green]-|>postgresql_0_15_0
+keycloak_4_0_3--[#orange]-|>jboss_keycloak_4_5_0_Final
+postgresql_0_15_0--[#orange]-|>postgres_10_1
+
+center footer Generated on 2020/02/13 10:23:44 by org.alfresco.deployment.util.PlantUmlChartMapPrinter\nhttps://github.com/Alfresco/alfresco-anaxes-chartmap
+@enduml
