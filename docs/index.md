@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<!--
-
-This page provides an index of sample documents generated using alfresco-anaxes-chartmap
-
--->
 <head>
     <link rel="stylesheet" href="./style.css">
 </head>
