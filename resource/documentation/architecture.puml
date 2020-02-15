@@ -1,6 +1,7 @@
 @startuml
 
 skinparam linetype ortho
+skinparam shadowing false
 skinparam componentStyle uml2
 skinparam monochrome reverse
 skinparam packageBackgroundColor Ghostwhite
