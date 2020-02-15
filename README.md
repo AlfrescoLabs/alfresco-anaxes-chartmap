@@ -208,7 +208,7 @@ Dependencies of Helm Charts on other Helm Charts are shown as green lines.   Dep
 
 ### Architecture Overview
 
-![Architecture](./resource/architecture.png)
+![Architecture](./resource/documentation/architecture.png)
 
 A illustrated, there is a *Chartmap* component, implemented as a Java class, that reads
 in a Helm Chart from a Helm Chart source. It then relies on the use 
