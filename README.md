@@ -213,9 +213,9 @@ Dependencies of Helm Charts on other Helm Charts are shown as green lines.   Dep
 A illustrated, there is a *Chartmap* component, implemented as a Java class, that reads
 in a Helm Chart from a Helm Chart source. It then relies on the use 
 of the [helm template command](https://helm.sh/docs/helm/helm_template)
-to recursively generate a template representation of a helm chart and its dependencies. 
+to recursively generate a template representation of a Helm Chart and its dependencies. 
 The resulting templates are parsed and the information saved in an in-memory representation
-of the helm chart and its dependencies, using a model of each of the main elements of Helm,
+of the Helm Chart and its dependencies, using a model of each of the main elements of Helm,
 such as *HelmChart* and *HelmDeploymentContainer*.  
 
 The result is then used to generate a file
