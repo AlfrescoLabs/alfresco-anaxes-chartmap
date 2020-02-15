@@ -1,0 +1,53 @@
+@startuml
+
+skinparam linetype ortho
+skinparam componentStyle uml2
+skinparam monochrome reverse
+skinparam packageBackgroundColor Ghostwhite
+
+actor a as "User"
+
+file hc as "helm chart"
+rectangle cs as "Chart Sources" {
+database fs as "FileSystem"
+database hr as "Helm Chart Repo"
+database ar as "appr"
+}
+
+component hcl as "Helm client"
+component pu as "PlantUML"
+rectangle hi as "helm-inspector\n\n<size:50><&browser>\n"
+
+file pf as "puml"
+file tf as "txt"
+file jf as "json"
+file if as "image"
+
+package app as "Chartmap" {
+ component cm as "Chartmap"
+ component pup as "PlantUMLPrinter"
+ component tp as "TextPrinter"
+ component jp as "JSONPrinter"
+ component hcm as "Helm chart model"
+}
+cm ---->> hcl: <&check>helm template\n command
+cm <<-->> hcm
+cm <<---- hc
+cm --->> [pup]
+cm --->> [tp]
+cm --->> [jp]
+fs -->> hc
+hr -->> hc
+ar -->> hc
+pup -->> pf
+tp -->> tf
+jp -->> jf
+pf -->> pu
+pu -->> if
+jf -->> hi
+a <<-- if
+a <<-->> hi
+a <<-- tf
+
+
+@enduml
