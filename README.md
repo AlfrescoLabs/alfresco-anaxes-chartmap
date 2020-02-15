@@ -206,6 +206,23 @@ Dependencies of Helm Charts on other Helm Charts are shown as green lines.   Dep
 [Example Text File](./docs/alfresco-dbp/alfresco-dbp-1.5.0.txt)
 
 
+### Architecture Overview
+
+![Architecture](./resource/documentation/architecture.png)
+
+A illustrated, there is a *Chartmap* component, implemented as a Java class, that reads
+in a Helm Chart from a Helm Chart source. It then relies on the use 
+of the [helm template command](https://helm.sh/docs/helm/helm_template)
+to recursively generate a template representation of a Helm Chart and its dependencies. 
+The resulting templates are parsed and the information saved in an in-memory representation
+of the Helm Chart and its dependencies, using a model of each of the main elements of Helm,
+such as *HelmChart* and *HelmDeploymentContainer*.  
+
+The result is then used to generate a file
+representation of the Helm Chart using one of several *ChartMapPrinter* classes,
+such as the *PlantUMLChartMapPrinter*. The end-user can then enjoy the result using an image
+viewer, a text viewer or [helm-inspector](https://github.com/melahn/helm-inspector).
+
 ### Maven Commands
 
 #### Building the jar from source and running tests
