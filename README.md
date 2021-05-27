@@ -1,6 +1,6 @@
 # Chart Map
 
-See some examples &#8594; [https://alfresco.github.io/alfresco-anaxes-chartmap/](https://melahn.github.io/alfresco-anaxes-chartmap/) 
+See some examples &#8594; [https://alfresco.github.io/alfresco-anaxes-chartmap/](https://alfresco.github.io/alfresco-anaxes-chartmap/) 
 
 ## Overview
 
